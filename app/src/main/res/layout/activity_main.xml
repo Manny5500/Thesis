@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity">
+
+    <Button
+        android:id="@+id/btnPERSONNEL"
+        android:layout_width="140dp"
+        android:layout_height="103dp"
+        android:layout_marginTop="24dp"
+        android:text="I'm a PERSONNEL"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btnAdmin" />
+
+    <Button
+        android:id="@+id/btnParent"
+        android:layout_width="137dp"
+        android:layout_height="99dp"
+        android:layout_marginTop="33dp"
+        android:layout_marginBottom="113dp"
+        android:text="I'm a PARENT"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.496"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btnPERSONNEL" />
+
+    <Button
+        android:id="@+id/btnAdmin"
+        android:layout_width="137dp"
+        android:layout_height="99dp"
+        android:layout_marginTop="260dp"
+        android:text="I'm an ADMIN"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.507"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
