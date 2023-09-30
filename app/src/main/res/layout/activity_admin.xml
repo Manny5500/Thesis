@@ -6,17 +6,62 @@
     android:layout_height="match_parent"
     tools:context=".AdminActivity">
 
-    <TextView
-        android:id="@+id/textView"
+    <Button
+        android:id="@+id/btnDashboards"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="167dp"
-        android:layout_marginTop="356dp"
-        android:layout_marginEnd="168dp"
-        android:layout_marginBottom="356dp"
-        android:text="Admin Page"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="6dp"
+        android:text="Dashboard"
+        app:layout_constraintEnd_toStartOf="@+id/btnReports"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/btnUM"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="6dp"
+        android:text="UM"
+        app:layout_constraintEnd_toStartOf="@+id/btnAdminLogOut"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/btnReports"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="6dp"
+        android:text="Reports"
+        app:layout_constraintEnd_toStartOf="@+id/btnPriority"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/btnPriority"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="6dp"
+        android:text="Priority"
+        app:layout_constraintEnd_toStartOf="@+id/btnUM"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/btnAdminLogOut"
+        android:layout_width="53dp"
+        android:layout_height="55dp"
+        android:layout_marginTop="6dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/baseline_login_24" />
+
+    <FrameLayout
+        android:id="@+id/frameLayoutAdmin"
+        android:layout_width="409dp"
+        android:layout_height="668dp"
+        android:layout_marginStart="1dp"
+        android:layout_marginEnd="1dp"
+        android:layout_marginBottom="1dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+    </FrameLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
