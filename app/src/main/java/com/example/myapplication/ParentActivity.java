@@ -9,9 +9,10 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 
 public class ParentActivity extends AppCompatActivity {
-    Button parentProfile, children, parentLogout;
+    ImageButton parentProfile, children, parentLogout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
