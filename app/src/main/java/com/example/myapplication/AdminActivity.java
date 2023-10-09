@@ -26,6 +26,7 @@ public class AdminActivity extends AppCompatActivity {
         logout = findViewById(R.id.btnAdminLogOut);
         reports = findViewById(R.id.btnReports);
 
+        replaceFragment(new fragmentDashboard());
         dashboard.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

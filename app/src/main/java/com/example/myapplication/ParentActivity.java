@@ -23,6 +23,7 @@ public class ParentActivity extends AppCompatActivity {
         children = findViewById(R.id.btnChildren);
         parentLogout = findViewById(R.id.btnLogOut);
 
+        replaceFragment(new ParentChildren());
         parentProfile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

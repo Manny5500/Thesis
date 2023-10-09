@@ -10,17 +10,28 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <TextView
-            android:id="@+id/textView1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="356dp"
-            android:text="User Management"
-            app:layout_constraintBottom_toBottomOf="parent"
+        <androidx.appcompat.widget.SearchView
+            android:id="@+id/umsearchView"
+            android:layout_width="match_parent"
+            android:layout_height="66dp"
+            android:layout_marginStart="15dp"
+            android:layout_marginEnd="15dp"
+            android:background="#EAE7E9"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.498"
+            app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
-            tools:layout_editor_absoluteX="148dp" />
+            app:layout_constraintTop_toTopOf="parent"
+            app:queryHint="Search Here...." />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/UserManagementRecycler"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="@+id/umsearchView"
+            app:layout_constraintStart_toStartOf="@+id/umsearchView"
+            app:layout_constraintTop_toBottomOf="@+id/umsearchView" />
+
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

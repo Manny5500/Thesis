@@ -102,8 +102,35 @@
     <string-array name="tipunan">
 
     </string-array>
-    <string-array name="halayhaying">
+    <string-array name="halayhayin">
 
     </string-array>
 
+    <string-array name="malnourished_categories">
+        <item>Severe Underweight</item>
+        <item>Severe Underweight</item>
+        <item>Severe Stunted</item>
+        <item>Severe Stunted</item>
+        <item>Severe Stunted</item>
+        <item>Severe Wasted</item>
+        <item>Severe Wasted</item>
+    </string-array>
+    <string-array name="children_name">
+        <item>Scarlet Malaya</item>
+        <item>Carlita Kalayaan</item>
+        <item>Marlon Victoria</item>
+        <item>Juan Dela Cruz</item>
+        <item>Wala Lang</item>
+        <item>Try Lang</item>
+        <item>Edi Wow</item>
+    </string-array>
+    <string-array name="phone_number">
+        <item>09123456789</item>
+        <item>09987654321</item>
+        <item>09876543219</item>
+        <item>09765432198</item>
+        <item>09654321987</item>
+        <item>095432198765</item>
+        <item>094321987654</item>
+    </string-array>
 </resources>

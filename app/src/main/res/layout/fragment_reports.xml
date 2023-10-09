@@ -7,93 +7,235 @@
     tools:context=".fragmentReports">
 
     <!-- TODO: Update blank fragment layout -->
-
     <ScrollView
+        android:fillViewport="true"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:fillViewport="true"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        tools:layout_editor_absoluteX="1dp"
+        tools:layout_editor_absoluteY="74dp"
+        >
 
         <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/parentConstraint"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="match_parent"
+            tools:context=".MainActivity">
+
+            <com.github.mikephil.charting.charts.BarChart
+                android:id="@+id/barChart"
+                android:layout_width="310dp"
+                android:layout_height="286dp"
+                app:layout_constraintEnd_toEndOf="@+id/textMonthCases"
+                app:layout_constraintStart_toStartOf="@+id/textMonthCases"
+                app:layout_constraintTop_toBottomOf="@+id/textMonthCases">
+
+            </com.github.mikephil.charting.charts.BarChart>
 
             <TextView
-                android:id="@+id/textView36"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:text="TextView"
+                android:id="@+id/textMonthCases"
+                android:layout_width="350dp"
+                android:layout_height="60dp"
+                android:layout_marginStart="30dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginEnd="31dp"
+                android:gravity="center"
+                android:text="Malnourished Cases every Month"
+                android:textSize="25sp"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.498"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <EditText
-                android:id="@+id/editTextText3"
-                android:layout_width="wrap_content"
-                android:layout_height="50dp"
-                android:layout_marginTop="56dp"
-                android:ems="10"
-                android:inputType="text"
-                android:text="Name"
-                app:layout_constraintEnd_toEndOf="@+id/textView36"
-                app:layout_constraintStart_toStartOf="@+id/textView36"
-                app:layout_constraintTop_toBottomOf="@+id/textView36" />
-
-            <EditText
-                android:id="@+id/editTextText4"
-                android:layout_width="wrap_content"
-                android:layout_height="50dp"
-                android:layout_marginTop="152dp"
-                android:ems="10"
-                android:inputType="text"
-                android:text="Name"
-                app:layout_constraintEnd_toEndOf="@+id/editTextText3"
-                app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintStart_toStartOf="@+id/editTextText3"
-                app:layout_constraintTop_toBottomOf="@+id/editTextText3" />
-
-            <EditText
-                android:id="@+id/editTextText5"
-                android:layout_width="wrap_content"
-                android:layout_height="50dp"
-                android:layout_marginTop="128dp"
-                android:ems="10"
-                android:inputType="text"
-                android:text="Name"
-                app:layout_constraintEnd_toEndOf="@+id/editTextText4"
-                app:layout_constraintHorizontal_bias="1.0"
-                app:layout_constraintStart_toStartOf="@+id/editTextText4"
-                app:layout_constraintTop_toBottomOf="@+id/editTextText4" />
-
-            <EditText
-                android:id="@+id/editTextText6"
-                android:layout_width="wrap_content"
-                android:layout_height="50dp"
-                android:layout_marginTop="92dp"
-                android:ems="10"
-                android:inputType="text"
-                android:text="Name"
-                app:layout_constraintEnd_toEndOf="@+id/editTextText5"
-                app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintStart_toStartOf="@+id/editTextText5"
-                app:layout_constraintTop_toBottomOf="@+id/editTextText5" />
-
-            <Button
-                android:id="@+id/button4"
-                android:layout_width="wrap_content"
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/constraintLayout"
+                android:layout_width="316dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="108dp"
-                android:text="Button"
-                app:layout_constraintEnd_toEndOf="@+id/editTextText6"
-                app:layout_constraintHorizontal_bias="0.504"
-                app:layout_constraintStart_toStartOf="@+id/editTextText6"
-                app:layout_constraintTop_toBottomOf="@+id/editTextText6" />
+                android:layout_marginTop="20dp"
+                app:layout_constraintEnd_toEndOf="@+id/barChart"
+                app:layout_constraintStart_toStartOf="@+id/barChart"
+                app:layout_constraintTop_toBottomOf="@+id/barChart">
+
+                <TextView
+                    android:id="@+id/textBarangayCases"
+                    android:layout_width="309dp"
+                    android:layout_height="81dp"
+                    android:layout_marginBottom="1dp"
+                    android:gravity="center"
+                    android:text="Top Malnourished Barangay"
+                    android:textSize="25sp"
+                    app:layout_constraintBottom_toTopOf="@+id/tableLayout"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TableLayout
+                    android:id="@+id/tableLayout"
+                    android:layout_width="314dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="1dp"
+                    android:layout_marginEnd="2dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/textBarangayCases">
+
+                    <TableRow
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent" />
+
+                    <TableRow
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent" />
+
+                    <TableRow
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent" />
+
+                    <TableRow
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent" />
+                </TableLayout>
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/constraintLayout2"
+                android:layout_width="316dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                app:layout_constraintEnd_toEndOf="@+id/constraintLayout"
+                app:layout_constraintStart_toStartOf="@+id/constraintLayout"
+                app:layout_constraintTop_toBottomOf="@+id/constraintLayout">
+
+                <TextView
+                    android:id="@+id/textSexCases"
+                    android:layout_width="309dp"
+                    android:layout_height="81dp"
+                    android:gravity="center"
+                    android:text="Malnourished Cases per Sex"
+                    android:textSize="25sp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <com.github.mikephil.charting.charts.PieChart
+                    android:id="@+id/pieChart"
+                    android:layout_width="310dp"
+                    android:layout_height="286dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/textSexCases" />
+
+                <TableLayout
+                    android:id="@+id/sextableLayout"
+                    android:layout_width="314dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="1dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/pieChart">
+
+                    <TableRow
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent" />
+
+                    <TableRow
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent" />
+
+                    <TableRow
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent" />
+
+                    <TableRow
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent" />
+                </TableLayout>
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/constraintLayout3"
+                android:layout_width="315dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                app:layout_constraintEnd_toEndOf="@+id/constraintLayout2"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="@+id/constraintLayout2"
+                app:layout_constraintTop_toBottomOf="@+id/constraintLayout2">
+
+                <TextView
+                    android:id="@+id/textCategoryCases"
+                    android:layout_width="match_parent"
+                    android:layout_height="81dp"
+                    android:gravity="center"
+                    android:text="Malnourished Cases per Category"
+                    android:textAlignment="center"
+                    android:textSize="25sp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="1.0"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TableLayout
+                    android:id="@+id/tableLayout3"
+                    android:layout_width="313dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="2dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/textCategoryCases">
+
+                    <TableRow
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent" />
+
+                    <TableRow
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent" />
+
+                    <TableRow
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent" />
+
+                    <TableRow
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent" />
+                </TableLayout>
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="313dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                app:layout_constraintEnd_toEndOf="@+id/constraintLayout3"
+                app:layout_constraintStart_toStartOf="@+id/constraintLayout3"
+                app:layout_constraintTop_toBottomOf="@+id/constraintLayout3">
+
+                <TextView
+                    android:id="@+id/textAgeCases"
+                    android:layout_width="309dp"
+                    android:layout_height="81dp"
+                    android:gravity="center"
+                    android:text="Malnourished Cases per Ages"
+                    android:textSize="25sp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+
+                <com.github.mikephil.charting.charts.BarChart
+                    android:id="@+id/barChart2"
+                    android:layout_width="310dp"
+                    android:layout_height="286dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/textAgeCases" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
 
         </androidx.constraintlayout.widget.ConstraintLayout>
+
     </ScrollView>
 </FrameLayout>

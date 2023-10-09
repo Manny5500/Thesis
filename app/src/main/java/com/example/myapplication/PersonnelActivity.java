@@ -24,6 +24,8 @@ public class PersonnelActivity extends AppCompatActivity {
         manageData = findViewById(R.id.btnManageData);
         syncData = findViewById(R.id.btnSyncData);
         logOut = findViewById(R.id.btnLogout);
+
+        replaceFragment(new fradAddData());
         personnelProfile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
