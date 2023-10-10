@@ -10,6 +10,7 @@
         android:layout_width="46dp"
         android:layout_height="56dp"
         android:layout_marginEnd="10dp"
+        android:backgroundTint="#674FA2"
         android:src="@drawable/baseline_delete_24"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/umEdit"
@@ -20,6 +21,7 @@
         android:layout_width="46dp"
         android:layout_height="56dp"
         android:layout_marginStart="10dp"
+        android:backgroundTint="#674fa3"
         android:src="@drawable/baseline_edit_24"
         app:layout_constraintStart_toEndOf="@+id/textumName"
         app:layout_constraintTop_toTopOf="@+id/textumName" />

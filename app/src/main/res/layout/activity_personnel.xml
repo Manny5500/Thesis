@@ -8,7 +8,7 @@
     tools:context=".PersonnelActivity">
 
 
-    <ImageButton
+    <ImageView
         android:id="@+id/btnProfile"
         android:layout_width="50dp"
         android:layout_height="50dp"
@@ -16,14 +16,14 @@
         android:layout_marginTop="10dp"
         android:layout_marginEnd="10dp"
         android:layout_marginBottom="10dp"
-        android:background="@drawable/baseline_people_alt_24"
+        app:srcCompat="@drawable/baseline_people_alt_24"
         android:contentDescription="Profile"
         app:layout_constraintBottom_toTopOf="@+id/frameLayoutPersonnel"
         app:layout_constraintEnd_toStartOf="@+id/btnAddData"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <ImageButton
+    <ImageView
         android:id="@+id/btnAddData"
         android:layout_width="50dp"
         android:layout_height="50dp"
@@ -31,7 +31,7 @@
         android:layout_marginTop="10dp"
         android:layout_marginEnd="10dp"
         android:layout_marginBottom="10dp"
-        android:background="@drawable/baseline_add_circle_24"
+        app:srcCompat="@drawable/baseline_add_circle_24"
         android:contentDescription="Add Data"
         app:layout_constraintBottom_toTopOf="@+id/frameLayoutPersonnel"
         app:layout_constraintEnd_toStartOf="@+id/btnManageData"
@@ -40,7 +40,7 @@
 
 
 
-    <ImageButton
+    <ImageView
         android:id="@+id/btnManageData"
         android:layout_width="50dp"
         android:layout_height="50dp"
@@ -48,14 +48,14 @@
         android:layout_marginTop="10dp"
         android:layout_marginEnd="10dp"
         android:layout_marginBottom="10dp"
-        android:background="@drawable/baseline_edit_24"
+        app:srcCompat="@drawable/baseline_edit_24"
         android:contentDescription="Manage Data"
         app:layout_constraintBottom_toTopOf="@+id/frameLayoutPersonnel"
         app:layout_constraintEnd_toStartOf="@+id/btnSyncData"
         app:layout_constraintStart_toEndOf="@+id/btnAddData"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <ImageButton
+    <ImageView
         android:id="@+id/btnSyncData"
         android:layout_width="50dp"
         android:layout_height="50dp"
@@ -63,14 +63,14 @@
         android:layout_marginTop="10dp"
         android:layout_marginEnd="10dp"
         android:layout_marginBottom="10dp"
-        android:background="@drawable/baseline_sync_24"
+        app:srcCompat="@drawable/baseline_sync_24"
         android:contentDescription="Sync"
         app:layout_constraintBottom_toTopOf="@+id/frameLayoutPersonnel"
         app:layout_constraintEnd_toStartOf="@+id/btnLogout"
         app:layout_constraintStart_toEndOf="@+id/btnManageData"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <ImageButton
+    <ImageView
         android:id="@+id/btnLogout"
         android:layout_width="50dp"
         android:layout_height="50dp"
@@ -78,7 +78,8 @@
         android:layout_marginTop="10dp"
         android:layout_marginEnd="10dp"
         android:layout_marginBottom="10dp"
-        android:background="@drawable/baseline_login_24"
+        app:srcCompat="@drawable/baseline_login_24"
+        app:tint = "@color/white"
         android:contentDescription="Logout"
         app:layout_constraintBottom_toTopOf="@+id/frameLayoutPersonnel"
         app:layout_constraintEnd_toEndOf="parent"

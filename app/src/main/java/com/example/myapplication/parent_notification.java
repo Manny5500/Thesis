@@ -10,16 +10,17 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class fragmentPriority extends Fragment implements PriorityAdapter.ItemClickListener{
-    View view;
+public class parent_notification extends Fragment implements NotifyAdapter.ItemClickListener {
+
+
     private RecyclerView recyclerView;
-    private PriorityAdapter adapter;
-
-
+    private NotifyAdapter adapter;
+    View view;
 
     String item[];
     String name[];
@@ -28,7 +29,7 @@ public class fragmentPriority extends Fragment implements PriorityAdapter.ItemCl
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        view = inflater.inflate(R.layout.fragment_priority, container, false);
+        view = inflater.inflate(R.layout.fragment_parent_notification, container, false);
 
         item = getResources().getStringArray(R.array.malnourished_categories);
         name = getResources().getStringArray(R.array.children_name);
@@ -38,25 +39,18 @@ public class fragmentPriority extends Fragment implements PriorityAdapter.ItemCl
         recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
 
         List<ComponentModel> items = generateComponents();
-        adapter = new PriorityAdapter(requireContext(), items, this);
+        adapter = new NotifyAdapter(requireContext(), items, this);
         recyclerView.setAdapter(adapter);
 
         return view;
-
     }
 
     private List<ComponentModel> generateComponents() {
         List<ComponentModel> components = new ArrayList<>();
-        for (int i = 0 ; i<item.length; i++){
-            if (item[i].equals("Severe Wasted"))
-            {
-                components.add(new ComponentModel(item[i], R.color.black,  R.color.background1, name[i], pnumber[i]));
-            }else if(item[i].equals("Severe Underweight")){
-                components.add(new ComponentModel(item[i], R.color.black, R.color.background2, name[i], pnumber[i]));
-            }else if (item[i].equals("Severe Stunted")) {
-                components.add(new ComponentModel(item[i], R.color.black, R.color.background3, name[i], pnumber[i]));
-            }
-        }
+        components.add(new ComponentModel("Your child is severely malnourished", R.color.black, R.color.background3));
+        components.add(new ComponentModel("Your child is severely malnourished", R.color.black, R.color.background3));
+        components.add(new ComponentModel("Your child is severely malnourished", R.color.black, R.color.background3));
+        components.add(new ComponentModel("Your child is severely malnourished", R.color.black, R.color.background3));
         return components;
     }
 
@@ -64,13 +58,9 @@ public class fragmentPriority extends Fragment implements PriorityAdapter.ItemCl
     public void onItemClick(int position) {
         ComponentModel clickedItem = adapter.getItem(position);
         if (clickedItem != null) {
-            Intent intent = new Intent(requireContext(), PriorityClicked.class);
-            intent.putExtra("name", clickedItem.getName());
-            intent.putExtra("status", clickedItem.getText());
-            intent.putExtra("pnumber", clickedItem.getPnumber());
-            //Toast.makeText(requireContext(), "Clicked: " + clickedItem.getText(), Toast.LENGTH_SHORT).show();
-            startActivity(intent);
+            //Intent intent = new Intent(MainActivity.this, DynamicActivity.class);
+            //startActivity(intent);
+            Toast.makeText(requireContext(),"Notify clicked", Toast.LENGTH_SHORT).show();
         }
     }
-
 }

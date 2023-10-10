@@ -7,7 +7,7 @@
     android:background="#6750A3"
     tools:context=".ParentActivity">
 
-    <ImageButton
+    <ImageView
         android:id="@+id/btnParentProfile"
         android:layout_width="50dp"
         android:layout_height="50dp"
@@ -15,14 +15,15 @@
         android:layout_marginTop="16dp"
         android:layout_marginEnd="20dp"
         android:layout_marginBottom="16dp"
-        android:background="@drawable/baseline_people_alt_24"
+        app:srcCompat="@drawable/baseline_people_alt_24"
         android:contentDescription="Profile"
         app:layout_constraintBottom_toTopOf="@+id/frameLayout"
         app:layout_constraintEnd_toStartOf="@+id/btnChildren"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+         />
 
-    <ImageButton
+    <ImageView
         android:id="@+id/btnChildren"
         android:layout_width="50dp"
         android:layout_height="50dp"
@@ -30,13 +31,14 @@
         android:layout_marginTop="16dp"
         android:layout_marginEnd="10dp"
         android:layout_marginBottom="16dp"
-        android:background="@drawable/baseline_child_care_24"
+        app:srcCompat="@drawable/baseline_child_care_24"
         android:contentDescription="Children"
         app:layout_constraintBottom_toTopOf="@+id/frameLayout"
-        app:layout_constraintEnd_toStartOf="@+id/imageView"
+        app:layout_constraintEnd_toStartOf="@+id/btnParentNotify"
         app:layout_constraintStart_toEndOf="@+id/btnParentProfile"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintVertical_bias="0.0"
+        />
 
     <FrameLayout
         android:id="@+id/frameLayout"
@@ -51,7 +53,7 @@
     </FrameLayout>
 
     <ImageView
-        android:id="@+id/imageView"
+        android:id="@+id/btnParentNotify"
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:layout_marginStart="10dp"
@@ -64,9 +66,9 @@
         app:layout_constraintStart_toEndOf="@+id/btnChildren"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/baseline_notifications_24"
-        app:tint="#FEFAFD" />
+        app:tint="@color/white" />
 
-    <ImageButton
+    <ImageView
         android:id="@+id/btnLogOut"
         android:layout_width="50dp"
         android:layout_height="50dp"
@@ -74,11 +76,14 @@
         android:layout_marginTop="16dp"
         android:layout_marginEnd="20dp"
         android:layout_marginBottom="16dp"
-        android:background="@drawable/baseline_login_24"
+        android:background="#6750A3"
+        app:srcCompat="@drawable/baseline_login_24"
         android:contentDescription="Logout"
         app:layout_constraintBottom_toTopOf="@+id/frameLayout"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/imageView"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintStart_toEndOf="@+id/btnParentNotify"
+        app:layout_constraintTop_toTopOf="parent"
+        app:tint = "@color/white"
+         />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
