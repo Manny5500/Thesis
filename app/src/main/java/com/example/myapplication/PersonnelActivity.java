@@ -29,7 +29,7 @@ public class PersonnelActivity extends AppCompatActivity {
         syncData = findViewById(R.id.btnSyncData);
         logOut = findViewById(R.id.btnLogout);
 
-        replaceFragment(new fradAddData());
+        replaceFragment(new ManageData());
         personnelProfile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -50,7 +50,7 @@ public class PersonnelActivity extends AppCompatActivity {
         manageData.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                replaceFragment(new fragmentManageData());
+                replaceFragment(new ManageData());
                 ButtonColorizer(manageData);
                 color_flag = 3;
             }

@@ -1,19 +1,18 @@
 package com.example.myapplication;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.widget.SearchView;
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
-
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -24,28 +23,33 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
-import java.util.List;
 
-public class fragmentManageData extends Fragment  {
+public class ManageData extends Fragment {
+
     View view;
     FirebaseFirestore db;
     RecyclerView recyclerView;
 
-    SearchView searchView;
     private ChildAdapter userAdapter;
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        // Initialize FirebaseApp when the fragment is attached to a context
+        FirebaseApp.initializeApp(requireContext());
+        userAdapter = new ChildAdapter(requireContext(), new ArrayList<>());
+    }
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        view = inflater.inflate(R.layout.fragment_manage_data, container, false);
+        view =  inflater.inflate(R.layout.fragment_manage_data2, container, false);
 
-        FirebaseApp.initializeApp(requireContext());
         db = FirebaseFirestore.getInstance();
-
-        recyclerView = view.findViewById(R.id.manageDataRecyclerView);
+        recyclerView = view.findViewById(R.id.recycler);
 
 
         Populate();
-        searchView = view.findViewById(R.id.manageDataSearchView);
+        SearchView searchView = view.findViewById(R.id.searchView);
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String s) {
@@ -58,7 +62,6 @@ public class fragmentManageData extends Fragment  {
                 return true;
             }
         });
-
 
 
         return view;
@@ -76,14 +79,14 @@ public class fragmentManageData extends Fragment  {
                         child.setId(doc.getId());
                         arrayList.add(child);
                     }
-                    userAdapter = new ChildAdapter(requireContext(), arrayList);
-                    recyclerView.setAdapter(userAdapter);
 
+                    userAdapter = new ChildAdapter(getContext(), arrayList);
+                    recyclerView.setAdapter(userAdapter);
                     userAdapter.setOnItemClickListener(new ChildAdapter.OnItemClickListener() {
                         @Override
                         public void onClick(Child child) {
-                            //App.child = child;
-                            //startActivity(new Intent(requireContext(), EditUserActivity.class));
+                            App.child = child;
+                            startActivity(new Intent(requireContext(), EditChild.class));
                         }
                     });
                 }
@@ -96,5 +99,9 @@ public class fragmentManageData extends Fragment  {
         });
     }
 
-
+    @Override
+    public void onResume(){
+        super.onResume();
+        Populate();
+    }
 }

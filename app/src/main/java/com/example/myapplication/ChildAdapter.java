@@ -4,87 +4,107 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
+import android.widget.Filter;
+import android.widget.Filterable;
+import android.widget.ImageView;
 import android.widget.TextView;
+
 import androidx.annotation.NonNull;
-import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
+
+import java.text.MessageFormat;
+import java.util.ArrayList;
 import java.util.List;
 
-public class ChildAdapter extends RecyclerView.Adapter<ChildAdapter.ViewHolder> {
+public class ChildAdapter extends RecyclerView.Adapter<ChildAdapter.ViewHolder> implements Filterable {
+    Context context;
+    private List<Child> exampleList;
+    private List<Child> exampleListFull;
 
-    public interface ItemClickListener {
-        void onItemClick(int position, String action);
-    }
+    OnItemClickListener onItemClickListener;
 
-    private List<ComponentModel> items;
-    private List<ComponentModel> filteredItems;
-    private ItemClickListener itemClickListener;
-    private Context context;
-
-    public ChildAdapter(Context context, List<ComponentModel> items, ItemClickListener itemClickListener) {
+    public ChildAdapter(Context context, ArrayList<Child> exampleList){
         this.context = context;
-        this.items = items;
-        this.itemClickListener = itemClickListener;
+        this.exampleList = exampleList;
+        exampleListFull = new ArrayList<>(exampleList);
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder {
-        public TextView textView;
-        public View umcontainer;
-        public ImageButton umEdit, umDelete;
-
-        public ViewHolder(View itemView) {
-            super(itemView);
-            umcontainer = itemView.findViewById(R.id.umcontainer);
-            textView = itemView.findViewById(R.id.textumName);
-            umEdit = itemView.findViewById(R.id.umEdit);
-            umDelete = itemView.findViewById(R.id.umDelete);
-
-            umEdit.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    itemClickListener.onItemClick(getAdapterPosition(), "edit");
-                }
-            });
-
-            umDelete.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    itemClickListener.onItemClick(getAdapterPosition(), "delete");
-                }
-            });
-        }
-    }
 
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.md_component, parent, false);
+        View view = LayoutInflater.from(context).inflate(R.layout.user_list_item, parent, false);
         return new ViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        ComponentModel item = items.get(position);
-        holder.textView.setText(item.getText());
-        holder.textView.setTextColor(ContextCompat.getColor(context, item.getTextColorResId()));
-        holder.umcontainer.setBackgroundColor(ContextCompat.getColor(context, item.getBackgroundColorResId()));
+        String firstNames = exampleList.get(position).getChildFirstName();
+        String lastNames = exampleList.get(position).getChildLastName();
+        holder.name.setText(firstNames + " " + lastNames);
+        holder.itemView.setOnClickListener(view -> onItemClickListener.onClick(exampleList.get(position)));
     }
 
     @Override
     public int getItemCount() {
-        return items.size();
+        return exampleList.size();
     }
 
-    public ComponentModel getItem(int position) {
-        if (position >= 0 && position < items.size()) {
-            return items.get(position);
+    public static class ViewHolder extends RecyclerView.ViewHolder{
+
+        TextView name;
+        public ViewHolder(@NonNull View itemView) {
+            super(itemView);
+            name = itemView.findViewById(R.id.list_item_name);
         }
-        return null;
     }
 
-    public void setComponents(List<ComponentModel> components) {
-        this.items = components;
-        notifyDataSetChanged();
+    public void setOnItemClickListener(OnItemClickListener onItemClickListener) {
+        this.onItemClickListener = onItemClickListener;
     }
+
+    public interface OnItemClickListener {
+        void onClick(Child child);
+    }
+    @Override
+    public Filter getFilter() {
+        return exampleFilter;
+    }
+
+    private Filter exampleFilter = new Filter() {
+        @Override
+        protected FilterResults performFiltering(CharSequence constraint) {
+            List<Child> filteredList = new ArrayList<>();
+
+            if (constraint == null || constraint.length() == 0) {
+                filteredList.addAll(exampleListFull);
+            } else {
+                String filterPattern = constraint.toString().toLowerCase().trim();
+
+                for (Child item : exampleListFull)  {
+
+                    String firstName = item.getChildFirstName().toLowerCase();
+                    String lastName = item.getChildLastName().toLowerCase();
+                    String fullName = firstName + " " + lastName;
+
+                    if (firstName.contains(filterPattern)|| lastName.contains(filterPattern) || fullName.contains(filterPattern)) {
+                        filteredList.add(item);
+                    }
+                }
+            }
+
+            FilterResults results = new FilterResults();
+            results.values = filteredList;
+
+            return results;
+        }
+
+
+        @Override
+        protected void publishResults(CharSequence constraint, FilterResults results) {
+            exampleList.clear();
+            exampleList.addAll((List) results.values);
+            notifyDataSetChanged();
+        }
+    };
 }

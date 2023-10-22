@@ -3,7 +3,6 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string-array name="barangay">
-        <item>Select Barangay</item>
         <item>Alipit</item>
         <item>Malaking Ambling</item>
         <item>Munting Ambling</item>
@@ -31,9 +30,13 @@
     </string-array>
 
     <string-array name="sex">
-        <item>Select Sex</item>
         <item>Male</item>
         <item>Female</item>
+    </string-array>
+
+    <string-array name = "yes_or_no">
+        <item>Yes</item>
+        <item>No</item>
     </string-array>
 
     <string-array name="alipit">
