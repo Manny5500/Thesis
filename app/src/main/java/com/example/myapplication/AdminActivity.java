@@ -12,15 +12,31 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.Toast;
+
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 public class AdminActivity extends AppCompatActivity {
     ImageView dashboard, priority, usermanage,  reports, logout;
+    FirebaseAuth auth;
+    FirebaseUser user;
 
     int color_flag = 0;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_admin);
+        auth = FirebaseAuth.getInstance();
+        user = auth.getCurrentUser();
+        if (user == null){
+            Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+            startActivity(intent);
+            finish();
+        }else{
+            Toast.makeText(this, ""+ user.getEmail(), Toast.LENGTH_SHORT).show();
+        }
+
 
         dashboard = findViewById(R.id.btnDashboards);
         priority = findViewById(R.id.btnPriority);
@@ -61,13 +77,16 @@ public class AdminActivity extends AppCompatActivity {
                 color_flag = 5;
             }
         });
+
         logout.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
-                Intent  intent = new Intent(AdminActivity.this, MainActivity.class);
-                startActivity(intent);
+            public void onClick(View view) {
                 ButtonColorizer(logout);
                 color_flag = 4;
+                FirebaseAuth.getInstance().signOut();
+                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                startActivity(intent);
+                finish();
             }
         });
 

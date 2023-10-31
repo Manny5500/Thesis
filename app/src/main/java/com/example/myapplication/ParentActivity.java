@@ -13,14 +13,37 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.Toast;
+
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 public class ParentActivity extends AppCompatActivity {
     ImageView parentNotify, parentProfile, children, parentLogout;
+    String email;
     int color_flag = 0;
+
+    FirebaseAuth auth;
+    FirebaseUser user;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_parent);
+
+        //Intent intent = getIntent();
+
+        //email = intent.getStringExtra("email");
+        email="";
+        auth = FirebaseAuth.getInstance();
+        user = auth.getCurrentUser();
+        if (user == null){
+            Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+            startActivity(intent);
+            finish();
+        }else{
+            email = user.getEmail();
+        }
+        //Toast.makeText(this, email, Toast.LENGTH_SHORT).show();
 
         parentProfile = findViewById(R.id.btnParentProfile);
         children = findViewById(R.id.btnChildren);
@@ -54,25 +77,24 @@ public class ParentActivity extends AppCompatActivity {
                 color_flag = 3;
             }
         });
-
         parentLogout.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onClick(View view) {
                 ButtonColorizer(parentLogout);
                 color_flag = 4;
-                Intent  intent = new Intent(ParentActivity.this, MainActivity.class);
+                FirebaseAuth.getInstance().signOut();
+                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                 startActivity(intent);
+                finish();
             }
         });
     }
-
     private void replaceFragment(Fragment fragment) {
         FragmentManager fragmentManager =  getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.replace(R.id.frameLayout,fragment);
         fragmentTransaction.commit();
     }
-
     private void ButtonColorizer(ImageView button){
         button.setColorFilter(ContextCompat.getColor(this, android.R.color.holo_blue_light));
         if (color_flag ==1) {
@@ -85,5 +107,4 @@ public class ParentActivity extends AppCompatActivity {
             parentLogout.setColorFilter(ContextCompat.getColor(this, android.R.color.white));
         }
     }
-
 }

@@ -30,13 +30,13 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/list_item_name"
             android:layout_toRightOf="@+id/Picture"
-            android:id="@+id/list_item_phone"/>
+            android:id="@+id/list_item_status"/>
 
         <TextView
             android:layout_width = "match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/list_item_bio"
-            android:layout_below="@id/list_item_phone"
+            android:layout_below="@id/list_item_status"
             android:layout_toRightOf="@+id/Picture"
             android:singleLine="true"
 

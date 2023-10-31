@@ -14,11 +14,10 @@
             android:id="@+id/textView6"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="28dp"
-            android:layout_marginTop="12dp"
-            android:layout_marginEnd="21dp"
+            android:layout_marginStart="30dp"
+            android:layout_marginTop="10dp"
             android:text="Child Name"
-            app:layout_constraintEnd_toStartOf="@+id/textView15"
+            android:textSize="18sp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/textView4" />
 
@@ -39,11 +38,10 @@
             android:id="@+id/textView7"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="28dp"
-            android:layout_marginTop="20dp"
-            android:layout_marginEnd="64dp"
+            android:layout_marginStart="30dp"
+            android:layout_marginTop="10dp"
             android:text="Age"
-            app:layout_constraintEnd_toStartOf="@+id/textView21"
+            android:textSize="18sp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/textView6" />
 
@@ -51,11 +49,10 @@
             android:id="@+id/textView9"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="28dp"
-            android:layout_marginTop="26dp"
-            android:layout_marginEnd="53dp"
+            android:layout_marginStart="30dp"
+            android:layout_marginTop="10dp"
             android:text="Status"
-            app:layout_constraintEnd_toStartOf="@+id/textView14"
+            android:textSize="18sp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/textView7" />
 
@@ -73,7 +70,7 @@
             app:layout_constraintTop_toBottomOf="@+id/textView9" />
 
         <ImageView
-            android:id="@+id/imageView3"
+            android:id="@+id/btnprev"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="88dp"
@@ -81,23 +78,24 @@
             android:background="#B190EB"
             android:src="@drawable/baseline_arrow_left_24"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/editTextTextMultiLine" />
+            app:layout_constraintTop_toBottomOf="@+id/textRecommendations" />
 
         <TextView
-            android:id="@+id/textView10"
+            android:id="@+id/textCounts"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="73dp"
             android:layout_marginTop="12dp"
             android:layout_marginEnd="54dp"
             android:text="Child 1 of 1"
-            app:layout_constraintEnd_toStartOf="@+id/imageView5"
+            android:textSize="18sp"
+            app:layout_constraintEnd_toStartOf="@+id/btnnext"
             app:layout_constraintHorizontal_bias="0.352"
-            app:layout_constraintStart_toEndOf="@+id/imageView3"
-            app:layout_constraintTop_toBottomOf="@+id/editTextTextMultiLine" />
+            app:layout_constraintStart_toEndOf="@+id/btnprev"
+            app:layout_constraintTop_toBottomOf="@+id/textRecommendations" />
 
         <ImageView
-            android:id="@+id/imageView5"
+            android:id="@+id/btnnext"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
@@ -105,83 +103,81 @@
             android:background="#B291EC"
             android:src="@drawable/baseline_arrow_right_24"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/editTextTextMultiLine" />
+            app:layout_constraintTop_toBottomOf="@+id/textRecommendations" />
 
         <TextView
-            android:id="@+id/textView11"
+            android:id="@+id/textChildName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="15dp"
-            android:layout_marginEnd="121dp"
-            android:text="Abcde F. Ghij"
+            android:layout_marginEnd="30dp"
+            android:text="............"
+            android:textSize="18sp"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView4" />
+            app:layout_constraintTop_toTopOf="@+id/textView15" />
 
         <TextView
             android:id="@+id/textView14"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="25dp"
-            android:layout_marginEnd="85dp"
             android:text=":"
-            app:layout_constraintEnd_toStartOf="@+id/textView13"
-            app:layout_constraintTop_toBottomOf="@+id/textView21" />
+            android:textSize="18sp"
+            app:layout_constraintEnd_toEndOf="@+id/textView21"
+            app:layout_constraintStart_toStartOf="@+id/textView21"
+            app:layout_constraintTop_toTopOf="@+id/textView9" />
 
         <TextView
             android:id="@+id/textView21"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="19dp"
-            android:layout_marginEnd="85dp"
             android:text=":"
-            app:layout_constraintEnd_toStartOf="@+id/textView12"
-            app:layout_constraintTop_toBottomOf="@+id/textView15" />
+            android:textSize="18sp"
+            app:layout_constraintEnd_toEndOf="@+id/textView15"
+            app:layout_constraintStart_toStartOf="@+id/textView15"
+            app:layout_constraintTop_toTopOf="@+id/textView7" />
 
         <TextView
             android:id="@+id/textView15"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="15dp"
-            android:layout_marginEnd="85dp"
             android:text=":"
-            app:layout_constraintEnd_toStartOf="@+id/textView11"
-            app:layout_constraintTop_toBottomOf="@+id/textView4" />
+            android:textSize="18sp"
+            app:layout_constraintEnd_toStartOf="@+id/textChildName"
+            app:layout_constraintStart_toEndOf="@+id/textView6"
+            app:layout_constraintTop_toTopOf="@+id/textView6" />
 
         <TextView
-            android:id="@+id/textView12"
+            android:id="@+id/textAge"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="19dp"
-            android:layout_marginEnd="194dp"
-            android:text="5"
+            android:layout_marginEnd="30dp"
+            android:text="............"
+            android:textSize="18sp"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView11" />
+            app:layout_constraintTop_toTopOf="@+id/textView21" />
 
         <TextView
-            android:id="@+id/textView13"
+            android:id="@+id/textStatus"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="25dp"
-            android:layout_marginEnd="122dp"
-            android:text="Underweight"
+            android:layout_marginEnd="30dp"
+            android:text="............"
+            android:textSize="18sp"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView12" />
+            app:layout_constraintTop_toTopOf="@+id/textView14" />
 
         <TextView
-            android:id="@+id/editTextTextMultiLine"
+            android:id="@+id/textRecommendations"
             android:layout_width="414dp"
             android:layout_height="402dp"
             android:layout_marginTop="5dp"
+            android:background="#B190EB"
             android:ems="10"
             android:inputType="textMultiLine"
-            android:text="\t\t\t*Consult for doctor
-            \n\t\t\t* Your child is qualifed for feeding program
-            \n\t\t\t* Refer to dietitian "
+            android:text=".........."
             android:textSize="20sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView8"
-            android:background="#B190EB"/>
+            app:layout_constraintTop_toBottomOf="@+id/textView8" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

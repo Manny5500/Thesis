@@ -112,25 +112,6 @@
         app:layout_constraintTop_toTopOf="@+id/labelGenderDynamics" />
 
     <TextView
-        android:id="@+id/labelBMIDynamics"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="10dp"
-        android:layout_marginTop="10dp"
-        android:text="BMI"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/labelHeightDynamics" />
-
-    <TextView
-        android:id="@+id/textBMIDynamics"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="10dp"
-        android:text="13"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/labelBMIDynamics" />
-
-    <TextView
         android:id="@+id/labelStatusDynamics"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -138,7 +119,7 @@
         android:layout_marginTop="10dp"
         android:text="Status"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/labelBMIDynamics" />
+        app:layout_constraintTop_toBottomOf="@+id/labelHeightDynamics" />
 
     <TextView
         android:id="@+id/textStatusDynamics"

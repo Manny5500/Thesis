@@ -11,7 +11,7 @@
         <com.google.android.material.appbar.MaterialToolbar
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="?attr/colorPrimary"
+            android:background="#f0e4f4"
             app:title="Users List"
             app:titleTextColor="?attr/colorSurface"
             app:titleCentered="true"
@@ -20,7 +20,9 @@
             <androidx.appcompat.widget.SearchView
                 android:id = "@+id/searchView"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="match_parent"
+                android:background="#f0e4f4"
+                android:layout_margin="5dp">
             </androidx.appcompat.widget.SearchView>
         </com.google.android.material.appbar.MaterialToolbar>
 

@@ -39,10 +39,22 @@ public class ChildAdapter extends RecyclerView.Adapter<ChildAdapter.ViewHolder> 
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        String firstNames = exampleList.get(position).getChildFirstName();
-        String lastNames = exampleList.get(position).getChildLastName();
-        holder.name.setText(firstNames + " " + lastNames);
-        holder.itemView.setOnClickListener(view -> onItemClickListener.onClick(exampleList.get(position)));
+        ArrayList<String> statusList = exampleList.get(position).getStatusdb();
+            StringBuilder statusStringBuilder = new StringBuilder();
+            if(statusList != null){
+                int size = statusList.size();
+                for (int i = 0; i < size; i++) {
+                    statusStringBuilder.append(statusList.get(i));
+                    if (i < size - 1) {
+                        statusStringBuilder.append(", ");
+                    }
+                }
+            }
+            String firstNames = exampleList.get(position).getChildFirstName();
+            String lastNames = exampleList.get(position).getChildLastName();
+            holder.name.setText(firstNames + " " + lastNames);
+            holder.status.setText(statusStringBuilder.toString());
+            holder.itemView.setOnClickListener(view -> onItemClickListener.onClick(exampleList.get(position)));
     }
 
     @Override
@@ -52,10 +64,11 @@ public class ChildAdapter extends RecyclerView.Adapter<ChildAdapter.ViewHolder> 
 
     public static class ViewHolder extends RecyclerView.ViewHolder{
 
-        TextView name;
+        TextView name,status;
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             name = itemView.findViewById(R.id.list_item_name);
+            status = itemView.findViewById(R.id.list_item_status);
         }
     }
 

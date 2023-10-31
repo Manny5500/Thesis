@@ -12,21 +12,36 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.Toast;
+
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 public class PersonnelActivity extends AppCompatActivity {
-    //Button personnelProfile, addData, manageData,syncData, logOut;
-    ImageView personnelProfile, addData, manageData, syncData, logOut;
 
+    ImageView personnelProfile, addData, manageData, logOut;
+    FirebaseAuth auth;
+    FirebaseUser user;
+
+    String email;
     int color_flag = 0;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_personnel);
+        auth = FirebaseAuth.getInstance();
+        user = auth.getCurrentUser();
+        if (user == null){
+            Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+            startActivity(intent);
+            finish();
+        }else{
+            email = user.getEmail();
+        }
 
         personnelProfile=findViewById(R.id.btnProfile);
         addData = findViewById(R.id.btnAddData);
         manageData = findViewById(R.id.btnManageData);
-        syncData = findViewById(R.id.btnSyncData);
         logOut = findViewById(R.id.btnLogout);
 
         replaceFragment(new ManageData());
@@ -55,21 +70,16 @@ public class PersonnelActivity extends AppCompatActivity {
                 color_flag = 3;
             }
         });
-        syncData.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                replaceFragment(new fragmentSyncData());
-                ButtonColorizer(syncData);
-                color_flag = 4;
-            }
-        });
+
         logOut.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(PersonnelActivity.this, MainActivity.class);
-                startActivity(intent);
+            public void onClick(View view) {
                 ButtonColorizer(logOut);
-                color_flag = 5;
+                color_flag = 4;
+                FirebaseAuth.getInstance().signOut();
+                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                startActivity(intent);
+                finish();
             }
         });
     }
@@ -91,8 +101,6 @@ public class PersonnelActivity extends AppCompatActivity {
         }else if(color_flag ==3){
             manageData.setColorFilter(ContextCompat.getColor(this, android.R.color.white));
         }else if(color_flag ==4){
-            syncData.setColorFilter(ContextCompat.getColor(this, android.R.color.white));
-        }else if(color_flag ==5){
             logOut.setColorFilter(ContextCompat.getColor(this, android.R.color.white));
         }
     }

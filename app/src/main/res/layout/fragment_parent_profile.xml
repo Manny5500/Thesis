@@ -19,7 +19,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="151dp"
             android:layout_marginTop="28dp"
-            android:layout_marginEnd="152dp"
+            android:layout_marginEnd="151dp"
             android:src="@drawable/ic_launcher_background"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="1.0"
@@ -33,140 +33,122 @@
             android:layout_marginTop="41dp"
             android:text="PROFILE"
             android:textSize="30sp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="@+id/imageView2"
+            app:layout_constraintStart_toStartOf="@+id/imageView2"
             app:layout_constraintTop_toBottomOf="@+id/imageView2" />
 
         <TextView
             android:id="@+id/labelParentProfileName"
             android:layout_width="76dp"
             android:layout_height="22dp"
-            android:layout_marginStart="66dp"
-            android:layout_marginTop="248dp"
-            android:layout_marginEnd="25dp"
+            android:layout_marginStart="30dp"
+            android:layout_marginTop="10dp"
             android:text="Name"
             android:textSize="18sp"
-            app:layout_constraintEnd_toStartOf="@+id/textView16"
-            app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toBottomOf="@+id/textView5" />
 
         <TextView
             android:id="@+id/textParentProfileName"
-            android:layout_width="187dp"
+            android:layout_width="wrap_content"
             android:layout_height="24dp"
-            android:layout_marginTop="31dp"
-            android:layout_marginEnd="17dp"
             android:text="Abcde F. Ghij"
+            android:layout_marginEnd="30dp"
             android:textSize="18sp"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView5" />
+            app:layout_constraintTop_toTopOf="@+id/textView16" />
 
         <TextView
             android:id="@+id/textView16"
             android:layout_width="14dp"
             android:layout_height="22dp"
-            android:layout_marginTop="31dp"
-            android:layout_marginEnd="26dp"
             android:text=":"
             android:textSize="18sp"
-            app:layout_constraintEnd_toStartOf="@+id/textParentProfileName"
-            app:layout_constraintTop_toBottomOf="@+id/textView5" />
+            app:layout_constraintStart_toStartOf="@+id/textView5"
+            app:layout_constraintTop_toTopOf="@+id/labelParentProfileName" />
 
         <TextView
             android:id="@+id/textView17"
             android:layout_width="16dp"
             android:layout_height="21dp"
-            android:layout_marginTop="21dp"
-            android:layout_marginEnd="24dp"
             android:text=":"
             android:textSize="18sp"
-            app:layout_constraintEnd_toStartOf="@+id/textParentProfileAge"
-            app:layout_constraintTop_toBottomOf="@+id/textView16" />
+            app:layout_constraintStart_toStartOf="@+id/textView16"
+            app:layout_constraintTop_toTopOf="@+id/labelParentProfileAge" />
 
         <TextView
             android:id="@+id/textView18"
             android:layout_width="12dp"
             android:layout_height="20dp"
-            android:layout_marginTop="35dp"
-            android:layout_marginEnd="28dp"
             android:text=":"
             android:textSize="18sp"
-            app:layout_constraintEnd_toStartOf="@+id/textParentProfileAddress"
-            app:layout_constraintTop_toBottomOf="@+id/textView17" />
+            app:layout_constraintStart_toStartOf="@+id/textView17"
+            app:layout_constraintTop_toTopOf="@+id/labelParentProfileAddress" />
 
         <TextView
             android:id="@+id/textView19"
             android:layout_width="16dp"
             android:layout_height="20dp"
-            android:layout_marginTop="122dp"
-            android:layout_marginEnd="24dp"
             android:text=":"
             android:textSize="18sp"
-            app:layout_constraintEnd_toStartOf="@+id/textParentProfileEmail"
-            app:layout_constraintTop_toBottomOf="@+id/textView18" />
+            app:layout_constraintStart_toStartOf="@+id/textView18"
+            app:layout_constraintTop_toTopOf="@+id/labelParentProfileEmail" />
 
         <TextView
             android:id="@+id/textView20"
             android:layout_width="20dp"
             android:layout_height="21dp"
-            android:layout_marginTop="41dp"
-            android:layout_marginEnd="20dp"
             android:text=":"
             android:textSize="18sp"
-            app:layout_constraintEnd_toStartOf="@+id/textParentProfileContact"
-            app:layout_constraintTop_toBottomOf="@+id/textView19" />
+            app:layout_constraintStart_toStartOf="@+id/textView19"
+            app:layout_constraintTop_toTopOf="@+id/labelParentProfileContact" />
 
         <TextView
             android:id="@+id/textParentProfileAge"
-            android:layout_width="76dp"
+            android:layout_width="wrap_content"
             android:layout_height="22dp"
-            android:layout_marginTop="19dp"
-            android:layout_marginEnd="128dp"
+            android:layout_marginEnd="30dp"
             android:text="35"
             android:textSize="18sp"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textParentProfileName" />
+            app:layout_constraintTop_toTopOf="@+id/textView17" />
 
         <TextView
             android:id="@+id/textParentProfileAddress"
-            android:layout_width="187dp"
-            android:layout_height="130dp"
-            android:layout_marginTop="34dp"
-            android:layout_marginEnd="17dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="30dp"
             android:text="Magdalena, Laguna"
             android:textSize="18sp"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textParentProfileAge" />
+            app:layout_constraintTop_toTopOf="@+id/textView18" />
 
         <TextView
             android:id="@+id/textParentProfileEmail"
-            android:layout_width="176dp"
-            android:layout_height="62dp"
-            android:layout_marginTop="10dp"
-            android:layout_marginEnd="28dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:text="abcd@gmail.com"
+            android:layout_marginEnd="30dp"
             android:textSize="18sp"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textParentProfileAddress" />
+            app:layout_constraintTop_toTopOf="@+id/textView19" />
 
         <TextView
             android:id="@+id/textParentProfileContact"
-            android:layout_width="169dp"
+            android:layout_width="wrap_content"
             android:layout_height="21dp"
-            android:layout_marginTop="1dp"
-            android:layout_marginEnd="35dp"
             android:text="09123456789"
+            android:layout_marginEnd="30dp"
             android:textSize="18sp"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textParentProfileEmail" />
+            app:layout_constraintTop_toTopOf="@+id/textView20" />
 
         <TextView
             android:id="@+id/labelParentProfileAge"
             android:layout_width="68dp"
             android:layout_height="28dp"
-            android:layout_marginStart="66dp"
-            android:layout_marginTop="21dp"
+            android:layout_marginStart="30dp"
+            android:layout_marginTop="10dp"
             android:text="Age"
             android:textSize="18sp"
             app:layout_constraintStart_toStartOf="parent"
@@ -176,8 +158,8 @@
             android:id="@+id/labelParentProfileAddress"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="66dp"
-            android:layout_marginTop="26dp"
+            android:layout_marginStart="30dp"
+            android:layout_marginTop="10dp"
             android:text="Address"
             android:textSize="18sp"
             app:layout_constraintStart_toStartOf="parent"
@@ -187,9 +169,9 @@
             android:id="@+id/labelParentProfileEmail"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="66dp"
-            android:layout_marginTop="118dp"
+            android:layout_marginTop="10dp"
             android:text="Email"
+            android:layout_marginStart="30dp"
             android:textSize="18sp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/labelParentProfileAddress" />
@@ -198,8 +180,8 @@
             android:id="@+id/labelParentProfileContact"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="66dp"
-            android:layout_marginTop="39dp"
+            android:layout_marginStart="30dp"
+            android:layout_marginTop="10dp"
             android:text="Contact No"
             android:textSize="18sp"
             app:layout_constraintStart_toStartOf="parent"

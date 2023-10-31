@@ -6,12 +6,14 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.widget.SearchView;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -31,12 +33,14 @@ public class ManageData extends Fragment {
     RecyclerView recyclerView;
 
     private ChildAdapter userAdapter;
+    int whiteColor;
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
         // Initialize FirebaseApp when the fragment is attached to a context
         FirebaseApp.initializeApp(requireContext());
+        whiteColor = ContextCompat.getColor(context, R.color.viola);
         userAdapter = new ChildAdapter(requireContext(), new ArrayList<>());
     }
     @Override
@@ -50,6 +54,10 @@ public class ManageData extends Fragment {
 
         Populate();
         SearchView searchView = view.findViewById(R.id.searchView);
+        EditText searchEditText = searchView.findViewById(androidx.appcompat.R.id.search_src_text);
+
+        searchEditText.setTextColor(whiteColor);
+        searchEditText.setHintTextColor(whiteColor);
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String s) {
@@ -62,7 +70,6 @@ public class ManageData extends Fragment {
                 return true;
             }
         });
-
 
         return view;
     }

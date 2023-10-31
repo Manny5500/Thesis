@@ -32,6 +32,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.protobuf.StringValue;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -47,6 +48,7 @@ public class fradAddData extends Fragment {
             gmail, houseNumber, height, weight, bdate, expectedDate;
 
     MaterialAutoCompleteTextView barangayAC, sexAC, belongAC, sitioAC;
+    ArrayList<String> statusdb;
     Button submit;
     private FirebaseFirestore db;
     String barangays, sexchose, belongchose, dateString;
@@ -115,7 +117,6 @@ public class fradAddData extends Fragment {
                     Toast.makeText(requireContext(), "Failed to parse the date", Toast.LENGTH_SHORT).show();
                 }
 
-                Toast.makeText(requireContext(), String.valueOf(monthdiff), Toast.LENGTH_SHORT).show();
                 childFirstNameValue = childFirstName.getText().toString().trim();
                 childMiddleNameValue = childMiddleName.getText().toString().trim();
                 childLastNameValue = childLastName.getText().toString().trim();
@@ -140,13 +141,13 @@ public class fradAddData extends Fragment {
                 }
 
                 FormUtils formUtilize = new FormUtils();
-                formUtilize.CalculateMalnourished(requireContext(), monthdiff, weight_true_val, height_true_val, sexACValue);
-                Toast.makeText(requireContext(), String.valueOf(height_true_val), Toast.LENGTH_SHORT).show();
+                statusdb = formUtilize.CalculateMalnourished(requireContext(), monthdiff, weight_true_val, height_true_val, sexACValue);
+
 
                 boolean isFormValid = FormUtils.validateForm(childFirstNameValue, childMiddleNameValue, childLastNameValue,
                         parentFirstNameValue, parentMiddleNameValue, parentLastNameValue,
                         gmailValue, houseNumberValue, bdateValue, expectedDateValue,
-                        sexACValue, belongACValue, barangayACValue, heightValue, weightValue, requireContext());
+                        sexACValue, belongACValue, barangayACValue, heightValue, weightValue, monthdiff, requireContext());
 
                 if (isFormValid) {
                     Map<String, Object> user = new HashMap<>();
@@ -166,6 +167,7 @@ public class fradAddData extends Fragment {
                     user.put("sitio", "placeholder");
                     user.put("sex", sexACValue);
                     user.put("expectedDate", expectedDateValue);
+                    user.put("statusdb", statusdb);
 
                     db.collection("children").add(user).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
                         @Override

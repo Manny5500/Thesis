@@ -1,16 +1,23 @@
 package com.example.myapplication;
 
+import java.util.ArrayList;
+
 public class Child {
 
     String childName, childFirstName, childMiddleName, childLastName,
             parentFirstName, parentMiddleName, parentLastName,
             id, barangay, parentName, gmail, houseNumber, sex, belongtoIP, birthDate, expectedDate;
-    int weight, height;
+    double weight, height;
+
+
+    ArrayList<String> statusdb;
 
     public Child(){
 
     }
 
+    public ArrayList<String> getStatusdb(){return statusdb;}
+    public void setStatusdb(ArrayList<String> statusdb){this.statusdb = statusdb; }
     public String getChildName() {
         return childName;
     }
@@ -139,19 +146,19 @@ public class Child {
         this.expectedDate = expectedDate;
     }
 
-    public int getWeight() {
+    public double getWeight() {
         return weight;
     }
 
-    public void setWeight(int weight) {
+    public void setWeight(double weight) {
         this.weight = weight;
     }
 
-    public int getHeight() {
+    public double getHeight() {
         return height;
     }
 
-    public void setHeight(int height) {
+    public void setHeight(double height) {
         this.height = height;
     }
 

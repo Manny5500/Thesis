@@ -28,7 +28,6 @@
                 app:layout_constraintEnd_toEndOf="@+id/textMonthCases"
                 app:layout_constraintStart_toStartOf="@+id/textMonthCases"
                 app:layout_constraintTop_toBottomOf="@+id/textMonthCases">
-
             </com.github.mikephil.charting.charts.BarChart>
 
             <TextView
@@ -39,7 +38,7 @@
                 android:layout_marginTop="10dp"
                 android:layout_marginEnd="31dp"
                 android:gravity="center"
-                android:text="Malnourished Cases every Month"
+                android:text="Malnourished Cases per Category"
                 android:textSize="25sp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -60,7 +59,7 @@
                     android:layout_height="81dp"
                     android:layout_marginBottom="1dp"
                     android:gravity="center"
-                    android:text="Top Malnourished Barangay"
+                    android:text="Category"
                     android:textSize="25sp"
                     app:layout_constraintBottom_toTopOf="@+id/tableLayout"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -168,7 +167,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="81dp"
                     android:gravity="center"
-                    android:text="Malnourished Cases per Category"
+                    android:text="Top Malnourished Barangay"
                     android:textAlignment="center"
                     android:textSize="25sp"
                     app:layout_constraintEnd_toEndOf="parent"

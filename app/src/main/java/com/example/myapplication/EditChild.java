@@ -20,6 +20,8 @@ import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -35,12 +37,14 @@ public class EditChild extends AppCompatActivity {
     private FirebaseFirestore db;
     String barangays, sexchose, belongchose, dateString;
     SimpleDateFormat dateFormat;
-    private int height_true_val, weight_true_val, bdatevalue, monthdiff;
-
+    private int  bdatevalue, monthdiff;
+    private double height_true_val, weight_true_val;
     String childFirstNameValue, childMiddleNameValue, childLastNameValue,
             parentFirstNameValue, parentMiddleNameValue, parentLastNameValue,
             gmailValue, houseNumberValue, bdateValue, expectedDateValue,
             sexACValue, belongACValue, barangayACValue, heightValue, weightValue;
+
+    ArrayList<String> statusdb;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -100,6 +104,16 @@ public class EditChild extends AppCompatActivity {
         edit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                dateString = bdate.getText().toString();
+                FormUtils formUtils = new FormUtils();
+                Date parsedDate = formUtils.parseDate(dateString);
+
+
+                if (parsedDate != null) {
+                    monthdiff = formUtils.calculateMonthsDifference(parsedDate);
+                } else {
+                    Toast.makeText(EditChild.this, "Failed to parse the date", Toast.LENGTH_SHORT).show();
+                }
                 childFirstNameValue = childFirstName.getText().toString().trim();
                 childMiddleNameValue = childMiddleName.getText().toString().trim();
                 childLastNameValue = childLastName.getText().toString().trim();
@@ -116,13 +130,17 @@ public class EditChild extends AppCompatActivity {
                 heightValue = height.getText().toString().trim();
                 weightValue = weight.getText().toString().trim();
 
-                height_true_val = Integer.parseInt(heightValue);
-                weight_true_val = Integer.parseInt(weightValue);
+                height_true_val = Double.parseDouble(heightValue);
+                weight_true_val = Double.parseDouble(weightValue);
 
                 boolean isFormValid = FormUtils.validateForm(childFirstNameValue, childMiddleNameValue, childLastNameValue,
                         parentFirstNameValue, parentMiddleNameValue, parentLastNameValue,
                         gmailValue, houseNumberValue, bdateValue, expectedDateValue,
-                        sexACValue, belongACValue, barangayACValue, heightValue, weightValue,EditChild.this);
+                        sexACValue, belongACValue, barangayACValue, heightValue, weightValue, monthdiff, EditChild.this);
+
+                FormUtils formUtilize = new FormUtils();
+                statusdb = formUtilize.CalculateMalnourished(EditChild.this, monthdiff, weight_true_val, height_true_val, sexACValue);
+
 
                 if (isFormValid) {
                     Map<String, Object> user = new HashMap<>();
@@ -142,6 +160,7 @@ public class EditChild extends AppCompatActivity {
                     user.put("sitio", "placeholder");
                     user.put("sex", sexACValue);
                     user.put("expectedDate", expectedDateValue);
+                    user.put("statusdb", statusdb);
                     db.collection("children").document(App.child.getId()).set(user).addOnSuccessListener(new OnSuccessListener<Void>() {
                         @Override
                         public void onSuccess(Void unused) {
@@ -159,7 +178,6 @@ public class EditChild extends AppCompatActivity {
                 }
             }
         });
-
 
         remove.setOnClickListener(new View.OnClickListener() {
             @Override

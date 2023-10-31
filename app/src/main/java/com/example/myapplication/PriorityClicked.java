@@ -15,6 +15,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
+import java.util.Date;
+
 public class PriorityClicked extends AppCompatActivity {
 
     private static final int REQUEST_PHONE_CALL = 1;
@@ -37,15 +39,54 @@ public class PriorityClicked extends AppCompatActivity {
             }
         });
 
-        // Get the name from the Intent
-        Intent intent = getIntent();
-        if (intent != null && intent.hasExtra("name")) {
-            String itemName = intent.getStringExtra("name");
-            TextView textName = findViewById(R.id.textNameDynamics);
-            phoneNumber = intent.getStringExtra("pnumber");
-            //Toast.makeText(this,itemName,Toast.LENGTH_SHORT).show();
-            textName.setText(itemName);
+        TextView textName, textAge, textSex, textWeight,
+                textHeight, textStatus;
+
+        TextView textNameLabel, textAgeLabel, textGenderLabel,
+                textWeightLabel, textHeightLabel, textStatusLabel;
+
+        textName = findViewById(R.id.textNameDynamics);
+        textAge = findViewById(R.id.textAgeDynamics);
+        textSex = findViewById(R.id.textMaleDynamics);
+        textWeight = findViewById(R.id.textWeightDynamics);
+        textHeight = findViewById(R.id.textHeightDynamics);
+        textStatus = findViewById(R.id.textStatusDynamics);
+
+        textNameLabel = findViewById(R.id.labelPCName);
+        textAgeLabel = findViewById(R.id.labelAge);
+        textGenderLabel = findViewById(R.id.labelGenderDynamics);
+        textWeightLabel = findViewById(R.id.labelWeightDynamics);
+        textHeightLabel = findViewById(R.id.labelHeightDynamics);
+        textStatusLabel = findViewById(R.id.labelStatusDynamics);
+
+        textName.setText(App.child.getChildFirstName()+" "+App.child.getChildLastName());
+        textSex.setText(App.child.getSex());
+        textWeight.setText(App.child.getWeight() + " kg");
+        textHeight.setText(App.child.getHeight() + " cm");
+        String statusmaker = "";
+        for(String status : App.child.getStatusdb()){
+            statusmaker = statusmaker + status + "\n";
         }
+        textStatus.setText(statusmaker);
+
+
+        FormUtils formUtils = new FormUtils();
+        Date parsedDate = formUtils.parseDate(App.child.getBirthDate());
+
+        int monthdiff = 0;
+
+        if (parsedDate != null) {
+            monthdiff = formUtils.calculateMonthsDifference(parsedDate);
+            textAge.setText(String.valueOf(monthdiff)+ " months");
+
+        } else {
+            Toast.makeText(this, "Failed to parse the date", Toast.LENGTH_SHORT).show();
+        }
+
+        setTextSize(textAge,textStatus, textSex, textName, textWeight, textHeight);
+        setTextSize(textAgeLabel, textStatusLabel, textGenderLabel, textNameLabel, textWeightLabel, textHeightLabel);
+
+
     }
 
     private void makePhoneCall(String phoneNumber) {
@@ -64,6 +105,12 @@ public class PriorityClicked extends AppCompatActivity {
                 // Permission denied, inform the user and handle accordingly
                 Toast.makeText(this, "Please allow the phone permission in the settings", Toast.LENGTH_SHORT).show();
             }
+        }
+    }
+
+    public void setTextSize(TextView... textViews){
+        for(TextView textView: textViews){
+            textView.setTextSize(18);
         }
     }
 }
