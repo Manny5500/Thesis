@@ -18,13 +18,16 @@ import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.FirebaseApp;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
+import java.util.Map;
 
 public class ManageData extends Fragment {
 
@@ -34,7 +37,7 @@ public class ManageData extends Fragment {
 
     private ChildAdapter userAdapter;
     int whiteColor;
-
+    private String  userid;
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
@@ -50,7 +53,7 @@ public class ManageData extends Fragment {
 
         db = FirebaseFirestore.getInstance();
         recyclerView = view.findViewById(R.id.recycler);
-
+        userid = ((PersonnelActivity)getActivity()).userid;
 
         Populate();
         SearchView searchView = view.findViewById(R.id.searchView);
@@ -75,7 +78,22 @@ public class ManageData extends Fragment {
     }
 
     public void Populate(){
-        db.collection("children").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+
+        db.collection("users").document(userid).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+            @Override
+            public void onSuccess(DocumentSnapshot documentSnapshot) {
+               Populate_now(String.valueOf(documentSnapshot.getString("barangay")));
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Toast.makeText(requireContext(), "Failed to save changes", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+    }
+    private void Populate_now(String barangayString){
+        db.collection("children").whereEqualTo("barangay", barangayString).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 if (task.isSuccessful()){
@@ -105,7 +123,6 @@ public class ManageData extends Fragment {
             }
         });
     }
-
     @Override
     public void onResume(){
         super.onResume();

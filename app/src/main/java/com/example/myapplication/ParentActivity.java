@@ -20,8 +20,9 @@ import com.google.firebase.auth.FirebaseUser;
 
 public class ParentActivity extends AppCompatActivity {
     ImageView parentNotify, parentProfile, children, parentLogout;
-    String email;
+    String email, userid;
     int color_flag = 0;
+
 
     FirebaseAuth auth;
     FirebaseUser user;
@@ -42,6 +43,7 @@ public class ParentActivity extends AppCompatActivity {
             finish();
         }else{
             email = user.getEmail();
+            userid = user.getUid();
         }
         //Toast.makeText(this, email, Toast.LENGTH_SHORT).show();
 

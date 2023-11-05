@@ -4,90 +4,126 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
+import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
-import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.bumptech.glide.Glide;
+
+import java.util.ArrayList;
 import java.util.List;
 
-public class UMAdapter extends RecyclerView.Adapter<UMAdapter.ViewHolder> {
+import de.hdodenhof.circleimageview.CircleImageView;
 
-    public interface ItemClickListener {
-        void onItemClick(int position, String action);
-    }
+public class UMAdapter extends RecyclerView.Adapter<UMAdapter.ViewHolder> implements Filterable {
 
-    private List<ComponentModel> items;
-    private List<ComponentModel> filteredItems;
-    private ItemClickListener itemClickListener;
-    private Context context;
+    Context context;
+    private List<User> exampleList;
+    private List<User> exampleListFull;
 
-    public UMAdapter(Context context, List<ComponentModel> items, ItemClickListener itemClickListener) {
+    UMAdapter.OnItemClickListener onItemClickListener;
+
+    public UMAdapter(Context context, ArrayList<User> exampleList){
         this.context = context;
-        this.items = items;
-        this.itemClickListener = itemClickListener;
-
-    }
-
-    public class ViewHolder extends RecyclerView.ViewHolder {
-        public TextView textView;
-        public View umcontainer;
-        public ImageButton umEdit, umDelete;
-
-
-        public ViewHolder(View itemView) {
-            super(itemView);
-            umcontainer = itemView.findViewById(R.id.umcontainer);
-            textView = itemView.findViewById(R.id.textumName);
-            umEdit = itemView.findViewById(R.id.umEdit);
-            umDelete = itemView.findViewById(R.id.umDelete);
-
-            umEdit.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    itemClickListener.onItemClick(getAdapterPosition(),"edit");
-                }
-            });
-
-            umDelete.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    itemClickListener.onItemClick(getAdapterPosition(), "delete");
-                }
-            });
-
-        }
+        this.exampleList = exampleList;
+        exampleListFull = new ArrayList<>(exampleList);
     }
 
     @NonNull
     @Override
-    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.um_component, parent, false);
-        return new ViewHolder(view);
+    public UMAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        View view = LayoutInflater.from(context).inflate(R.layout.user_list_item, parent, false);
+        return new UMAdapter.ViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        ComponentModel item = items.get(position);
-        holder.textView.setText(item.getText());
-        holder.textView.setTextColor(ContextCompat.getColor(context, item.getTextColorResId()));
-        holder.umcontainer.setBackgroundColor(ContextCompat.getColor(context, item.getBackgroundColorResId()));
+    public void onBindViewHolder(@NonNull UMAdapter.ViewHolder holder, int position) {
+        String firstNames = exampleList.get(position).getFirstName();
+        String lastNames = exampleList.get(position).getLastName();
+        String imageUrl = exampleList.get(position).getImageUrl();
+        String barangay = exampleList.get(position).getBarangay();
+
+        Glide.with(holder.itemView.getContext())
+                .load(imageUrl)
+                .placeholder(R.drawable.anya)
+                .error(R.drawable.suika)
+                .override(300, 300)
+                .centerCrop()
+                .into(holder.image);
+
+
+        holder.name.setText(firstNames + " " + lastNames);
+        holder.barangay.setText(barangay);
+        holder.itemView.setOnClickListener(view -> onItemClickListener.onClick(exampleList.get(position)));
     }
 
     @Override
     public int getItemCount() {
-        return items.size();
+        return exampleList.size();
     }
-    public ComponentModel getItem(int position) {
-        if (position >= 0 && position < items.size()) {
-            return items.get(position);
+
+    public static class ViewHolder extends RecyclerView.ViewHolder{
+
+        TextView name, barangay;
+        CircleImageView image;
+        public ViewHolder(@NonNull View itemView) {
+            super(itemView);
+            name = itemView.findViewById(R.id.list_item_name);
+            image = itemView.findViewById(R.id.Picture);
+            barangay = itemView.findViewById(R.id.list_item_barangay);
         }
-        return null;
     }
-    public void setComponents(List<ComponentModel> components) {
-        this.items = components;
-        notifyDataSetChanged();
+
+    public void setOnItemClickListener(UMAdapter.OnItemClickListener onItemClickListener) {
+        this.onItemClickListener = onItemClickListener;
     }
+
+    public interface OnItemClickListener {
+        void onClick(User child);
+    }
+    @Override
+    public Filter getFilter() {
+        return exampleFilter;
+    }
+
+    private Filter exampleFilter = new Filter() {
+        @Override
+        protected FilterResults performFiltering(CharSequence constraint) {
+            List<User> filteredList = new ArrayList<>();
+
+            if (constraint == null || constraint.length() == 0) {
+                filteredList.addAll(exampleListFull);
+            } else {
+                String filterPattern = constraint.toString().toLowerCase().trim();
+
+                for (User item : exampleListFull)  {
+
+                    String firstName = item.getFirstName().toLowerCase();
+                    String lastName = item.getLastName().toLowerCase();
+                    String fullName = firstName + " " + lastName;
+
+                    if (firstName.contains(filterPattern)|| lastName.contains(filterPattern) || fullName.contains(filterPattern)) {
+                        filteredList.add(item);
+                    }
+                }
+            }
+
+            FilterResults results = new FilterResults();
+            results.values = filteredList;
+
+            return results;
+        }
+
+
+        @Override
+        protected void publishResults(CharSequence constraint, FilterResults results) {
+            exampleList.clear();
+            exampleList.addAll((List) results.values);
+            notifyDataSetChanged();
+        }
+    };
 
 }
 

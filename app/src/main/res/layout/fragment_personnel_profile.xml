@@ -26,28 +26,29 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <ImageView
-            android:id="@+id/imageView4"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="151dp"
-            android:layout_marginTop="12dp"
-            android:layout_marginEnd="152dp"
-            android:src="@drawable/ic_launcher_background"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="parent"
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/imagePersonnel"
+            android:layout_width="120dp"
+            android:layout_height="120dp"
+            android:layout_marginTop="28dp"
+            android:src="@mipmap/ic_launcher"
+            app:civ_border_color="#FF000000"
+            app:civ_border_width="2dp"
+            app:layout_constraintEnd_toEndOf="@+id/txtTitleChild2"
+            app:layout_constraintStart_toStartOf="@+id/txtTitleChild2"
             app:layout_constraintTop_toBottomOf="@+id/txtTitleChild2" />
 
         <TextView
             android:id="@+id/textContact"
             android:layout_width="181dp"
             android:layout_height="wrap_content"
-            android:text="09123456789"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="20dp"
+            android:text="..."
             android:textSize="18sp"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toStartOf="@+id/guideline2"
+            app:layout_constraintStart_toEndOf="@+id/textView23"
             app:layout_constraintTop_toTopOf="@+id/textView23" />
 
         <TextView
@@ -56,23 +57,18 @@
             android:layout_height="wrap_content"
             android:text=":"
             android:textSize="18sp"
-            app:layout_constraintEnd_toStartOf="@+id/guideline2"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toStartOf="@+id/guideline"
+            app:layout_constraintEnd_toEndOf="@+id/textView33"
+            app:layout_constraintStart_toStartOf="@+id/textView33"
             app:layout_constraintTop_toTopOf="@+id/textView26" />
 
         <TextView
             android:id="@+id/textView26"
             android:layout_width="100dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="20dp"
-            android:layout_marginTop="25dp"
-            android:layout_marginBottom="208dp"
+            android:layout_marginStart="30dp"
+            android:layout_marginTop="10dp"
             android:text="Contact#"
             android:textSize="18sp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/guideline"
-            app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/textView31" />
 
@@ -80,11 +76,12 @@
             android:id="@+id/textGmail"
             android:layout_width="181dp"
             android:layout_height="wrap_content"
-            android:text="abcd@gmail.com"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="20dp"
+            android:text="..."
             android:textSize="18sp"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toStartOf="@+id/guideline2"
+            app:layout_constraintStart_toEndOf="@+id/textView33"
             app:layout_constraintTop_toTopOf="@+id/textView33" />
 
         <TextView
@@ -93,35 +90,31 @@
             android:layout_height="wrap_content"
             android:text=":"
             android:textSize="18sp"
-            app:layout_constraintEnd_toStartOf="@+id/guideline2"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toStartOf="@+id/guideline"
+            app:layout_constraintEnd_toEndOf="@+id/textView3"
+            app:layout_constraintStart_toStartOf="@+id/textView3"
             app:layout_constraintTop_toTopOf="@+id/textView31" />
 
         <TextView
             android:id="@+id/textView31"
             android:layout_width="100dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="20dp"
+            android:layout_marginStart="30dp"
             android:layout_marginTop="25dp"
-            android:layout_marginBottom="25dp"
             android:text="Email"
             android:textSize="18sp"
-            app:layout_constraintBottom_toTopOf="@+id/textView26"
-            app:layout_constraintEnd_toStartOf="@+id/guideline"
-            app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/textView24" />
 
         <TextView
             android:id="@+id/textAddress"
             android:layout_width="181dp"
-            android:layout_height="37dp"
-            android:text="Magdalena, Laguna"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="20dp"
+            android:text="..."
             android:textSize="18sp"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.55"
-            app:layout_constraintStart_toStartOf="@+id/guideline2"
+            app:layout_constraintStart_toEndOf="@+id/textView3"
             app:layout_constraintTop_toTopOf="@+id/textView3" />
 
         <TextView
@@ -130,23 +123,18 @@
             android:layout_height="wrap_content"
             android:text=":"
             android:textSize="18sp"
-            app:layout_constraintEnd_toStartOf="@+id/guideline2"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toStartOf="@+id/guideline"
+            app:layout_constraintEnd_toEndOf="@+id/textView22"
+            app:layout_constraintStart_toStartOf="@+id/textView22"
             app:layout_constraintTop_toTopOf="@+id/textView24" />
 
         <TextView
             android:id="@+id/textView24"
             android:layout_width="100dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="20dp"
-            android:layout_marginTop="25dp"
-            android:layout_marginBottom="25dp"
+            android:layout_marginStart="30dp"
+            android:layout_marginTop="10dp"
             android:text="Address"
             android:textSize="18sp"
-            app:layout_constraintBottom_toTopOf="@+id/textView31"
-            app:layout_constraintEnd_toStartOf="@+id/guideline"
-            app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/textView28" />
 
@@ -154,11 +142,12 @@
             android:id="@+id/textAge"
             android:layout_width="181dp"
             android:layout_height="wrap_content"
-            android:text="19"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="20dp"
+            android:text="..."
             android:textSize="18sp"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toStartOf="@+id/guideline2"
+            app:layout_constraintStart_toEndOf="@+id/textView22"
             app:layout_constraintTop_toTopOf="@+id/textView22" />
 
         <TextView
@@ -167,24 +156,19 @@
             android:layout_height="wrap_content"
             android:text=":"
             android:textSize="18sp"
-            app:layout_constraintEnd_toStartOf="@+id/guideline2"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toStartOf="@+id/guideline"
+            app:layout_constraintEnd_toEndOf="@+id/textView32"
+            app:layout_constraintStart_toStartOf="@+id/textView32"
             app:layout_constraintTop_toTopOf="@+id/textView28" />
 
         <TextView
             android:id="@+id/textView28"
             android:layout_width="100dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="20dp"
-            android:layout_marginTop="25dp"
-            android:layout_marginBottom="26dp"
+            android:layout_marginStart="30dp"
+            android:layout_marginTop="10dp"
             android:gravity="start"
             android:text="Age"
             android:textSize="18sp"
-            app:layout_constraintBottom_toTopOf="@+id/textView24"
-            app:layout_constraintEnd_toStartOf="@+id/guideline"
-            app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/textView35" />
 
@@ -192,53 +176,37 @@
             android:id="@+id/textName"
             android:layout_width="181dp"
             android:layout_height="wrap_content"
-            android:text="Abcde F. Ghij"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="20dp"
+            android:text="..."
             android:textSize="18sp"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toStartOf="@+id/guideline2"
+            app:layout_constraintStart_toEndOf="@+id/textView32"
             app:layout_constraintTop_toTopOf="@+id/textView32" />
 
         <TextView
             android:id="@+id/textView32"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginEnd="60dp"
             android:text=":"
             android:textSize="18sp"
-            app:layout_constraintEnd_toStartOf="@+id/guideline2"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toStartOf="@+id/guideline"
+            app:layout_constraintEnd_toEndOf="@+id/imagePersonnel"
+            app:layout_constraintStart_toStartOf="@+id/imagePersonnel"
             app:layout_constraintTop_toTopOf="@+id/textView35" />
 
         <TextView
             android:id="@+id/textView35"
             android:layout_width="100dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="20dp"
-            android:layout_marginTop="50dp"
-            android:layout_marginBottom="25dp"
+            android:layout_marginStart="30dp"
+            android:layout_marginTop="20dp"
             android:gravity="left"
             android:text="Name"
             android:textSize="18sp"
-            app:layout_constraintBottom_toTopOf="@+id/textView28"
-            app:layout_constraintEnd_toStartOf="@+id/guideline"
-            app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/imageView4" />
+            app:layout_constraintTop_toBottomOf="@+id/imagePersonnel" />
 
-        <androidx.constraintlayout.widget.Guideline
-            android:id="@+id/guideline"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            app:layout_constraintGuide_begin="151dp" />
-
-        <androidx.constraintlayout.widget.Guideline
-            android:id="@+id/guideline2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            app:layout_constraintGuide_begin="218dp" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </FrameLayout>

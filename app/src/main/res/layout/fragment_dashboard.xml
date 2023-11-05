@@ -62,9 +62,9 @@
             android:layout_marginEnd="30dp"
             android:layout_marginBottom="15dp"
             android:background="#f2bae4"
-            app:layout_constraintBottom_toTopOf="@+id/view3"
-            app:layout_constraintEnd_toEndOf="@+id/view3"
-            app:layout_constraintStart_toStartOf="@+id/view3"
+            app:layout_constraintBottom_toTopOf="@+id/ViewRecommendation"
+            app:layout_constraintEnd_toEndOf="@+id/ViewRecommendation"
+            app:layout_constraintStart_toStartOf="@+id/ViewRecommendation"
             app:layout_constraintTop_toBottomOf="@+id/view" />
 
         <TextView
@@ -93,7 +93,7 @@
             app:layout_constraintTop_toTopOf="@+id/view2" />
 
         <View
-            android:id="@+id/view3"
+            android:id="@+id/ViewRecommendation"
             android:layout_width="match_parent"
             android:layout_height="130dp"
             android:layout_marginStart="30dp"
@@ -116,16 +116,16 @@
             android:textSize="25sp"
             android:textStyle="bold"
             app:layout_constraintBottom_toTopOf="@+id/button3"
-            app:layout_constraintEnd_toEndOf="@+id/view3"
-            app:layout_constraintTop_toTopOf="@+id/view3" />
+            app:layout_constraintEnd_toEndOf="@+id/ViewRecommendation"
+            app:layout_constraintTop_toTopOf="@+id/ViewRecommendation" />
 
         <Button
             android:id="@+id/button3"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="View"
-            app:layout_constraintBottom_toBottomOf="@+id/view3"
-            app:layout_constraintEnd_toEndOf="@+id/view3"
+            app:layout_constraintBottom_toBottomOf="@+id/ViewRecommendation"
+            app:layout_constraintEnd_toEndOf="@+id/ViewRecommendation"
             app:layout_constraintStart_toStartOf="@+id/textView40" />
 
         <View
@@ -140,7 +140,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/view3" />
+            app:layout_constraintTop_toBottomOf="@+id/ViewRecommendation" />
 
         <TextView
             android:id="@+id/textPriority"
@@ -172,10 +172,10 @@
             android:layout_width="97dp"
             android:layout_height="123dp"
             android:src="@drawable/baseline_priority_high_24"
-            app:layout_constraintBottom_toBottomOf="@+id/view3"
+            app:layout_constraintBottom_toBottomOf="@+id/ViewRecommendation"
             app:layout_constraintEnd_toStartOf="@+id/textView40"
-            app:layout_constraintStart_toStartOf="@+id/view3"
-            app:layout_constraintTop_toTopOf="@+id/view3" />
+            app:layout_constraintStart_toStartOf="@+id/ViewRecommendation"
+            app:layout_constraintTop_toTopOf="@+id/ViewRecommendation" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </FrameLayout>

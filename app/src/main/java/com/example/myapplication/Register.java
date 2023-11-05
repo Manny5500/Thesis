@@ -35,6 +35,7 @@ public class Register extends AppCompatActivity {
     String fnameVal, mnameVal, lnameVal,gmailVal, passwordVal, cpasswordVal, contactVal,
     monthVal, dayVal, yearVal, sexVal, barangayVal, bdayfull, motono, userVal;
 
+
     Button btnRegister;
     FirebaseAuth mAuth;
 
@@ -89,6 +90,8 @@ public class Register extends AppCompatActivity {
         ArrayAdapter<Integer> dayAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, generateNumbers(1, 31));
         day.setAdapter(dayAdapter);
 
+
+
         btnRegister.setOnClickListener(new View.OnClickListener() {
 
             @Override
@@ -120,21 +123,12 @@ public class Register extends AppCompatActivity {
                                 @Override
                                 public void onComplete(@NonNull Task<AuthResult> task) {
                                     if (task.isSuccessful()) {
-                                        //progressBar.setVisibility(View.GONE);
-                                        // Sign in success, update UI with the signed-in user's information
-                                        //FirebaseUser user = mAuth.getCurrentUser();
-                                        /*Toast.makeText(Register.this, "Account Created",
-                                                Toast.LENGTH_SHORT).show();
-                                        Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-                                        startActivity(intent);
-                                        finish();*/
                                         addUserDataToFirestore();
 
                                     } else {
                                         // If sign in fails, display a message to the user.
                                         Toast.makeText(Register.this, "Authentication failed.",
                                                 Toast.LENGTH_SHORT).show();
-
                                     }
                                 }
                             });

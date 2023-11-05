@@ -6,33 +6,33 @@
     android:layout_height="match_parent"
     tools:context=".fragmentUM">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-
-        <androidx.appcompat.widget.SearchView
-            android:id="@+id/umsearchView"
+        <com.google.android.material.appbar.MaterialToolbar
             android:layout_width="match_parent"
-            android:layout_height="66dp"
-            android:layout_marginStart="15dp"
-            android:layout_marginEnd="15dp"
-            android:background="#EAE7E9"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:queryHint="Search Here...." />
+            android:layout_height="wrap_content"
+            android:background="#f0e4f4"
+            app:title="Users List"
+            app:titleTextColor="?attr/colorSurface"
+            app:titleCentered="true"
+            android:id="@+id/toolbar">
+
+            <androidx.appcompat.widget.SearchView
+                android:id = "@+id/searchView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="#f0e4f4"
+                android:layout_margin="5dp">
+            </androidx.appcompat.widget.SearchView>
+        </com.google.android.material.appbar.MaterialToolbar>
 
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/UserManagementRecycler"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="@+id/umsearchView"
-            app:layout_constraintStart_toStartOf="@+id/umsearchView"
-            app:layout_constraintTop_toBottomOf="@+id/umsearchView" />
-
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@+id/toolbar"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            android:id="@+id/recycler"/>
+    </RelativeLayout>
 
 </FrameLayout>

@@ -147,7 +147,11 @@ public class ParentChildren extends Fragment {
         }
 
 
-        recommendation = formUtils.Recommendations(statusList,monthdiff);
+        recommendation = FindStatusWFA.Recommendations(statusList,monthdiff);
+
+        if(String.valueOf(child.getForfeeding()).equals("Yes") && monthdiff>=24){
+            recommendation.add("Your child is part of the feeding program.");
+        }
 
         for (String recommend: recommendation){
             if (!recommend.endsWith("\n")) {
@@ -156,7 +160,6 @@ public class ParentChildren extends Fragment {
                 statusStringBuilder2.append("\t\t\t\t\t\t*").append(recommend);
             }
         }
-
         textCounts.setText("Child " + String.valueOf(currentIndex+1) + " of " + String.valueOf(childrenList.size()));
         status.setText(statusStringBuilder.toString());
         textRecommendations.setText(statusStringBuilder2.toString());

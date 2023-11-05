@@ -35,9 +35,8 @@ public class EditChild extends AppCompatActivity {
     MaterialAutoCompleteTextView barangayAC, sexAC, belongAC, sitioAC;
     Button edit, remove;
     private FirebaseFirestore db;
-    String barangays, sexchose, belongchose, dateString;
-    SimpleDateFormat dateFormat;
-    private int  bdatevalue, monthdiff;
+    String  dateString;
+    private int   monthdiff;
     private double height_true_val, weight_true_val;
     String childFirstNameValue, childMiddleNameValue, childLastNameValue,
             parentFirstNameValue, parentMiddleNameValue, parentLastNameValue,
@@ -51,7 +50,6 @@ public class EditChild extends AppCompatActivity {
         setContentView(R.layout.activity_edit_child);
 
 
-        String[] barangay = getResources().getStringArray(R.array.barangay);
         String[] sex = getResources().getStringArray(R.array.sex);
         String[] belongs = getResources().getStringArray(R.array.yes_or_no);
         String[] sitio;
@@ -72,7 +70,6 @@ public class EditChild extends AppCompatActivity {
         expectedDate = findViewById(R.id.textExpectedDate);
         sexAC = findViewById(R.id.textSex);
         belongAC = findViewById(R.id.textBelong);
-        barangayAC = findViewById(R.id.textBarangay);
         edit = findViewById(R.id.btnEdit);
         remove = findViewById(R.id.btnDelete);
 
@@ -88,7 +85,8 @@ public class EditChild extends AppCompatActivity {
         parentMiddleName.setText(App.child.getParentMiddleName());
         parentLastName.setText(App.child.getParentLastName());
 
-        barangayAC.setText(App.child.getBarangay());
+
+        barangayACValue = App.child.getBarangay();
         sexAC.setText(App.child.getSex());
         belongAC.setText(App.child.getBelongtoIP());
         bdate.setText(App.child.getBirthDate());
@@ -96,7 +94,6 @@ public class EditChild extends AppCompatActivity {
 
         FormUtils.setAdapter(sex, sexAC, this);
         FormUtils.setAdapter(belongs,belongAC,this);
-        FormUtils.setAdapter(barangay, barangayAC, this);
         FormUtils.dateClicked(bdate,this);
         FormUtils.dateClicked(expectedDate, this);
 
@@ -107,7 +104,6 @@ public class EditChild extends AppCompatActivity {
                 dateString = bdate.getText().toString();
                 FormUtils formUtils = new FormUtils();
                 Date parsedDate = formUtils.parseDate(dateString);
-
 
                 if (parsedDate != null) {
                     monthdiff = formUtils.calculateMonthsDifference(parsedDate);
@@ -126,7 +122,6 @@ public class EditChild extends AppCompatActivity {
                 expectedDateValue = expectedDate.getText().toString().trim();
                 sexACValue = sexAC.getText().toString().trim();
                 belongACValue = belongAC.getText().toString().trim();
-                barangayACValue = barangayAC.getText().toString().trim();
                 heightValue = height.getText().toString().trim();
                 weightValue = weight.getText().toString().trim();
 
@@ -136,10 +131,8 @@ public class EditChild extends AppCompatActivity {
                 boolean isFormValid = FormUtils.validateForm(childFirstNameValue, childMiddleNameValue, childLastNameValue,
                         parentFirstNameValue, parentMiddleNameValue, parentLastNameValue,
                         gmailValue, houseNumberValue, bdateValue, expectedDateValue,
-                        sexACValue, belongACValue, barangayACValue, heightValue, weightValue, monthdiff, EditChild.this);
-
-                FormUtils formUtilize = new FormUtils();
-                statusdb = formUtilize.CalculateMalnourished(EditChild.this, monthdiff, weight_true_val, height_true_val, sexACValue);
+                        sexACValue, belongACValue, heightValue, weightValue, monthdiff, EditChild.this);
+                statusdb = FindStatusWFA.CalculateMalnourished(EditChild.this, monthdiff, weight_true_val, height_true_val, sexACValue);
 
 
                 if (isFormValid) {
@@ -161,7 +154,7 @@ public class EditChild extends AppCompatActivity {
                     user.put("sex", sexACValue);
                     user.put("expectedDate", expectedDateValue);
                     user.put("statusdb", statusdb);
-                    db.collection("children").document(App.child.getId()).set(user).addOnSuccessListener(new OnSuccessListener<Void>() {
+                    db.collection("children").document(App.child.getId()).update(user).addOnSuccessListener(new OnSuccessListener<Void>() {
                         @Override
                         public void onSuccess(Void unused) {
                             Toast.makeText(EditChild.this, "Saved successfully", Toast.LENGTH_SHORT).show();

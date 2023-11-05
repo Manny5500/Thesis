@@ -1,6 +1,7 @@
 package com.example.myapplication;
 
 public class User {
+
     private String firstName;
     private String middleName;
     private String email;
@@ -10,8 +11,15 @@ public class User {
 
     private String lastName;
     private String user;
-
     private String contact;
+
+    private String id;
+
+    private String imageUrl;
+
+
+    public User(){}
+
 
     public User(String firstName, String middleName, String lastName, String email, String birthdate,
                 String sex, String barangay, String user, String contact) {
@@ -91,12 +99,29 @@ public class User {
         this.barangay = barangay;
     }
 
-    public String setContact() {
+    public String getContact() {
         return contact;
     }
 
     public void setContact(String contact) {
         this.contact = contact;
+    }
+
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
     }
 
 }

@@ -22,13 +22,18 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.MaterialAutoCompleteTextView;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.google.protobuf.StringValue;
 
 import java.text.SimpleDateFormat;
@@ -43,11 +48,14 @@ import java.util.Objects;
 public class fradAddData extends Fragment {
     View view;
 
+    private ArrayList<User> userlist;
+    private String personnelgmail, userid;
+
     TextInputEditText childFirstName, childMiddleName, childLastName,
             parentFirstName, parentMiddleName, parentLastName,
             gmail, houseNumber, height, weight, bdate, expectedDate;
 
-    MaterialAutoCompleteTextView barangayAC, sexAC, belongAC, sitioAC;
+    MaterialAutoCompleteTextView sexAC, belongAC, sitioAC;
     ArrayList<String> statusdb;
     Button submit;
     private FirebaseFirestore db;
@@ -58,7 +66,7 @@ public class fradAddData extends Fragment {
     String childFirstNameValue, childMiddleNameValue, childLastNameValue,
             parentFirstNameValue, parentMiddleNameValue, parentLastNameValue,
             gmailValue, houseNumberValue, bdateValue, expectedDateValue,
-            sexACValue, belongACValue, barangayACValue, heightValue, weightValue;
+            sexACValue, belongACValue,  heightValue, weightValue;
     
     @Override
 
@@ -71,6 +79,9 @@ public class fradAddData extends Fragment {
         height_true_val = 0;
 
 
+        personnelgmail = ((PersonnelActivity)getActivity()).email;
+        userid = ((PersonnelActivity)getActivity()).userid;
+        userlist = new ArrayList<>();
 
         String[] barangay = getResources().getStringArray(R.array.barangay);
         String[] sex = getResources().getStringArray(R.array.sex);
@@ -93,12 +104,10 @@ public class fradAddData extends Fragment {
         expectedDate = view.findViewById(R.id.textExpectedDate);
         sexAC = view.findViewById(R.id.textSex);
         belongAC = view.findViewById(R.id.textBelong);
-        barangayAC = view.findViewById(R.id.textBarangay);
         submit = view.findViewById(R.id.btnSubmit);
 
         FormUtils.setAdapter(sex, sexAC, requireContext());
         FormUtils.setAdapter(belongs,belongAC, requireContext());
-        FormUtils.setAdapter(barangay, barangayAC, requireContext());
         FormUtils.dateClicked(bdate, requireContext());
         FormUtils.dateClicked(expectedDate, requireContext());
 
@@ -129,7 +138,6 @@ public class fradAddData extends Fragment {
                 expectedDateValue = expectedDate.getText().toString().trim();
                 sexACValue = sexAC.getText().toString().trim();
                 belongACValue = belongAC.getText().toString().trim();
-                barangayACValue = barangayAC.getText().toString().trim();
                 heightValue = height.getText().toString().trim();
                 weightValue = weight.getText().toString().trim();
 
@@ -139,47 +147,16 @@ public class fradAddData extends Fragment {
                     height_true_val = Double.parseDouble(heightValue);
                     weight_true_val = Double.parseDouble(weightValue);
                 }
-
-                FormUtils formUtilize = new FormUtils();
-                statusdb = formUtilize.CalculateMalnourished(requireContext(), monthdiff, weight_true_val, height_true_val, sexACValue);
+                statusdb = FindStatusWFA.CalculateMalnourished(requireContext(), monthdiff, weight_true_val, height_true_val, sexACValue);
 
 
                 boolean isFormValid = FormUtils.validateForm(childFirstNameValue, childMiddleNameValue, childLastNameValue,
                         parentFirstNameValue, parentMiddleNameValue, parentLastNameValue,
                         gmailValue, houseNumberValue, bdateValue, expectedDateValue,
-                        sexACValue, belongACValue, barangayACValue, heightValue, weightValue, monthdiff, requireContext());
+                        sexACValue, belongACValue, heightValue, weightValue, monthdiff, requireContext());
 
                 if (isFormValid) {
-                    Map<String, Object> user = new HashMap<>();
-                    user.put("childFirstName", childFirstNameValue);
-                    user.put("childMiddleName", childMiddleNameValue);
-                    user.put("childLastName", childLastNameValue);
-                    user.put("parentFirstName", parentFirstNameValue);
-                    user.put("parentMiddleName", parentMiddleNameValue);
-                    user.put("parentLastName", parentLastNameValue);
-                    user.put("gmail", gmailValue);
-                    user.put("houseNumber", houseNumberValue);
-                    user.put("height", height_true_val);
-                    user.put("weight", weight_true_val);
-                    user.put("birthDate", bdateValue);
-                    user.put("belongtoIP", belongACValue);
-                    user.put("barangay", barangayACValue);
-                    user.put("sitio", "placeholder");
-                    user.put("sex", sexACValue);
-                    user.put("expectedDate", expectedDateValue);
-                    user.put("statusdb", statusdb);
-
-                    db.collection("children").add(user).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
-                        @Override
-                        public void onSuccess(DocumentReference documentReference) {
-                            Toast.makeText(getContext(), "Form submitted successfully!", Toast.LENGTH_SHORT).show();
-                        }
-                    }).addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                            Toast.makeText(requireContext(), "Failed to add user", Toast.LENGTH_SHORT).show();
-                        }
-                    });
+                    getBarangay();
 
                 } else {
                     Toast.makeText(getContext(), "Please fill out all fields and provide valid information", Toast.LENGTH_SHORT).show();
@@ -187,5 +164,53 @@ public class fradAddData extends Fragment {
             }
         });
         return view;
+    }
+
+
+    private void AddtoFirestore(String barangayString){
+        Map<String, Object> user = new HashMap<>();
+        user.put("childFirstName", childFirstNameValue);
+        user.put("childMiddleName", childMiddleNameValue);
+        user.put("childLastName", childLastNameValue);
+        user.put("parentFirstName", parentFirstNameValue);
+        user.put("parentMiddleName", parentMiddleNameValue);
+        user.put("parentLastName", parentLastNameValue);
+        user.put("gmail", gmailValue);
+        user.put("houseNumber", houseNumberValue);
+        user.put("height", height_true_val);
+        user.put("weight", weight_true_val);
+        user.put("birthDate", bdateValue);
+        user.put("belongtoIP", belongACValue);
+        user.put("barangay", barangayString);
+        user.put("sitio", "placeholder");
+        user.put("sex", sexACValue);
+        user.put("expectedDate", expectedDateValue);
+        user.put("statusdb", statusdb);
+        db.collection("children").add(user).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+            @Override
+            public void onSuccess(DocumentReference documentReference) {
+                Toast.makeText(getContext(), "Form submitted successfully!", Toast.LENGTH_SHORT).show();
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Toast.makeText(requireContext(), "Failed to add user", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void getBarangay(){
+
+        db.collection("users").document(userid).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+            @Override
+            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                AddtoFirestore(String.valueOf(documentSnapshot.getString("barangay")));
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Toast.makeText(requireContext(), "Failed to save changes", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 }

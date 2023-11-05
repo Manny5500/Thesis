@@ -32,4 +32,23 @@ public class DateParser {
         }
         return 0;
     }
+
+    public static int calculateDaysDifference(Date givenDate) {
+        if (givenDate != null) {
+            Calendar currentCalendar = Calendar.getInstance();
+            Calendar givenCalendar = Calendar.getInstance();
+            givenCalendar.setTime(givenDate);
+
+            long currentTimeInMillis = currentCalendar.getTimeInMillis();
+            long givenTimeInMillis = givenCalendar.getTimeInMillis();
+
+            long differenceInMillis = currentTimeInMillis - givenTimeInMillis;
+            int daysDifference = (int) (differenceInMillis / (24 * 60 * 60 * 1000));
+
+            return daysDifference;
+        }
+        return 0;
+    }
+
+
 }

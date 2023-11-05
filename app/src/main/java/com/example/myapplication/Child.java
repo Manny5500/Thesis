@@ -6,7 +6,8 @@ public class Child {
 
     String childName, childFirstName, childMiddleName, childLastName,
             parentFirstName, parentMiddleName, parentLastName,
-            id, barangay, parentName, gmail, houseNumber, sex, belongtoIP, birthDate, expectedDate;
+            id, barangay, parentName, gmail, houseNumber, sex, belongtoIP, birthDate,
+            expectedDate, forfeeding;
     double weight, height;
 
 
@@ -160,6 +161,14 @@ public class Child {
 
     public void setHeight(double height) {
         this.height = height;
+    }
+
+    public String getForfeeding() {
+        return forfeeding;
+    }
+
+    public void setForfeeding(String forfeeding) {
+        this.forfeeding = forfeeding;
     }
 
 }

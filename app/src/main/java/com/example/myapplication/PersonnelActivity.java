@@ -24,6 +24,7 @@ public class PersonnelActivity extends AppCompatActivity {
     FirebaseUser user;
 
     String email;
+    String userid;
     int color_flag = 0;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,8 +38,8 @@ public class PersonnelActivity extends AppCompatActivity {
             finish();
         }else{
             email = user.getEmail();
+            userid = user.getUid();
         }
-
         personnelProfile=findViewById(R.id.btnProfile);
         addData = findViewById(R.id.btnAddData);
         manageData = findViewById(R.id.btnManageData);

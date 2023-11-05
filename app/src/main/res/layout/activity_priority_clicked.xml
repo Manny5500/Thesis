@@ -141,23 +141,10 @@
         app:layout_constraintTop_toBottomOf="@+id/labelStatusDynamics" />
 
     <Button
-        android:id="@+id/btnNotifyDynamics"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="10dp"
-        android:text="Notify"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/btnCallDynamics" />
-
-    <Button
         android:id="@+id/btnReferralDynamics"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
         android:text="generate referall form"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btnCallDynamics"
-        app:layout_constraintVertical_bias="0.118" />
+        app:layout_constraintTop_toTopOf="@+id/btnCallDynamics" />
 </androidx.constraintlayout.widget.ConstraintLayout>
