@@ -43,7 +43,6 @@
             android:layout_below="@id/list_item_barangay"
             android:layout_toRightOf="@+id/Picture"
             android:singleLine="true"
-
             />
     </RelativeLayout>
 

@@ -6,6 +6,8 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -34,7 +36,7 @@ public class AdminActivity extends AppCompatActivity {
             startActivity(intent);
             finish();
         }else{
-            Toast.makeText(this, ""+ user.getEmail(), Toast.LENGTH_SHORT).show();
+           // Toast.makeText(this, ""+ user.getEmail(), Toast.LENGTH_SHORT).show();
         }
 
 
@@ -83,10 +85,7 @@ public class AdminActivity extends AppCompatActivity {
             public void onClick(View view) {
                 ButtonColorizer(logout);
                 color_flag = 4;
-                FirebaseAuth.getInstance().signOut();
-                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-                startActivity(intent);
-                finish();
+                showYesNoDialog();
             }
         });
 
@@ -111,5 +110,33 @@ public class AdminActivity extends AppCompatActivity {
         }else if(color_flag ==5){
             reports.setColorFilter(ContextCompat.getColor(this, android.R.color.white));
         }
+    }
+
+    private void showYesNoDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Confirmation");
+        builder.setMessage("Do you want to log out?");
+
+        builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+                FirebaseAuth.getInstance().signOut();
+                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                startActivity(intent);
+                finish();
+                dialog.dismiss();
+            }
+        });
+
+        builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+
+        AlertDialog dialog = builder.create();
+        dialog.show();
     }
 }

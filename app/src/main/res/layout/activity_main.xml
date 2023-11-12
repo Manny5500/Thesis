@@ -12,21 +12,21 @@
         android:layout_height="103dp"
         android:layout_marginTop="24dp"
         android:text="I'm a PERSONNEL"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/btnAdmin"
+        app:layout_constraintStart_toStartOf="@+id/btnAdmin"
         app:layout_constraintTop_toBottomOf="@+id/btnAdmin" />
 
     <Button
         android:id="@+id/btnParent"
         android:layout_width="137dp"
         android:layout_height="99dp"
-        android:layout_marginTop="33dp"
+        android:layout_marginTop="24dp"
         android:layout_marginBottom="113dp"
         android:text="I'm a PARENT"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/btnPERSONNEL"
         app:layout_constraintHorizontal_bias="0.496"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/btnPERSONNEL"
         app:layout_constraintTop_toBottomOf="@+id/btnPERSONNEL" />
 
     <Button

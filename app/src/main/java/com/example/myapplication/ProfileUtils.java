@@ -70,12 +70,14 @@ public class ProfileUtils {
         if (context != null) {
             Glide.with(context)
                     .load(imageLink) // Load the image from the URL
-                    .placeholder(R.drawable.anya) // Placeholder image while loading (drawable resource ID)
-                    .error(R.drawable.suika) // Error image if loading fails (drawable resource ID)
+                    .placeholder(R.drawable.nutriassist_logo) // Placeholder image while loading (drawable resource ID)
+                    .error(R.drawable.nutriassist_logo) // Error image if loading fails (drawable resource ID)
                     .override(300, 300) // Set the target dimensions
                     .centerCrop()
                     .into(imagePersonnel);
 
         }
     }
+
+
 }

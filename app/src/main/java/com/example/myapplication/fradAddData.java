@@ -1,48 +1,29 @@
 package com.example.myapplication;
 
-import android.app.DatePickerDialog;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
-import android.text.InputType;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.AutoCompleteTextView;
 import android.widget.Button;
-import android.widget.CheckBox;
-import android.widget.CompoundButton;
-import android.widget.DatePicker;
-import android.widget.EditText;
-import android.widget.Spinner;
-import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.MaterialAutoCompleteTextView;
 import com.google.android.material.textfield.TextInputEditText;
-import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
-import com.google.protobuf.StringValue;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 
 
 public class fradAddData extends Fragment {
@@ -55,7 +36,7 @@ public class fradAddData extends Fragment {
             parentFirstName, parentMiddleName, parentLastName,
             gmail, houseNumber, height, weight, bdate, expectedDate;
 
-    MaterialAutoCompleteTextView sexAC, belongAC, sitioAC;
+    MaterialAutoCompleteTextView sexAC, belongAC, sitioAC, incomeAC;
     ArrayList<String> statusdb;
     Button submit;
     private FirebaseFirestore db;
@@ -66,7 +47,7 @@ public class fradAddData extends Fragment {
     String childFirstNameValue, childMiddleNameValue, childLastNameValue,
             parentFirstNameValue, parentMiddleNameValue, parentLastNameValue,
             gmailValue, houseNumberValue, bdateValue, expectedDateValue,
-            sexACValue, belongACValue,  heightValue, weightValue;
+            sexACValue, belongACValue,  heightValue, weightValue, incomeVal;
     
     @Override
 
@@ -87,6 +68,8 @@ public class fradAddData extends Fragment {
         String[] sex = getResources().getStringArray(R.array.sex);
         String[] belongs = getResources().getStringArray(R.array.yes_or_no);
         String[] sitio;
+        String[] monthlyIncome = {"Less than 9,100", "9,100 to 18,200", "18,200 to 36,400",
+        "36,400 to 63,700", "63,700 to 109,200", "109,200 to 182,000", "Above 182,000"};
 
         db = FirebaseFirestore.getInstance();
 
@@ -102,12 +85,15 @@ public class fradAddData extends Fragment {
         weight = view.findViewById(R.id.textWeight);
         bdate = view.findViewById(R.id.textBdate);
         expectedDate = view.findViewById(R.id.textExpectedDate);
-        sexAC = view.findViewById(R.id.textSex);
+        sexAC = view.findViewById(R.id.textPregnant);
         belongAC = view.findViewById(R.id.textBelong);
         submit = view.findViewById(R.id.btnSubmit);
+        incomeAC = view.findViewById(R.id.textIncome);
 
         FormUtils.setAdapter(sex, sexAC, requireContext());
         FormUtils.setAdapter(belongs,belongAC, requireContext());
+        FormUtils.setAdapter(monthlyIncome, incomeAC, requireContext());
+
         FormUtils.dateClicked(bdate, requireContext());
         FormUtils.dateClicked(expectedDate, requireContext());
 
@@ -118,7 +104,6 @@ public class fradAddData extends Fragment {
                 dateString = bdate.getText().toString();
                 FormUtils formUtils = new FormUtils();
                 Date parsedDate = formUtils.parseDate(dateString);
-
 
                 if (parsedDate != null) {
                     monthdiff = formUtils.calculateMonthsDifference(parsedDate);
@@ -140,6 +125,7 @@ public class fradAddData extends Fragment {
                 belongACValue = belongAC.getText().toString().trim();
                 heightValue = height.getText().toString().trim();
                 weightValue = weight.getText().toString().trim();
+                incomeVal = incomeAC.getText().toString().trim();
 
                 if(heightValue.isEmpty()||weightValue.isEmpty()){
 
@@ -166,7 +152,6 @@ public class fradAddData extends Fragment {
         return view;
     }
 
-
     private void AddtoFirestore(String barangayString){
         Map<String, Object> user = new HashMap<>();
         user.put("childFirstName", childFirstNameValue);
@@ -186,6 +171,7 @@ public class fradAddData extends Fragment {
         user.put("sex", sexACValue);
         user.put("expectedDate", expectedDateValue);
         user.put("statusdb", statusdb);
+        user.put("monthlyIncome", incomeVal);
         db.collection("children").add(user).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
             @Override
             public void onSuccess(DocumentReference documentReference) {

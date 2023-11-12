@@ -27,33 +27,23 @@
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:contentDescription="Children"
-        app:layout_constraintEnd_toStartOf="@+id/btnParentNotify"
-        app:layout_constraintTop_toTopOf="@+id/btnParentProfile"
+        app:layout_constraintEnd_toStartOf="@+id/btnLogOut"
         app:layout_constraintStart_toEndOf="@id/btnParentProfile"
+        app:layout_constraintTop_toTopOf="@+id/btnParentProfile"
         app:srcCompat="@drawable/baseline_child_care_24" />
 
     <FrameLayout
         android:id="@+id/frameLayout"
-        android:layout_width="409dp"
+        android:layout_width="match_parent"
         android:layout_height="0dp"
         android:background="@color/white"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/btnParentProfile">
 
     </FrameLayout>
-
-    <ImageView
-        android:id="@+id/btnParentNotify"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:background="#6750A3"
-        app:layout_constraintEnd_toStartOf="@+id/btnLogOut"
-        app:layout_constraintTop_toTopOf="@+id/btnChildren"
-        app:layout_constraintStart_toEndOf="@id/btnChildren"
-        app:srcCompat="@drawable/baseline_notifications_24"
-        app:tint="@color/white" />
 
     <ImageView
         android:id="@+id/btnLogOut"
@@ -61,9 +51,9 @@
         android:layout_height="50dp"
         android:background="#6750A3"
         android:contentDescription="Logout"
-        app:layout_constraintStart_toEndOf="@id/btnParentNotify"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/btnParentNotify"
+        app:layout_constraintStart_toEndOf="@id/btnChildren"
+        app:layout_constraintTop_toTopOf="@+id/btnChildren"
         app:srcCompat="@drawable/baseline_login_24"
         app:tint="@color/white" />
 

@@ -47,8 +47,8 @@ public class UMAdapter extends RecyclerView.Adapter<UMAdapter.ViewHolder> implem
 
         Glide.with(holder.itemView.getContext())
                 .load(imageUrl)
-                .placeholder(R.drawable.anya)
-                .error(R.drawable.suika)
+                .placeholder(R.drawable.nutriassist_logo)
+                .error(R.drawable.nutriassist_logo)
                 .override(300, 300)
                 .centerCrop()
                 .into(holder.image);

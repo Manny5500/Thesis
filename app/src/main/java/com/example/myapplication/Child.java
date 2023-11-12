@@ -7,7 +7,7 @@ public class Child {
     String childName, childFirstName, childMiddleName, childLastName,
             parentFirstName, parentMiddleName, parentLastName,
             id, barangay, parentName, gmail, houseNumber, sex, belongtoIP, birthDate,
-            expectedDate, forfeeding;
+            expectedDate, forfeeding, monthlyIncome;
     double weight, height;
 
 
@@ -15,6 +15,14 @@ public class Child {
 
     public Child(){
 
+    }
+
+    public String getMonthlyIncome() {
+        return monthlyIncome;
+    }
+
+    public void setMonthlyIncome(String monthlyIncome) {
+        this.monthlyIncome = monthlyIncome;
     }
 
     public ArrayList<String> getStatusdb(){return statusdb;}

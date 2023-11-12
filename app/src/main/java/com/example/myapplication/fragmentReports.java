@@ -107,17 +107,17 @@ public class fragmentReports extends Fragment {
             if (parsedDate != null) {
                 monthdiff = formUtils.calculateMonthsDifference(parsedDate);
             }
-            if(monthdiff>=0 && monthdiff<=5){
+            if(monthdiff>=0 && monthdiff<=5 && !isNormal){
                 age0_5++;
-            } else if (monthdiff>=6 && monthdiff<=11) {
+            } else if (monthdiff>=6 && monthdiff<=11 && !isNormal) {
                 age6_11++;
-            } else if (monthdiff>=12 && monthdiff<=23) {
+            } else if (monthdiff>=12 && monthdiff<=23 && !isNormal) {
                 age12_23++;
-            } else if (monthdiff>=24 && monthdiff<=35) {
+            } else if (monthdiff>=24 && monthdiff<=35 && !isNormal) {
                 age24_35++;
-            } else if (monthdiff>=36 && monthdiff<=47) {
+            } else if (monthdiff>=36 && monthdiff<=47 && !isNormal) {
                 age36_47++;
-            } else if (monthdiff>=48 && monthdiff<=59) {
+            } else if (monthdiff>=48 && monthdiff<=59 && !isNormal) {
                 age48_59++;
             }
         }

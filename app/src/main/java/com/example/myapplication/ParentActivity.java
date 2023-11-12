@@ -6,7 +6,9 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -19,7 +21,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 public class ParentActivity extends AppCompatActivity {
-    ImageView parentNotify, parentProfile, children, parentLogout;
+    ImageView  parentProfile, children, parentLogout;
     String email, userid;
     int color_flag = 0;
 
@@ -31,9 +33,7 @@ public class ParentActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_parent);
 
-        //Intent intent = getIntent();
 
-        //email = intent.getStringExtra("email");
         email="";
         auth = FirebaseAuth.getInstance();
         user = auth.getCurrentUser();
@@ -45,12 +45,10 @@ public class ParentActivity extends AppCompatActivity {
             email = user.getEmail();
             userid = user.getUid();
         }
-        //Toast.makeText(this, email, Toast.LENGTH_SHORT).show();
 
         parentProfile = findViewById(R.id.btnParentProfile);
         children = findViewById(R.id.btnChildren);
         parentLogout = findViewById(R.id.btnLogOut);
-        parentNotify = findViewById(R.id.btnParentNotify);
         replaceFragment(new ParentChildren());
         parentProfile.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -71,23 +69,12 @@ public class ParentActivity extends AppCompatActivity {
             }
         });
 
-        parentNotify.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                replaceFragment(new parent_notification());
-                ButtonColorizer(parentNotify);
-                color_flag = 3;
-            }
-        });
         parentLogout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 ButtonColorizer(parentLogout);
-                color_flag = 4;
-                FirebaseAuth.getInstance().signOut();
-                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-                startActivity(intent);
-                finish();
+                color_flag = 3;
+                showYesNoDialog();
             }
         });
     }
@@ -104,9 +91,35 @@ public class ParentActivity extends AppCompatActivity {
         }else if(color_flag==2){
             children.setColorFilter(ContextCompat.getColor(this, android.R.color.white));
         }else if(color_flag ==3){
-            parentNotify.setColorFilter(ContextCompat.getColor(this, android.R.color.white));
-        }else if(color_flag ==4){
             parentLogout.setColorFilter(ContextCompat.getColor(this, android.R.color.white));
         }
     }
+    private void showYesNoDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Confirmation");
+        builder.setMessage("Do you want to log out?");
+
+        builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+                FirebaseAuth.getInstance().signOut();
+                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                startActivity(intent);
+                finish();
+                dialog.dismiss();
+            }
+        });
+
+        builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+
+        AlertDialog dialog = builder.create();
+        dialog.show();
+    }
+
 }

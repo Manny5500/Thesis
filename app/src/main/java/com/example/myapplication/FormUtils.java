@@ -213,6 +213,20 @@ public class FormUtils {
         }
         return true;
     }
+
+
+    public static boolean validateForm_ADIN(String hasPregnantVal, String familySizeVal,
+                                          String employment1Val, String employment2Val, Context context) {
+
+        if (hasPregnantVal.isEmpty() || familySizeVal.isEmpty() ||
+                employment1Val.isEmpty() || employment2Val.isEmpty()) {
+            Toast.makeText(context, "Please fill all fields", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+
+
+        return true;
+    }
     public Date parseDate(String dateString) {
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
         Date parsedDate = null;

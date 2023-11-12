@@ -4,13 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.CheckBox;
-import android.widget.CompoundButton;
-import android.widget.EditText;
-import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
@@ -19,12 +13,10 @@ import com.google.android.material.textfield.MaterialAutoCompleteTextView;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.firestore.FirebaseFirestore;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 
 public class EditChild extends AppCompatActivity {
 
@@ -68,7 +60,7 @@ public class EditChild extends AppCompatActivity {
         weight = findViewById(R.id.textWeight);
         bdate = findViewById(R.id.textBdate);
         expectedDate = findViewById(R.id.textExpectedDate);
-        sexAC = findViewById(R.id.textSex);
+        sexAC = findViewById(R.id.textPregnant);
         belongAC = findViewById(R.id.textBelong);
         edit = findViewById(R.id.btnEdit);
         remove = findViewById(R.id.btnDelete);

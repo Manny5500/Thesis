@@ -1,8 +1,10 @@
 package com.example.myapplication;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
@@ -31,6 +33,8 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -48,12 +52,14 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 public class fragmentPersonnelProfile extends Fragment {
     View view;
-    private String gmail;
 
-    private String age, name, address, email, contact, imageLink, userid;
+
+    private String userid, gmail;
+    Button btnDelete;
     TextView textage, textname, textaddress, textemail, textcontact;
     private FirebaseFirestore db;
 
+    FirebaseUser user;
     private StorageReference storageRef;
     private ActivityResultLauncher<Intent> pickImageLauncher;
 
@@ -67,7 +73,6 @@ public class fragmentPersonnelProfile extends Fragment {
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
 
-        // Initialize the permission launcher
         requestPermissionLauncher = registerForActivityResult(
                 new ActivityResultContracts.RequestPermission(),
                 isGranted -> {
@@ -81,7 +86,6 @@ public class fragmentPersonnelProfile extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         view = inflater.inflate(R.layout.fragment_personnel_profile, container, false);
 
         FirebaseStorage storage = FirebaseStorage.getInstance();
@@ -93,6 +97,17 @@ public class fragmentPersonnelProfile extends Fragment {
         textemail = view.findViewById(R.id.textGmail);
         textcontact = view.findViewById(R.id.textContact);
         imagePersonnel = view.findViewById(R.id.imagePersonnel);
+        btnDelete = view.findViewById(R.id.btnDeleteAccount);
+        user = ((PersonnelActivity)getActivity()).user;
+        btnDelete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showYesNoDialog();
+            }
+        });
+
+
+
         imagePersonnel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -149,6 +164,7 @@ public class fragmentPersonnelProfile extends Fragment {
            ProfileUtils.getProfile(db, userid, getContext(), textage, textname, textaddress,
                    textemail, textcontact, imagePersonnel);
         }
+
         pickImageLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
                 new ActivityResultCallback<ActivityResult>() {
                     @Override
@@ -162,6 +178,9 @@ public class fragmentPersonnelProfile extends Fragment {
                         }
                     }
                 });
+
+
+
         return view;
     }
 
@@ -185,16 +204,12 @@ public class fragmentPersonnelProfile extends Fragment {
                             @Override
                             public void onSuccess(Uri uri) {
                                 String imageUrl = uri.toString();
-                                if (email != null) {
-                                    Query query = db.collection("users").whereEqualTo("email", email);
+                                if (gmail != null) {
+                                    Query query = db.collection("users").whereEqualTo("email", gmail);
                                     ImageQueryUpload(imageUrl);
                                 } else {
-                                    // Handle the case where the user ID is null
                                     Toast.makeText(requireContext(), "User ID is null", Toast.LENGTH_SHORT).show();
                                 }
-                                // Now you have the download URL of the image
-                                // You can use this URL to display the image or store it in the database
-                                // TODO: Use the imageUrl as needed
                             }
                         });
                     }
@@ -202,7 +217,6 @@ public class fragmentPersonnelProfile extends Fragment {
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                        // Handle unsuccessful uploads
                     }
                 });
     }
@@ -213,6 +227,8 @@ public class fragmentPersonnelProfile extends Fragment {
                     public void onSuccess(Void aVoid) {
                         // Image URL updated successfully in the matching documents
                         Toast.makeText(requireContext(), "Image URL updated in user documents", Toast.LENGTH_SHORT).show();
+                        ProfileUtils.getProfile(db, userid, getContext(), textage, textname, textaddress,
+                                textemail, textcontact, imagePersonnel);
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
@@ -222,5 +238,61 @@ public class fragmentPersonnelProfile extends Fragment {
                         Toast.makeText(requireContext(), "Failed to update image URL in user documents", Toast.LENGTH_SHORT).show();
                     }
                 });
+    }
+
+
+    private void showYesNoDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
+        builder.setTitle("Confirmation");
+        builder.setMessage("Do you want to delete your account?");
+
+        builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                user.delete()
+                        .addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+                                if (task.isSuccessful()) {
+                                    Toast.makeText(requireContext(), "User account is deleted", Toast.LENGTH_SHORT).show();
+                                    FirebaseAuth.getInstance().signOut();
+                                    requireActivity().finish();
+                                }
+                            }
+                        });
+                deleteFirestoreData();
+                dialog.dismiss();
+            }
+        });
+
+        builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+
+        AlertDialog dialog = builder.create();
+        dialog.show();
+    }
+
+    public void deleteFirestoreData(){
+        db.collection("users").document(userid).delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void unused) {
+                Toast.makeText(requireContext(), "User deleted sucessfully", Toast.LENGTH_SHORT).show();
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Toast.makeText(requireContext(), "Failed to delete user", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+    @Override
+    public void onResume() {
+        super.onResume();
+        ProfileUtils.getProfile(db, userid, getContext(), textage, textname, textaddress,
+                textemail, textcontact, imagePersonnel);
     }
 }

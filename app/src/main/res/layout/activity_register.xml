@@ -157,7 +157,7 @@
         app:layout_constraintTop_toBottomOf="@+id/textPasswordLayout">
 
         <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/textConfirmPassword"
+            android:id="@+id/textFamilySize"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="textPassword"
@@ -190,7 +190,7 @@
         app:layout_constraintEnd_toStartOf="@+id/textDayLayout">
 
         <com.google.android.material.textfield.MaterialAutoCompleteTextView
-            android:id="@+id/textMonth"
+            android:id="@+id/textMonthlyIncome"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="textCapSentences"
@@ -214,7 +214,7 @@
         app:layout_constraintEnd_toStartOf="@id/textYearLayout">
 
         <com.google.android.material.textfield.MaterialAutoCompleteTextView
-            android:id="@+id/textDay"
+            android:id="@+id/txtEmployment1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="textCapSentences"
@@ -238,7 +238,7 @@
         app:layout_constraintEnd_toEndOf="parent">
 
         <com.google.android.material.textfield.MaterialAutoCompleteTextView
-            android:id="@+id/textYear"
+            android:id="@+id/txtEmployment2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="textCapSentences"
@@ -264,7 +264,7 @@
         app:layout_constraintTop_toBottomOf="@+id/textMonthLayout">
 
         <com.google.android.material.textfield.MaterialAutoCompleteTextView
-            android:id="@+id/textSex"
+            android:id="@+id/textPregnant"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="textCapSentences"

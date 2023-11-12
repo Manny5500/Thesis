@@ -6,7 +6,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Toast;
@@ -17,12 +16,9 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.MaterialAutoCompleteTextView;
 import com.google.android.material.textfield.TextInputEditText;
-import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
@@ -67,11 +63,11 @@ public class Register extends AppCompatActivity {
         lname = findViewById(R.id.textChildLastName);
         gmail = findViewById(R.id.textGmail);
         password = findViewById(R.id.textPassword);
-        cpassword = findViewById(R.id.textConfirmPassword);
-        month = findViewById(R.id.textMonth);
-        day = findViewById(R.id.textDay);
-        year = findViewById(R.id.textYear);
-        sex = findViewById(R.id.textSex);
+        cpassword = findViewById(R.id.textFamilySize);
+        month = findViewById(R.id.textMonthlyIncome);
+        day = findViewById(R.id.txtEmployment1);
+        year = findViewById(R.id.txtEmployment2);
+        sex = findViewById(R.id.textPregnant);
         barangay = findViewById(R.id.textBarangay);
         btnRegister = findViewById(R.id.buttonRegister);
         userrole = findViewById(R.id.textUserRole);
@@ -113,7 +109,6 @@ public class Register extends AppCompatActivity {
                 contactVal = contact.getText().toString().trim();
                 bdayfull = motono + "/" + dayVal + "/" + yearVal;
 
-                Toast.makeText(Register.this, bdayfull, Toast.LENGTH_SHORT).show();
                 boolean isFormValid = formUtils.validateForm_R(fnameVal, mnameVal, lnameVal, gmailVal,
                         bdayfull, sexVal, barangayVal, passwordVal, cpasswordVal, userVal, contactVal, Register.this);
 

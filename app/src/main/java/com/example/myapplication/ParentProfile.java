@@ -2,8 +2,10 @@ package com.example.myapplication;
 
 import android.Manifest;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
@@ -30,6 +32,9 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -46,8 +51,10 @@ import de.hdodenhof.circleimageview.CircleImageView;
 public class ParentProfile extends Fragment {
     private String gmail, userid;
     private FirebaseFirestore db;
+    FirebaseUser user;
     private String age, name, address, email, contact, imageLink;
     TextView textage, textname, textaddress, textemail, textcontact;
+    Button btnDelete;
 
     CircleImageView imageParent;
     private StorageReference storageRef;
@@ -72,6 +79,7 @@ public class ParentProfile extends Fragment {
                     }
                 });
     }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -87,13 +95,26 @@ public class ParentProfile extends Fragment {
         textemail = view.findViewById(R.id.textParentProfileEmail);
         textcontact = view.findViewById(R.id.textParentProfileContact);
         imageParent = view.findViewById(R.id.imageParent);
+        btnDelete = view.findViewById(R.id.btnDeleteAccount);
 
         gmail = ((ParentActivity)getActivity()).email;
         userid = ((ParentActivity)getActivity()).userid;
+        user = ((ParentActivity)getActivity()).user;
+
+
+
         if(!userid.isEmpty()) {
             ProfileUtils.getProfile(db, userid, getContext(), textage, textname, textaddress,
                     textemail, textcontact, imageParent);
         }
+
+        btnDelete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showYesNoDialog();
+
+            }
+        });
         imageParent.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -119,8 +140,6 @@ public class ParentProfile extends Fragment {
                 });takePhotoBtn.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        // Handle take photo option
-                        // TODO: Implement your logic here
                         Intent intent = new Intent (requireContext(), CameraTests.class);
                         intent.putExtra("email", gmail);
                         startActivity(intent);
@@ -131,7 +150,6 @@ public class ParentProfile extends Fragment {
                 cancelBtn.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        // Handle cancel option
                         dialog.dismiss();
                     }
                 });
@@ -162,11 +180,9 @@ public class ParentProfile extends Fragment {
     }
 
     private void uploadImage(Uri imageUri) {
-        // Create a unique filename for the image (optional)
         String fileName = "image_" + System.currentTimeMillis() + ".jpg";
         StorageReference imageRef = storageRef.child("images/" + fileName);
 
-        // Upload the image to Firebase Storage
         imageRef.putFile(imageUri)
                 .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                     @Override
@@ -175,8 +191,8 @@ public class ParentProfile extends Fragment {
                             @Override
                             public void onSuccess(Uri uri) {
                                 String imageUrl = uri.toString();
-                                if (email != null) {
-                                    Query query = db.collection("users").whereEqualTo("email", email);
+                                if (gmail != null) {
+                                    Query query = db.collection("users").whereEqualTo("email", gmail);
                                     ImageQueryUpload(query, imageUrl);
                                 } else {
                                     // Handle the case where the user ID is null
@@ -189,7 +205,6 @@ public class ParentProfile extends Fragment {
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                        // Handle unsuccessful uploads
                     }
                 });
     }
@@ -199,28 +214,109 @@ public class ParentProfile extends Fragment {
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 if (task.isSuccessful()) {
                     for (QueryDocumentSnapshot document : task.getResult()) {
-                        // Update the "imageUrl" field of each matching document with the download URL
                         db.collection("users").document(document.getId()).update("imageUrl", imageUrl)
                                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                                     @Override
                                     public void onSuccess(Void aVoid) {
-                                        // Image URL updated successfully in the matching documents
-                                        Toast.makeText(requireContext(), "Image URL updated in user documents", Toast.LENGTH_SHORT).show();
+                                        ProfileUtils.getProfile(db, userid, getContext(), textage, textname, textaddress,
+                                                textemail, textcontact, imageParent);
                                     }
                                 })
                                 .addOnFailureListener(new OnFailureListener() {
                                     @Override
                                     public void onFailure(@NonNull Exception e) {
-                                        // Handle failures
                                         Toast.makeText(requireContext(), "Failed to update image URL in user documents", Toast.LENGTH_SHORT).show();
                                     }
                                 });
                     }
                 } else {
-                    // Handle errors while fetching documents
                     Toast.makeText(requireContext(), "Error fetching documents", Toast.LENGTH_SHORT).show();
                 }
             }
         });
+    }
+    public void deleteFirestoreData(){
+        db.collection("users").document(userid).delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void unused) {
+                Toast.makeText(requireContext(), "User deleted sucessfully", Toast.LENGTH_SHORT).show();
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Toast.makeText(requireContext(), "Failed to delete user", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        db.collection("children").whereEqualTo("gmail", gmail).get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                    @Override
+                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                        if (!queryDocumentSnapshots.isEmpty()) {
+                            for (DocumentSnapshot documentSnapshot : queryDocumentSnapshots.getDocuments()) {
+                                db.collection("children").document(documentSnapshot.getId()).delete()
+                                        .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                            @Override
+                                            public void onSuccess(Void unused) {
+
+                                            }
+                                        })
+                                        .addOnFailureListener(new OnFailureListener() {
+                                            @Override
+                                            public void onFailure(@NonNull Exception e) {
+                                            }
+                                        });
+                            }
+                        } else {
+
+                        }
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Toast.makeText(requireContext(), "Error querying database", Toast.LENGTH_SHORT).show();
+                    }
+                });
+
+    }
+    private void showYesNoDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
+        builder.setTitle("Confirmation");
+        builder.setMessage("Do you want to delete your account?");
+
+        builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                user.delete()
+                        .addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+                                if (task.isSuccessful()) {
+                                    Toast.makeText(requireContext(), "User account is deleted", Toast.LENGTH_SHORT).show();
+                                    FirebaseAuth.getInstance().signOut();
+                                    requireActivity().finish();
+                                }
+                            }
+                        });
+                deleteFirestoreData();
+                dialog.dismiss();
+            }
+        });
+
+        builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+
+        AlertDialog dialog = builder.create();
+        dialog.show();
+    }
+    @Override
+    public void onResume() {
+        super.onResume();
+        ProfileUtils.getProfile(db, userid, getContext(), textage, textname, textaddress,
+                textemail, textcontact, imageParent);
     }
 }

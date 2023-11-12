@@ -1,17 +1,20 @@
 package com.example.myapplication;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Filter;
 import android.widget.Filterable;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class ChildAdapter extends RecyclerView.Adapter<ChildAdapter.ViewHolder> implements Filterable {
@@ -48,11 +51,25 @@ public class ChildAdapter extends RecyclerView.Adapter<ChildAdapter.ViewHolder> 
                     }
                 }
             }
-            String firstNames = exampleList.get(position).getChildFirstName();
-            String lastNames = exampleList.get(position).getChildLastName();
-            holder.name.setText(firstNames + " " + lastNames);
-            holder.status.setText(statusStringBuilder.toString());
-            holder.itemView.setOnClickListener(view -> onItemClickListener.onClick(exampleList.get(position)));
+
+        FormUtils formUtils = new FormUtils();
+
+
+        String firstNames = exampleList.get(position).getChildFirstName();
+        String lastNames = exampleList.get(position).getChildLastName();
+        String expectedDates = exampleList.get(position).getExpectedDate();
+        holder.name.setText(firstNames + " " + lastNames);
+        holder.expectedDate.setText(expectedDates);
+        Date parsedDate = formUtils.parseDate(expectedDates);
+        int daydiff = 0;
+        if (parsedDate != null) {
+            daydiff = formUtils.calculateDaysDifference(parsedDate);
+        }
+        if(daydiff<=7){
+            holder.expectedDate.setTextColor(Color.parseColor("#FF0000"));
+        }
+        holder.status.setText(statusStringBuilder.toString());
+        holder.itemView.setOnClickListener(view -> onItemClickListener.onClick(exampleList.get(position)));
     }
 
     @Override
@@ -62,11 +79,12 @@ public class ChildAdapter extends RecyclerView.Adapter<ChildAdapter.ViewHolder> 
 
     public static class ViewHolder extends RecyclerView.ViewHolder{
 
-        TextView name,status;
+        TextView name,status, expectedDate;
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             name = itemView.findViewById(R.id.list_item_name);
             status = itemView.findViewById(R.id.list_item_barangay);
+            expectedDate = itemView.findViewById(R.id.list_item_bio);
         }
     }
 

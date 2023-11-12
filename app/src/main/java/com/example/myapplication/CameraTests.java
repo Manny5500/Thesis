@@ -45,6 +45,8 @@ public class CameraTests extends AppCompatActivity {
     private ActivityResultLauncher<Intent> cameraLauncher;
     private FirebaseFirestore db;
 
+
+
     private String email;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,7 +58,6 @@ public class CameraTests extends AppCompatActivity {
         Intent intent = getIntent();
         if (intent != null && intent.hasExtra("email")) {
             email = intent.getStringExtra("email");
-            // Now 'email' contains the value passed from PersonnelActivity
         }
         // Check for camera permission
         if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.CAMERA)
@@ -129,9 +130,7 @@ public class CameraTests extends AppCompatActivity {
             StorageReference photoRef = storageReference.child("images/" + imageUri.getLastPathSegment());
             photoRef.putFile(imageUri)
                     .addOnSuccessListener(taskSnapshot -> {
-                        // Image uploaded successfully
                         photoRef.getDownloadUrl().addOnSuccessListener(uri -> {
-                            // Get the download URL for the uploaded image
                             String downloadUrl = uri.toString();
 
                             if (email != null) {
@@ -145,7 +144,6 @@ public class CameraTests extends AppCompatActivity {
                         });
                     })
                     .addOnFailureListener(e -> {
-                        // Handle unsuccessful uploads
                         Toast.makeText(CameraTests.this, "Upload failed: " + e.getMessage(),
                                 Toast.LENGTH_SHORT).show();
                         finish();
@@ -163,6 +161,7 @@ public class CameraTests extends AppCompatActivity {
                                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                                     @Override
                                     public void onSuccess(Void aVoid) {
+
                                     }
                                 })
                                 .addOnFailureListener(new OnFailureListener() {
@@ -174,7 +173,6 @@ public class CameraTests extends AppCompatActivity {
                                 });
                     }
                 } else {
-                    // Handle errors while fetching documents
                     Toast.makeText(CameraTests.this, "Error fetching documents", Toast.LENGTH_SHORT).show();
                 }
             }

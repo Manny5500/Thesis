@@ -18,6 +18,8 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.FirebaseApp;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -31,6 +33,8 @@ public class fragmentDashboard extends Fragment {
     View view;
     TextView priority, totalAssessment, totalMalnourished;
     FirebaseFirestore db;
+    FirebaseAuth auth;
+    FirebaseUser user;
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
         FirebaseApp.initializeApp(requireContext());
@@ -41,6 +45,15 @@ public class fragmentDashboard extends Fragment {
         view = inflater.inflate(R.layout.fragment_dashboard, container, false);
         db = FirebaseFirestore.getInstance();
         View recommendation = view.findViewById(R.id.ViewRecommendation);
+
+        auth = FirebaseAuth.getInstance();
+        user = auth.getCurrentUser();
+        if (user == null){
+            Intent intent = new Intent(requireContext(), MainActivity.class);
+            startActivity(intent);
+        }else{
+            // Toast.makeText(this, ""+ user.getEmail(), Toast.LENGTH_SHORT).show();
+        }
 
         priority = view.findViewById(R.id.textPriority);
         totalAssessment = view.findViewById(R.id.txtTotalAssessment);

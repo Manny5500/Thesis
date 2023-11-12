@@ -46,11 +46,11 @@ public class UMEdit extends AppCompatActivity {
         middleName = findViewById(R.id.textChildMiddleName);
         lastName = findViewById(R.id.textChildLastName);
         contact = findViewById(R.id.textContact);
-        month = findViewById(R.id.textMonth);
-        day = findViewById(R.id.textDay);
-        year = findViewById(R.id.textYear);
+        month = findViewById(R.id.textMonthlyIncome);
+        day = findViewById(R.id.txtEmployment1);
+        year = findViewById(R.id.txtEmployment2);
         barangay = findViewById(R.id.textBarangay);
-        sex = findViewById(R.id.textSex);
+        sex = findViewById(R.id.textPregnant);
         edit = findViewById(R.id.buttonEdit);
         archive = findViewById(R.id.buttonArchive);
 

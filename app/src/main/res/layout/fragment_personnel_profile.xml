@@ -45,11 +45,12 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="10dp"
             android:layout_marginEnd="20dp"
+            android:layout_marginTop="10dp"
             android:text="..."
             android:textSize="18sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/textView23"
-            app:layout_constraintTop_toTopOf="@+id/textView23" />
+            app:layout_constraintTop_toBottomOf="@+id/textGmail" />
 
         <TextView
             android:id="@+id/textView23"
@@ -59,18 +60,17 @@
             android:textSize="18sp"
             app:layout_constraintEnd_toEndOf="@+id/textView33"
             app:layout_constraintStart_toStartOf="@+id/textView33"
-            app:layout_constraintTop_toTopOf="@+id/textView26" />
+            app:layout_constraintTop_toTopOf="@+id/textContact" />
 
         <TextView
             android:id="@+id/textView26"
             android:layout_width="100dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="30dp"
-            android:layout_marginTop="10dp"
             android:text="Contact#"
             android:textSize="18sp"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView31" />
+            app:layout_constraintTop_toTopOf="@+id/textView23" />
 
         <TextView
             android:id="@+id/textGmail"
@@ -78,11 +78,12 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="10dp"
             android:layout_marginEnd="20dp"
+            android:layout_marginTop="10dp"
             android:text="..."
             android:textSize="18sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/textView33"
-            app:layout_constraintTop_toTopOf="@+id/textView33" />
+            app:layout_constraintTop_toBottomOf="@+id/textAddress" />
 
         <TextView
             android:id="@+id/textView33"
@@ -92,18 +93,17 @@
             android:textSize="18sp"
             app:layout_constraintEnd_toEndOf="@+id/textView3"
             app:layout_constraintStart_toStartOf="@+id/textView3"
-            app:layout_constraintTop_toTopOf="@+id/textView31" />
+            app:layout_constraintTop_toTopOf="@+id/textGmail" />
 
         <TextView
             android:id="@+id/textView31"
             android:layout_width="100dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="30dp"
-            android:layout_marginTop="25dp"
             android:text="Email"
             android:textSize="18sp"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView24" />
+            app:layout_constraintTop_toTopOf="@+id/textView33" />
 
         <TextView
             android:id="@+id/textAddress"
@@ -111,11 +111,13 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="10dp"
             android:layout_marginEnd="20dp"
+            android:layout_marginTop="10dp"
             android:text="..."
             android:textSize="18sp"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.521"
             app:layout_constraintStart_toEndOf="@+id/textView3"
-            app:layout_constraintTop_toTopOf="@+id/textView3" />
+            app:layout_constraintTop_toBottomOf="@+id/textAge" />
 
         <TextView
             android:id="@+id/textView3"
@@ -125,18 +127,17 @@
             android:textSize="18sp"
             app:layout_constraintEnd_toEndOf="@+id/textView22"
             app:layout_constraintStart_toStartOf="@+id/textView22"
-            app:layout_constraintTop_toTopOf="@+id/textView24" />
+            app:layout_constraintTop_toTopOf="@+id/textAddress" />
 
         <TextView
             android:id="@+id/textView24"
             android:layout_width="100dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="30dp"
-            android:layout_marginTop="10dp"
             android:text="Address"
             android:textSize="18sp"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView28" />
+            app:layout_constraintTop_toTopOf="@+id/textView3" />
 
         <TextView
             android:id="@+id/textAge"
@@ -144,11 +145,12 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="10dp"
             android:layout_marginEnd="20dp"
+            android:layout_marginTop="10dp"
             android:text="..."
             android:textSize="18sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/textView22"
-            app:layout_constraintTop_toTopOf="@+id/textView22" />
+            app:layout_constraintTop_toBottomOf="@+id/textName" />
 
         <TextView
             android:id="@+id/textView22"
@@ -158,31 +160,31 @@
             android:textSize="18sp"
             app:layout_constraintEnd_toEndOf="@+id/textView32"
             app:layout_constraintStart_toStartOf="@+id/textView32"
-            app:layout_constraintTop_toTopOf="@+id/textView28" />
+            app:layout_constraintTop_toTopOf="@+id/textAge" />
 
         <TextView
             android:id="@+id/textView28"
             android:layout_width="100dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="30dp"
-            android:layout_marginTop="10dp"
             android:gravity="start"
             android:text="Age"
             android:textSize="18sp"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView35" />
+            app:layout_constraintTop_toTopOf="@+id/textView22" />
 
         <TextView
             android:id="@+id/textName"
             android:layout_width="181dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="10dp"
             android:layout_marginEnd="20dp"
+            android:layout_marginTop="10dp"
             android:text="..."
+            android:layout_marginStart="10dp"
             android:textSize="18sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/textView32"
-            app:layout_constraintTop_toTopOf="@+id/textView32" />
+            app:layout_constraintTop_toBottomOf="@+id/imagePersonnel" />
 
         <TextView
             android:id="@+id/textView32"
@@ -193,19 +195,28 @@
             android:textSize="18sp"
             app:layout_constraintEnd_toEndOf="@+id/imagePersonnel"
             app:layout_constraintStart_toStartOf="@+id/imagePersonnel"
-            app:layout_constraintTop_toTopOf="@+id/textView35" />
+            app:layout_constraintTop_toTopOf="@+id/textName" />
 
         <TextView
             android:id="@+id/textView35"
             android:layout_width="100dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="30dp"
-            android:layout_marginTop="20dp"
             android:gravity="left"
             android:text="Name"
             android:textSize="18sp"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/imagePersonnel" />
+            app:layout_constraintTop_toTopOf="@+id/textView32" />
+
+        <Button
+            android:id="@+id/btnDeleteAccount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="108dp"
+            android:text="Delete Account"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textContact" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

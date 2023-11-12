@@ -70,8 +70,9 @@ public class ParentChildren extends Fragment {
                             child.setId(doc.getId());
                             childrenList.add(child);
                         }
-
-                        displayChildData(currentIndex);
+                        if(task.getResult().size()>0){
+                            displayChildData(currentIndex);
+                        }
                     }
                 }
             }).addOnFailureListener(new OnFailureListener() {
@@ -82,8 +83,6 @@ public class ParentChildren extends Fragment {
             });
 
         }
-
-
 
         ImageView nextButton = view.findViewById(R.id.btnnext);
         nextButton.setOnClickListener(new View.OnClickListener() {
@@ -137,7 +136,6 @@ public class ParentChildren extends Fragment {
         }
 
         ArrayList<String> statusList = child.getStatusdb();
-        //ArrayList<String> recommendation = new ArrayList<>();
         Set<String> recommendation = new HashSet<>();
 
         StringBuilder statusStringBuilder = new StringBuilder();
@@ -146,12 +144,12 @@ public class ParentChildren extends Fragment {
             statusStringBuilder.append(status).append("\n");
         }
 
-
         recommendation = FindStatusWFA.Recommendations(statusList,monthdiff);
 
         if(String.valueOf(child.getForfeeding()).equals("Yes") && monthdiff>=24){
             recommendation.add("Your child is part of the feeding program.");
         }
+
 
         for (String recommend: recommendation){
             if (!recommend.endsWith("\n")) {

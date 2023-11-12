@@ -10,6 +10,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.View;
@@ -35,11 +36,16 @@ import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.firestore.WriteBatch;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 
 public class RecommendationAdmin extends AppCompatActivity {
     FirebaseFirestore db;
+    private List<Child> childList;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -47,6 +53,8 @@ public class RecommendationAdmin extends AppCompatActivity {
 
         db = FirebaseFirestore.getInstance();
         String [] barangay = getResources().getStringArray(R.array.barangay);
+
+
         db.collection("children").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
@@ -105,27 +113,53 @@ public class RecommendationAdmin extends AppCompatActivity {
                 tableRow.addView(cellTextView);
                 String maybe = rowData[0];
                 if(i==rowData.length-1 && which.equals("barangay")){
-                    cellTextView.setTextColor(Color.parseColor("#0000FF"));
-                    FireStoreUtility.getBarangayStatus(maybe, cellTextView, db);
-                    cellTextView.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            final Dialog dialog = new Dialog(RecommendationAdmin.this);
-                            dialog.setContentView(R.layout.dialog_assign);
-                            FireStoreUtility.getBarangayDetails(maybe, dialog, db,RecommendationAdmin.this);
-                            dialog.show();
-                        }
-                    });
+                    if(Integer.parseInt(rowData[1])>0) {
+                        cellTextView.setTextColor(Color.parseColor("#0000FF"));
+                        FireStoreUtility.getBarangayStatus(maybe, cellTextView, db);
+                        cellTextView.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                final Dialog dialog = new Dialog(RecommendationAdmin.this);
+                                dialog.setContentView(R.layout.dialog_assign);
+                                FireStoreUtility.getBarangayDetails(maybe, dialog, db,RecommendationAdmin.this);
+                                dialog.show();
+                            }
+                        });
+                    } else{
+                        cellTextView.setTextColor(Color.parseColor("#FF0000"));
+                    }
+                }
+
+                if(i==rowData.length-1 && which.equals("gulayan")){
+
+                    if(Integer.parseInt(rowData[1])>0) {
+                        cellTextView.setTextColor(Color.parseColor("#0000FF"));
+                        FireStoreUtility.getGulayanStatus(rowData[0], cellTextView, db);
+
+                        cellTextView.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                final Dialog dialog = new Dialog(RecommendationAdmin.this);
+                                dialog.setContentView(R.layout.dialog_assign);
+                                FireStoreUtility.getGulayanDetails(rowData[0], dialog, rowData[0],db,RecommendationAdmin.this);
+                                dialog.show();
+                            }
+                        });
+
+                    } else{
+                        cellTextView.setTextColor(Color.parseColor("#FF0000"));
+                    }
                 }
             }
             tableLayout.addView(tableRow);
         }
     }
-
     public void FeedingProgramBarangay(Task<QuerySnapshot> task, ArrayList<Child> childrenList, String [] barangay){
         int [] feeding_barangay = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
         int[] index = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23};
         int count_FEEDING;
+        int count_GSB, count_MBL, count_M, count_L;
+        count_GSB = count_MBL = count_M = count_L = 0;
         for (int i = 0; i < index.length; i++) {
             count_FEEDING = 0;
             for (QueryDocumentSnapshot doc : task.getResult()) {
@@ -137,9 +171,32 @@ public class RecommendationAdmin extends AppCompatActivity {
                 Boolean isUnderWeight = child.getStatusdb().contains("Underweight");
                 Boolean isWasted = child.getStatusdb().contains("Wasted");
                 Boolean isStunted = child.getStatusdb().contains("Stunted");
+                Boolean isNormal = child.getStatusdb().contains("Normal");
+                Boolean isLowestIncome = child.getMonthlyIncome().equals("Less than 9,100");
+                Boolean isLowerIncome = child.getMonthlyIncome().equals("9,100 to 18,200");
+                Boolean isLowIncome = child.getMonthlyIncome().equals("18,200 to 36,400");
+                String bdate = child.getBirthDate();
+                FormUtils formUtils = new FormUtils();
+                Date parsedDate = formUtils.parseDate(bdate);
+                int monthdiff = 0;
+                if (parsedDate != null) {
+                    monthdiff = formUtils.calculateMonthsDifference(parsedDate);
+                }
                 if(barangaytrue) {
-                    if(isUnderWeight||isStunted||isWasted){
+                    if((isUnderWeight||isStunted||isWasted) && (monthdiff>23)){
                         count_FEEDING++;
+                    }
+                    if((!isNormal) || (isLowerIncome||isLowIncome||isLowestIncome)){
+                        count_GSB++;
+                    }
+                    if((isNormal) && (isLowerIncome||isLowIncome||isLowestIncome)){
+                        count_L++;
+                    }
+                    if(!isNormal){
+                        count_M++;
+                    }
+                    if((!isNormal) && (isLowerIncome||isLowIncome||isLowestIncome)){
+                        count_MBL++;
                     }
                 }
                 feeding_barangay[i] = count_FEEDING;
@@ -147,7 +204,15 @@ public class RecommendationAdmin extends AppCompatActivity {
             childrenList.clear();
         }
         RankBarangay(feeding_barangay, index, barangay, task.getResult().size());
+        String[] gulayanHeaders = {"Beneficiaries","Total", "Action"};
+        String[][] gulayanData = {{"Malnourished but Low Income", Integer.toString(count_MBL),"Set"},
+                {"Malnourished", Integer.toString(count_M),"Set"},
+                {"Low Income", Integer.toString(count_L),"Set"},
+                {"All Beneficiaries", Integer.toString(count_GSB), "Set All"}};
+        TableLayout tableLayout = findViewById(R.id.GulayanTable);
+        generateTable(tableLayout, gulayanHeaders, gulayanData, "gulayan" );
     }
+
     private void RankBarangay(int[] malnutrition_perbarangay, int[] index, String[] barangay, int totalcase){
         for (int i = 0; i < malnutrition_perbarangay.length - 1; i++) {
             for (int j = i + 1; j < malnutrition_perbarangay.length; j++) {

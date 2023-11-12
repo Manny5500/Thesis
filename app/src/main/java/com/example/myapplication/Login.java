@@ -139,11 +139,13 @@ public class Login extends AppCompatActivity {
         Intent intent = new Intent(Login.this, activityClass);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
+        Toast.makeText(this, "Login Successfully", Toast.LENGTH_SHORT).show();
         finish();
     }
     private void redirectToActivity(Intent intent) {
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
+        Toast.makeText(this, "Login Successfully", Toast.LENGTH_SHORT).show();
         finish();
     }
 }

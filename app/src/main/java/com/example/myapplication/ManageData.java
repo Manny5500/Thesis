@@ -104,7 +104,6 @@ public class ManageData extends Fragment {
                         child.setId(doc.getId());
                         arrayList.add(child);
                     }
-
                     userAdapter = new ChildAdapter(getContext(), arrayList);
                     recyclerView.setAdapter(userAdapter);
                     userAdapter.setOnItemClickListener(new ChildAdapter.OnItemClickListener() {
