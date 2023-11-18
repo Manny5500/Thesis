@@ -349,8 +349,8 @@ public class FireStoreUtility {
 
     private static void resetGulayanDate(String gulayanString, String fromValue, String toValue, FirebaseFirestore db){
         Map<String, Object> gulayan = new HashMap<>();
-        gulayan.put("feedfrom", fromValue);
-        gulayan.put("feedto", toValue);
+        gulayan.put("from", fromValue);
+        gulayan.put("to", toValue);
         db.collection("gulayan").document(gulayanString).set(gulayan).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void unused) {

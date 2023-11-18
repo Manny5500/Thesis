@@ -68,7 +68,7 @@ public class fragmentPersonnelProfile extends Fragment {
     private ActivityResultLauncher<String> requestPermissionLauncher;
 
     CircleImageView imagePersonnel;
-
+    Dialog dialog2;
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
@@ -99,6 +99,11 @@ public class fragmentPersonnelProfile extends Fragment {
         imagePersonnel = view.findViewById(R.id.imagePersonnel);
         btnDelete = view.findViewById(R.id.btnDeleteAccount);
         user = ((PersonnelActivity)getActivity()).user;
+
+        dialog2 = new Dialog(requireContext());
+        dialog2.setContentView(R.layout.dialog_loader);
+        dialog2.setCanceledOnTouchOutside(false);
+        dialog2.setCancelable(false);
         btnDelete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

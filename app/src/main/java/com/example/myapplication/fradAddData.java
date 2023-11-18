@@ -34,9 +34,9 @@ public class fradAddData extends Fragment {
 
     TextInputEditText childFirstName, childMiddleName, childLastName,
             parentFirstName, parentMiddleName, parentLastName,
-            gmail, houseNumber, height, weight, bdate, expectedDate;
+            gmail, houseNumber, height, weight, bdate, expectedDate, sitio;
 
-    MaterialAutoCompleteTextView sexAC, belongAC, sitioAC, incomeAC;
+    MaterialAutoCompleteTextView sexAC, belongAC,  incomeAC;
     ArrayList<String> statusdb;
     Button submit;
     private FirebaseFirestore db;
@@ -47,7 +47,7 @@ public class fradAddData extends Fragment {
     String childFirstNameValue, childMiddleNameValue, childLastNameValue,
             parentFirstNameValue, parentMiddleNameValue, parentLastNameValue,
             gmailValue, houseNumberValue, bdateValue, expectedDateValue,
-            sexACValue, belongACValue,  heightValue, weightValue, incomeVal;
+            sexACValue, belongACValue,  heightValue, weightValue, incomeVal, sitioVal;
     
     @Override
 
@@ -67,7 +67,6 @@ public class fradAddData extends Fragment {
         String[] barangay = getResources().getStringArray(R.array.barangay);
         String[] sex = getResources().getStringArray(R.array.sex);
         String[] belongs = getResources().getStringArray(R.array.yes_or_no);
-        String[] sitio;
         String[] monthlyIncome = {"Less than 9,100", "9,100 to 18,200", "18,200 to 36,400",
         "36,400 to 63,700", "63,700 to 109,200", "109,200 to 182,000", "Above 182,000"};
 
@@ -89,6 +88,7 @@ public class fradAddData extends Fragment {
         belongAC = view.findViewById(R.id.textBelong);
         submit = view.findViewById(R.id.btnSubmit);
         incomeAC = view.findViewById(R.id.textIncome);
+        sitio = view.findViewById(R.id.spinnerSitio);
 
         FormUtils.setAdapter(sex, sexAC, requireContext());
         FormUtils.setAdapter(belongs,belongAC, requireContext());
@@ -126,6 +126,7 @@ public class fradAddData extends Fragment {
                 heightValue = height.getText().toString().trim();
                 weightValue = weight.getText().toString().trim();
                 incomeVal = incomeAC.getText().toString().trim();
+                sitioVal = sitio.getText().toString().trim();
 
                 if(heightValue.isEmpty()||weightValue.isEmpty()){
 
@@ -139,7 +140,7 @@ public class fradAddData extends Fragment {
                 boolean isFormValid = FormUtils.validateForm(childFirstNameValue, childMiddleNameValue, childLastNameValue,
                         parentFirstNameValue, parentMiddleNameValue, parentLastNameValue,
                         gmailValue, houseNumberValue, bdateValue, expectedDateValue,
-                        sexACValue, belongACValue, heightValue, weightValue, monthdiff, requireContext());
+                        sexACValue, belongACValue, heightValue, weightValue, monthdiff, sitioVal, requireContext());
 
                 if (isFormValid) {
                     getBarangay();
@@ -167,7 +168,7 @@ public class fradAddData extends Fragment {
         user.put("birthDate", bdateValue);
         user.put("belongtoIP", belongACValue);
         user.put("barangay", barangayString);
-        user.put("sitio", "placeholder");
+        user.put("sitio", sitioVal);
         user.put("sex", sexACValue);
         user.put("expectedDate", expectedDateValue);
         user.put("statusdb", statusdb);

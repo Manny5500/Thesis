@@ -103,7 +103,7 @@
             android:background="#dfbbda"
             app:layout_constraintBottom_toTopOf="@+id/priorityView"
             app:layout_constraintEnd_toEndOf="@+id/priorityView"
-            app:layout_constraintHorizontal_bias="0.516"
+            app:layout_constraintHorizontal_bias="0.2"
             app:layout_constraintStart_toStartOf="@+id/priorityView"
             app:layout_constraintTop_toBottomOf="@+id/view2" />
 
@@ -111,7 +111,8 @@
             android:id="@+id/textView40"
             android:layout_width="208dp"
             android:layout_height="71dp"
-            android:text="General Recommendation"
+            android:layout_marginTop="16dp"
+            android:text="Recommendation"
             android:textColor="@color/white"
             android:textSize="25sp"
             android:textStyle="bold"

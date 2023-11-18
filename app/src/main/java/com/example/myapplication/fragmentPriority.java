@@ -19,6 +19,7 @@ import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.firestore.CollectionReference;
@@ -49,11 +50,9 @@ public class fragmentPriority extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         view = inflater.inflate(R.layout.fragment_priority, container, false);
         db = FirebaseFirestore.getInstance();
         recyclerView = view.findViewById(R.id.recycler);
-
 
         Populate();
 
@@ -79,7 +78,8 @@ public class fragmentPriority extends Fragment {
     }
 
     public void Populate(){
-        db.collection("children").whereArrayContainsAny("statusdb", Arrays.asList("Severe Wasted", "Severe Stunted", "Severe Underweight")).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+        db.collection("children").whereArrayContainsAny("statusdb", Arrays.asList("Severe Wasted", "Severe Stunted", "Severe Underweight")).
+                get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 if (task.isSuccessful()){
@@ -89,6 +89,16 @@ public class fragmentPriority extends Fragment {
                         Child child = doc.toObject(Child.class);
                         child.setId(doc.getId());
                         arrayList.add(child);
+                        db.collection("users").whereEqualTo("user","parent").
+                                whereEqualTo("email", child.getGmail()).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                            @Override
+                            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                for(QueryDocumentSnapshot doc1:task.getResult()){
+                                    User user = doc1.toObject(User.class);
+                                    child.setPhoneNumber(user.getContact());
+                                }
+                            }
+                        });
                     }
 
                     userAdapter = new ChildAdapter(getContext(), arrayList);

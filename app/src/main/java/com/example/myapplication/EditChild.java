@@ -23,8 +23,8 @@ public class EditChild extends AppCompatActivity {
 
     TextInputEditText childFirstName, childMiddleName, childLastName,
             parentFirstName, parentMiddleName, parentLastName,
-            gmail, houseNumber, height, weight, bdate, expectedDate;
-    MaterialAutoCompleteTextView barangayAC, sexAC, belongAC, sitioAC;
+            gmail, houseNumber, height, weight, bdate, expectedDate, sitio;
+    MaterialAutoCompleteTextView barangayAC, sexAC, belongAC;
     Button edit, remove;
     private FirebaseFirestore db;
     String  dateString;
@@ -33,7 +33,7 @@ public class EditChild extends AppCompatActivity {
     String childFirstNameValue, childMiddleNameValue, childLastNameValue,
             parentFirstNameValue, parentMiddleNameValue, parentLastNameValue,
             gmailValue, houseNumberValue, bdateValue, expectedDateValue,
-            sexACValue, belongACValue, barangayACValue, heightValue, weightValue;
+            sexACValue, belongACValue, barangayACValue, heightValue, weightValue, sitioVal;
 
     ArrayList<String> statusdb;
     @Override
@@ -123,7 +123,7 @@ public class EditChild extends AppCompatActivity {
                 boolean isFormValid = FormUtils.validateForm(childFirstNameValue, childMiddleNameValue, childLastNameValue,
                         parentFirstNameValue, parentMiddleNameValue, parentLastNameValue,
                         gmailValue, houseNumberValue, bdateValue, expectedDateValue,
-                        sexACValue, belongACValue, heightValue, weightValue, monthdiff, EditChild.this);
+                        sexACValue, belongACValue, heightValue, weightValue, monthdiff, sitioVal, EditChild.this);
                 statusdb = FindStatusWFA.CalculateMalnourished(EditChild.this, monthdiff, weight_true_val, height_true_val, sexACValue);
 
 
@@ -142,7 +142,7 @@ public class EditChild extends AppCompatActivity {
                     user.put("birthDate", bdateValue);
                     user.put("belongtoIP", belongACValue);
                     user.put("barangay", barangayACValue);
-                    user.put("sitio", "placeholder");
+                    user.put("sitio", sitioVal);
                     user.put("sex", sexACValue);
                     user.put("expectedDate", expectedDateValue);
                     user.put("statusdb", statusdb);

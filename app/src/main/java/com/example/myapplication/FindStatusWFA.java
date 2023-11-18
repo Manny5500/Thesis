@@ -206,7 +206,7 @@ public class FindStatusWFA {
             if(age<=6){
                 recommendationSet.add(recommendations[0]);
 
-                if(isUnderweight){
+                if(isUnderweight || isOverweight){
                     recommendationSet.add(recommendations[1]);
                     recommendationSet.add(recommendations[2]);
                 }
@@ -218,9 +218,6 @@ public class FindStatusWFA {
                     recommendationSet.add(recommendations[5]);
                     recommendationSet.add(recommendations[3]);
                     recommendationSet.add(recommendations[4]);
-                }
-                if(isOverweight){
-                    recommendationSet.add(recommendations[1]);
                 }
             }
 
@@ -242,7 +239,7 @@ public class FindStatusWFA {
                 }
             }
             if(age>=23 && age<=59){
-                if(isUnderweight){
+                if(isUnderweight||isStunted){
                     recommendationSet.add(recommendations[7]);
                     recommendationSet.add(recommendations[8]);
                     recommendationSet.add(recommendations[9]);
@@ -250,12 +247,8 @@ public class FindStatusWFA {
                 if(isOverweight){
                     recommendationSet.add(recommendations[10]);
                     recommendationSet.add(recommendations[11]);
-                    recommendationSet.add(recommendations[13]);
                 }
-                if(isStunted){
-                    recommendationSet.add(recommendations[7]);
-                    recommendationSet.add(recommendations[1]);
-                }
+                
                 if(isSevereUnderweight||isSevereWasted||isSevereStunted||isWasted){
                     recommendationSet.add(recommendations[5]);
                     recommendationSet.add(recommendations[3]);

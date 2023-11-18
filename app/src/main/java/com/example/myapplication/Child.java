@@ -7,7 +7,7 @@ public class Child {
     String childName, childFirstName, childMiddleName, childLastName,
             parentFirstName, parentMiddleName, parentLastName,
             id, barangay, parentName, gmail, houseNumber, sex, belongtoIP, birthDate,
-            expectedDate, forfeeding, monthlyIncome;
+            expectedDate, forfeeding, monthlyIncome, forgulayan, phoneNumber, downloadUrl;
     double weight, height;
 
 
@@ -17,6 +17,12 @@ public class Child {
 
     }
 
+    public String getPhoneNumber(){return phoneNumber;}
+    public void setPhoneNumber(String phoneNumber){this.phoneNumber = phoneNumber; }
+    public String getDownloadUrl(){return downloadUrl;}
+    public void setDownloadUrl(String downloadUrl){this.downloadUrl = downloadUrl; }
+    public String getForgulayan(){return forgulayan;}
+    public void setForgulayan(String forgulayan){this.forgulayan = forgulayan; }
     public String getMonthlyIncome() {
         return monthlyIncome;
     }

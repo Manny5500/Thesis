@@ -235,15 +235,15 @@
                             android:layout_marginEnd="20dp"
                             android:hint="Sitio"
                             android:inputType="text"
-                            style="@style/Widget.Material3.TextInputLayout.FilledBox.Dense.ExposedDropdownMenu"
+                            style="@style/Widget.Material3.TextInputLayout.FilledBox.Dense"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintTop_toTopOf="@+id/textHouseNumberLayout">
 
-                                <com.google.android.material.textfield.MaterialAutoCompleteTextView
+                                <com.google.android.material.textfield.TextInputEditText
                                     android:id="@+id/spinnerSitio"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
-                                    android:inputType="none"
+                                    android:inputType="text"
                                     android:textSize="18sp"
                                     app:layout_constraintEnd_toEndOf="parent"
                                     app:layout_constraintStart_toStartOf="parent" />

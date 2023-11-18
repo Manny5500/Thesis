@@ -1,5 +1,6 @@
 package com.example.myapplication;
 
+import android.app.AlertDialog;
 import android.content.Context;
 import android.os.Bundle;
 
@@ -65,14 +66,35 @@ public class ParentChildren extends Fragment {
                 @Override
                 public void onComplete(@NonNull Task<QuerySnapshot> task) {
                     if (task.isSuccessful()) {
+                        ArrayList getGulayanStatus = new ArrayList<>();
+                        ArrayList getFeedingStatus = new ArrayList<>();
                         for (QueryDocumentSnapshot doc : task.getResult()) {
                             Child child = doc.toObject(Child.class);
                             child.setId(doc.getId());
                             childrenList.add(child);
+
+                            if(child.getForgulayan()!=null){
+                                if(child.getForgulayan().equals("Yes")){
+                                    getGulayanStatus.add("Yes");
+                                }
+                            }
+
+                            if(child.getForfeeding()!=null){
+                                if(child.getForfeeding().equals("Yes")){
+                                    getFeedingStatus.add("Yes");
+                                }
+                            }
                         }
                         if(task.getResult().size()>0){
                             displayChildData(currentIndex);
                         }
+                        if(getGulayanStatus.contains("Yes")){
+                            showDialog("gulayan");
+                        }
+                        if(getFeedingStatus.contains("Yes")){
+                            showDialog("feeding");
+                        }
+
                     }
                 }
             }).addOnFailureListener(new OnFailureListener() {
@@ -137,7 +159,6 @@ public class ParentChildren extends Fragment {
 
         ArrayList<String> statusList = child.getStatusdb();
         Set<String> recommendation = new HashSet<>();
-
         StringBuilder statusStringBuilder = new StringBuilder();
         StringBuilder statusStringBuilder2 = new StringBuilder();
         for (String status : statusList) {
@@ -150,7 +171,6 @@ public class ParentChildren extends Fragment {
             recommendation.add("Your child is part of the feeding program.");
         }
 
-
         for (String recommend: recommendation){
             if (!recommend.endsWith("\n")) {
                 statusStringBuilder2.append("\t\t\t\t\t\t*").append(recommend).append("\n");
@@ -161,6 +181,22 @@ public class ParentChildren extends Fragment {
         textCounts.setText("Child " + String.valueOf(currentIndex+1) + " of " + String.valueOf(childrenList.size()));
         status.setText(statusStringBuilder.toString());
         textRecommendations.setText(statusStringBuilder2.toString());
+    }
+
+    private void showDialog(String type){
+        AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
+        if(type.equals("gulayan")) {
+            builder.setTitle("Gulayan sa Bakuran")
+                    .setMessage("You are qualified to Gulayan sa Bakuran Program");
+            builder.setCancelable(true);
+        }
+        if(type.equals("feeding")){
+            builder.setTitle("Feeding Program")
+                    .setMessage("You're child is qualified to Program");
+            builder.setCancelable(true);
+        }
+        AlertDialog dialog = builder.create();
+        dialog.show();
     }
 
 }

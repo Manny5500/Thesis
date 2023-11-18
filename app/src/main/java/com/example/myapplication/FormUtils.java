@@ -60,12 +60,13 @@ public class FormUtils {
     public static boolean validateForm(String childFirstName, String childMiddleName, String childLastName,
                                        String parentFirstName, String parentMiddleName, String parentLastName,
                                        String gmail, String houseNumber, String bdate, String expectedDate,
-                                       String sexAC, String belongAC,  String height, String weight, int monthdiff, Context context) {
+                                       String sexAC, String belongAC,  String height, String weight, int monthdiff, String sitio,
+                                               Context context) {
 
         if (childFirstName.isEmpty() || childMiddleName.isEmpty() || childLastName.isEmpty() ||
                 parentFirstName.isEmpty() || parentMiddleName.isEmpty() || parentLastName.isEmpty() ||
                 gmail.isEmpty() || houseNumber.isEmpty() || bdate.isEmpty() || expectedDate.isEmpty() ||
-                sexAC.isEmpty() || belongAC.isEmpty() || height.isEmpty() || weight.isEmpty()) {
+                sexAC.isEmpty() || belongAC.isEmpty() || height.isEmpty() || weight.isEmpty() || sitio.isEmpty()) {
             Toast.makeText(context, "Please fill all fields", Toast.LENGTH_SHORT).show();
             return false;
         }
@@ -225,6 +226,20 @@ public class FormUtils {
         }
 
 
+        return true;
+    }
+
+    public static boolean validateForm_Forgot(String gmail,  Context context) {
+
+        if (gmail.isEmpty()) {
+            Toast.makeText(context, "Please fill up the email", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        String emailPattern = "^[a-zA-Z0-9._-]+@gmail\\.com$";
+        if (!gmail.matches(emailPattern)) {
+            Toast.makeText(context, "Invalid Email", Toast.LENGTH_SHORT).show();
+            return false;
+        }
         return true;
     }
     public Date parseDate(String dateString) {

@@ -46,4 +46,6 @@ dependencies {
     implementation("com.github.PhilJay:MPAndroidChart:v3.1.0")
     implementation("com.github.bumptech.glide:glide:4.16.0")
     implementation("de.hdodenhof:circleimageview:3.1.0")
+    implementation("com.github.mhiew:android-pdf-viewer:3.2.0-beta.3")
+    implementation("commons-io:commons-io:2.15.0")
 }
