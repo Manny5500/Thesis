@@ -67,7 +67,6 @@ public class FormUtils {
                 parentFirstName.isEmpty() || parentMiddleName.isEmpty() || parentLastName.isEmpty() ||
                 gmail.isEmpty() || houseNumber.isEmpty() || bdate.isEmpty() || expectedDate.isEmpty() ||
                 sexAC.isEmpty() || belongAC.isEmpty() || height.isEmpty() || weight.isEmpty() || sitio.isEmpty()) {
-            Toast.makeText(context, "Please fill all fields", Toast.LENGTH_SHORT).show();
             return false;
         }
 
@@ -93,12 +92,6 @@ public class FormUtils {
 
         if (!childLastName.matches(namePattern) || !parentLastName.matches(namePattern)) {
             Toast.makeText(context, "Invalid Last Name", Toast.LENGTH_SHORT).show();
-            return false;
-        }
-
-        String datePattern = "^([1-9]|0[1-9]|[12][0-9]|3[01])/(0[1-9]|1[0-2])/(\\d{4})$";
-        if (!expectedDate.matches(datePattern) || !bdate.matches(datePattern)) {
-            Toast.makeText(context, "Invalid Date", Toast.LENGTH_SHORT).show();
             return false;
         }
 

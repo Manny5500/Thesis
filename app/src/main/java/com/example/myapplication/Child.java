@@ -7,7 +7,8 @@ public class Child {
     String childName, childFirstName, childMiddleName, childLastName,
             parentFirstName, parentMiddleName, parentLastName,
             id, barangay, parentName, gmail, houseNumber, sex, belongtoIP, birthDate,
-            expectedDate, forfeeding, monthlyIncome, forgulayan, phoneNumber, downloadUrl;
+            expectedDate, forfeeding, monthlyIncome, forgulayan, phoneNumber, downloadUrl,
+            sitio;
     double weight, height;
 
 
@@ -16,7 +17,8 @@ public class Child {
     public Child(){
 
     }
-
+    public String getSitio(){return sitio;}
+    public void setSitio(String sitio){this.sitio = sitio; }
     public String getPhoneNumber(){return phoneNumber;}
     public void setPhoneNumber(String phoneNumber){this.phoneNumber = phoneNumber; }
     public String getDownloadUrl(){return downloadUrl;}

@@ -83,6 +83,7 @@ public class EditChild extends AppCompatActivity {
         belongAC.setText(App.child.getBelongtoIP());
         bdate.setText(App.child.getBirthDate());
         expectedDate.setText(App.child.getExpectedDate());
+        sitio.setText(App.child.getSitio());
 
         FormUtils.setAdapter(sex, sexAC, this);
         FormUtils.setAdapter(belongs,belongAC,this);
@@ -117,18 +118,15 @@ public class EditChild extends AppCompatActivity {
                 heightValue = height.getText().toString().trim();
                 weightValue = weight.getText().toString().trim();
                 sitioVal = sitio.getText().toString().trim();
-
-                height_true_val = Double.parseDouble(heightValue);
-                weight_true_val = Double.parseDouble(weightValue);
-
                 boolean isFormValid = FormUtils.validateForm(childFirstNameValue, childMiddleNameValue, childLastNameValue,
                         parentFirstNameValue, parentMiddleNameValue, parentLastNameValue,
                         gmailValue, houseNumberValue, bdateValue, expectedDateValue,
                         sexACValue, belongACValue, heightValue, weightValue, monthdiff, sitioVal, EditChild.this);
-                statusdb = FindStatusWFA.CalculateMalnourished(EditChild.this, monthdiff, weight_true_val, height_true_val, sexACValue);
-
 
                 if (isFormValid) {
+                    height_true_val = Double.parseDouble(heightValue);
+                    weight_true_val = Double.parseDouble(weightValue);
+                    statusdb = FindStatusWFA.CalculateMalnourished(EditChild.this, monthdiff, weight_true_val, height_true_val, sexACValue);
                     Map<String, Object> user = new HashMap<>();
                     user.put("childFirstName", childFirstNameValue);
                     user.put("childMiddleName", childMiddleNameValue);
@@ -171,7 +169,7 @@ public class EditChild extends AppCompatActivity {
                 db.collection("children").document(App.child.getId()).delete().addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void unused) {
-                        Toast.makeText(EditChild.this, "User deleted sucessfully", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(EditChild.this, "Child deleted sucessfully", Toast.LENGTH_SHORT).show();
                         finish();
                     }
                 }).addOnFailureListener(new OnFailureListener() {

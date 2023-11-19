@@ -128,15 +128,6 @@ public class fradAddData extends Fragment {
                 incomeVal = incomeAC.getText().toString().trim();
                 sitioVal = sitio.getText().toString().trim();
 
-                if(heightValue.isEmpty()||weightValue.isEmpty()){
-
-                }else{
-                    height_true_val = Double.parseDouble(heightValue);
-                    weight_true_val = Double.parseDouble(weightValue);
-                }
-                statusdb = FindStatusWFA.CalculateMalnourished(requireContext(), monthdiff, weight_true_val, height_true_val, sexACValue);
-
-
                 boolean isFormValid = FormUtils.validateForm(childFirstNameValue, childMiddleNameValue, childLastNameValue,
                         parentFirstNameValue, parentMiddleNameValue, parentLastNameValue,
                         gmailValue, houseNumberValue, bdateValue, expectedDateValue,
@@ -152,8 +143,11 @@ public class fradAddData extends Fragment {
         });
         return view;
     }
-
     private void AddtoFirestore(String barangayString){
+        height_true_val = Double.parseDouble(heightValue);
+        weight_true_val = Double.parseDouble(weightValue);
+
+        statusdb = FindStatusWFA.CalculateMalnourished(requireContext(), monthdiff, weight_true_val, height_true_val, sexACValue);
         Map<String, Object> user = new HashMap<>();
         user.put("childFirstName", childFirstNameValue);
         user.put("childMiddleName", childMiddleNameValue);
@@ -176,7 +170,9 @@ public class fradAddData extends Fragment {
         db.collection("children").add(user).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
             @Override
             public void onSuccess(DocumentReference documentReference) {
+                clearInputs();
                 Toast.makeText(getContext(), "Form submitted successfully!", Toast.LENGTH_SHORT).show();
+
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
@@ -185,7 +181,6 @@ public class fradAddData extends Fragment {
             }
         });
     }
-
     private void getBarangay(){
 
         db.collection("users").document(userid).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
@@ -199,5 +194,24 @@ public class fradAddData extends Fragment {
                 Toast.makeText(requireContext(), "Failed to save changes", Toast.LENGTH_SHORT).show();
             }
         });
+    }
+    private void clearInputs(){
+        childFirstName.setText("");
+        childMiddleName.setText("");
+        childLastName.setText("");
+        parentFirstName.setText("");
+        parentMiddleName.setText("");
+        parentLastName.setText("");
+        gmail.setText("");
+        houseNumber.setText("");
+        height.setText("");
+        weight.setText("");
+        bdate.setText("");
+        expectedDate.setText("");
+        sexAC.setText("");
+        belongAC.setText("");
+        submit.setText("");
+        incomeAC.setText("");
+        sitio.setText("");
     }
 }

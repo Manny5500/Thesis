@@ -66,10 +66,13 @@ public class FindStatusWFA {
                 break;
             } else if (weight < nsd3[position]) {
                 status = "Severe Wasted";
-            } else if (weight > sd1[position] && weight <= sd2[position]) {
+                break;
+            } else if (weight >= sd1[position] && weight <= sd2[position]) {
                 status = "Overweight";
+                break;
             } else if (weight >= sd3[position]) {
                 status = "Obese";
+                break;
             }
         }
         return status;
