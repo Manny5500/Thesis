@@ -64,6 +64,7 @@ public class ParentProfile extends Fragment {
     private static final int CAMERA_PERMISSION_REQUEST_CODE = 2;
     private ActivityResultLauncher<String> requestPermissionLauncher;
 
+    Dialog dialog2;
     View view;
 
     @Override
@@ -101,6 +102,10 @@ public class ParentProfile extends Fragment {
         userid = ((ParentActivity)getActivity()).userid;
         user = ((ParentActivity)getActivity()).user;
 
+        dialog2 = new Dialog(requireContext());
+        dialog2.setContentView(R.layout.dialog_loader);
+        dialog2.setCanceledOnTouchOutside(false);
+        dialog2.setCancelable(false);
 
 
         if(!userid.isEmpty()) {
@@ -182,7 +187,7 @@ public class ParentProfile extends Fragment {
     private void uploadImage(Uri imageUri) {
         String fileName = "image_" + System.currentTimeMillis() + ".jpg";
         StorageReference imageRef = storageRef.child("images/" + fileName);
-
+        dialog2.show();
         imageRef.putFile(imageUri)
                 .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                     @Override
@@ -194,6 +199,7 @@ public class ParentProfile extends Fragment {
                                 if (gmail != null) {
                                     Query query = db.collection("users").whereEqualTo("email", gmail);
                                     ImageQueryUpload(query, imageUrl);
+
                                 } else {
                                     // Handle the case where the user ID is null
                                     Toast.makeText(requireContext(), "User ID is null", Toast.LENGTH_SHORT).show();
@@ -218,6 +224,7 @@ public class ParentProfile extends Fragment {
                                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                                     @Override
                                     public void onSuccess(Void aVoid) {
+                                        dialog2.dismiss();
                                         ProfileUtils.getProfile(db, userid, getContext(), textage, textname, textaddress,
                                                 textemail, textcontact, imageParent);
                                     }

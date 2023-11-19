@@ -44,7 +44,6 @@ public class ParentChildren extends Fragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        // Initialize FirebaseApp when the fragment is attached to a context
         FirebaseApp.initializeApp(requireContext());
     }
     @Override
@@ -115,7 +114,7 @@ public class ParentChildren extends Fragment {
                     displayChildData(currentIndex);
                 } else {
                     // Handle the case when there are no more children to display
-                    Toast.makeText(requireContext(), "No more children to display", Toast.LENGTH_SHORT).show();
+                   // Toast.makeText(requireContext(), "No more children to display", Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -130,7 +129,7 @@ public class ParentChildren extends Fragment {
                     displayChildData(currentIndex);
                 } else {
                     // Handle the case when the user is at the first child
-                    Toast.makeText(requireContext(), "Already at the first child", Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(requireContext(), "Already at the first child", Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -173,9 +172,9 @@ public class ParentChildren extends Fragment {
 
         for (String recommend: recommendation){
             if (!recommend.endsWith("\n")) {
-                statusStringBuilder2.append("\t\t\t\t\t\t*").append(recommend).append("\n");
+                statusStringBuilder2.append("*\t").append(recommend).append("\n\n");
             } else {
-                statusStringBuilder2.append("\t\t\t\t\t\t*").append(recommend);
+                statusStringBuilder2.append("*\t").append(recommend);
             }
         }
         textCounts.setText("Child " + String.valueOf(currentIndex+1) + " of " + String.valueOf(childrenList.size()));

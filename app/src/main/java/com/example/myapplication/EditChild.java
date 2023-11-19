@@ -44,7 +44,6 @@ public class EditChild extends AppCompatActivity {
 
         String[] sex = getResources().getStringArray(R.array.sex);
         String[] belongs = getResources().getStringArray(R.array.yes_or_no);
-        String[] sitio;
 
         db = FirebaseFirestore.getInstance();
 
@@ -64,6 +63,7 @@ public class EditChild extends AppCompatActivity {
         belongAC = findViewById(R.id.textBelong);
         edit = findViewById(R.id.btnEdit);
         remove = findViewById(R.id.btnDelete);
+        sitio  = findViewById(R.id.spinnerSitio);
 
         gmail.setText(App.child.getGmail());
         houseNumber.setText(App.child.getHouseNumber());
@@ -116,6 +116,7 @@ public class EditChild extends AppCompatActivity {
                 belongACValue = belongAC.getText().toString().trim();
                 heightValue = height.getText().toString().trim();
                 weightValue = weight.getText().toString().trim();
+                sitioVal = sitio.getText().toString().trim();
 
                 height_true_val = Double.parseDouble(heightValue);
                 weight_true_val = Double.parseDouble(weightValue);

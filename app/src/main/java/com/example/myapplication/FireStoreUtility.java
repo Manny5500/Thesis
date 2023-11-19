@@ -26,6 +26,8 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.firestore.WriteBatch;
 
+import org.w3c.dom.Text;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -78,6 +80,7 @@ public class FireStoreUtility {
                     Button cancel = dialog.findViewById(R.id.btnCancel);
                     TextInputEditText from = dialog.findViewById(R.id.dateFrom);
                     TextInputEditText to = dialog.findViewById(R.id.dateTo);
+                    TextView title = dialog.findViewById(R.id.title);
                     if(data!=null && data.containsKey("feedfrom")){
                         from.setText(String.valueOf(data.get("feedfrom")));
                         to.setText(String.valueOf(data.get("feedto")));
@@ -239,6 +242,8 @@ public class FireStoreUtility {
                     Button cancel = dialog.findViewById(R.id.btnCancel);
                     TextInputEditText from = dialog.findViewById(R.id.dateFrom);
                     TextInputEditText to = dialog.findViewById(R.id.dateTo);
+                    TextView title = dialog.findViewById(R.id.title);
+                    title.setText("Gulayan sa Bakuran");
                     if(data!=null && data.containsKey("from")){
                         from.setText(String.valueOf(data.get("from")));
                         to.setText(String.valueOf(data.get("to")));

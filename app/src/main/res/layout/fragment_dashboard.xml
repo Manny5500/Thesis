@@ -110,8 +110,8 @@
         <TextView
             android:id="@+id/textView40"
             android:layout_width="208dp"
-            android:layout_height="71dp"
-            android:layout_marginTop="16dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
             android:text="Recommendation"
             android:textColor="@color/white"
             android:textSize="25sp"
@@ -162,11 +162,25 @@
             android:id="@+id/imageView6"
             android:layout_width="97dp"
             android:layout_height="123dp"
-            android:src="@drawable/baseline_priority_high_24"
+            android:src="@drawable/idea"
             app:layout_constraintBottom_toBottomOf="@+id/ViewRecommendation"
             app:layout_constraintEnd_toStartOf="@+id/textView40"
+            app:layout_constraintHorizontal_bias="0.322"
             app:layout_constraintStart_toStartOf="@+id/ViewRecommendation"
-            app:layout_constraintTop_toTopOf="@+id/ViewRecommendation" />
+            app:layout_constraintTop_toTopOf="@+id/ViewRecommendation"
+            app:layout_constraintVertical_bias="0.0" />
+
+        <Button
+            android:id="@+id/buttonRecommendation"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="View"
+            android:layout_marginTop="10dp"
+            app:layout_constraintEnd_toEndOf="@+id/textView40"
+            app:layout_constraintHorizontal_bias="0.504"
+            app:layout_constraintStart_toStartOf="@+id/textView40"
+            app:layout_constraintTop_toBottomOf="@+id/textView40" />
+
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </FrameLayout>

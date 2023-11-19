@@ -24,8 +24,6 @@ public class ParentActivity extends AppCompatActivity {
     ImageView  parentProfile, children, parentLogout;
     String email, userid;
     int color_flag = 0;
-
-
     FirebaseAuth auth;
     FirebaseUser user;
     @Override
@@ -49,6 +47,8 @@ public class ParentActivity extends AppCompatActivity {
         parentProfile = findViewById(R.id.btnParentProfile);
         children = findViewById(R.id.btnChildren);
         parentLogout = findViewById(R.id.btnLogOut);
+        ButtonColorizer(children);
+        color_flag=2;
         replaceFragment(new ParentChildren());
         parentProfile.setOnClickListener(new View.OnClickListener() {
             @Override

@@ -199,6 +199,7 @@ public class fragmentPersonnelProfile extends Fragment {
         // Create a unique filename for the image (optional)
         String fileName = "image_" + System.currentTimeMillis() + ".jpg";
         StorageReference imageRef = storageRef.child("images/" + fileName);
+        dialog2.show();
 
         // Upload the image to Firebase Storage
         imageRef.putFile(imageUri)
@@ -231,9 +232,10 @@ public class fragmentPersonnelProfile extends Fragment {
                     @Override
                     public void onSuccess(Void aVoid) {
                         // Image URL updated successfully in the matching documents
-                        Toast.makeText(requireContext(), "Image URL updated in user documents", Toast.LENGTH_SHORT).show();
+                        dialog2.dismiss();
                         ProfileUtils.getProfile(db, userid, getContext(), textage, textname, textaddress,
                                 textemail, textcontact, imagePersonnel);
+                        Toast.makeText(requireContext(), "Successfully changed the profile picture", Toast.LENGTH_SHORT).show();
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {

@@ -11,6 +11,7 @@ import androidx.fragment.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -32,6 +33,7 @@ import java.util.ArrayList;
 public class fragmentDashboard extends Fragment {
     View view;
     TextView priority, totalAssessment, totalMalnourished;
+    Button btnRecommendation;
     FirebaseFirestore db;
     FirebaseAuth auth;
     FirebaseUser user;
@@ -45,6 +47,7 @@ public class fragmentDashboard extends Fragment {
         view = inflater.inflate(R.layout.fragment_dashboard, container, false);
         db = FirebaseFirestore.getInstance();
         View recommendation = view.findViewById(R.id.ViewRecommendation);
+        btnRecommendation = view.findViewById(R.id.buttonRecommendation);
 
         auth = FirebaseAuth.getInstance();
         user = auth.getCurrentUser();
@@ -65,9 +68,16 @@ public class fragmentDashboard extends Fragment {
                 startActivity(intent);
             }
         });
-
+        btnRecommendation.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(requireContext(), RecommendationAdmin.class);
+                startActivity(intent);
+            }
+        });
         dashboardData();
         View priorityView = view.findViewById(R.id.priorityView);
+        /*
         priorityView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -78,7 +88,8 @@ public class fragmentDashboard extends Fragment {
                 // Commit the transaction
                 fragmentTransaction.commit();
             }
-        });
+        });*/
+
         return view;
     }
 
