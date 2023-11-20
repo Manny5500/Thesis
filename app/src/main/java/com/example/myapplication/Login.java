@@ -70,7 +70,16 @@ public class Login extends AppCompatActivity {
             receivedData = intention.getStringExtra("role");
         }
         //admin, personnel or parent
-        admin.setText(receivedData);
+        if(receivedData.equals("admin")){
+            admin.setText("a d m i n");
+        }
+        if(receivedData.equals("parent")){
+            admin.setText("p a r e n t");
+        }
+        if(receivedData.equals("personnel")){
+            admin.setText("p e r s o n n e l");
+        }
+
         admin.setGravity(Gravity.CENTER);
         admin.setAllCaps(true);
         progressBar.setVisibility(View.GONE);

@@ -4,8 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".AdminActivity"
-    android:background="#6750A3">
+    android:background="#F48024"
+    tools:context=".AdminActivity">
 
     <ImageView
         android:id="@+id/btnDashboards"
@@ -15,12 +15,12 @@
         android:layout_marginTop="10dp"
         android:layout_marginEnd="10dp"
         android:layout_marginBottom="10dp"
-        app:srcCompat="@drawable/baseline_dashboard_24"
         android:contentDescription="Dashboard"
         app:layout_constraintBottom_toTopOf="@+id/frameLayoutAdmin"
         app:layout_constraintEnd_toStartOf="@+id/btnReports"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/baseline_dashboard_24" />
 
     <ImageView
         android:id="@+id/btnUM"
@@ -30,12 +30,12 @@
         android:layout_marginTop="10dp"
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="10dp"
-        app:srcCompat="@drawable/baseline_supervised_user_circle_24"
         android:contentDescription="Manage Users"
         app:layout_constraintBottom_toTopOf="@+id/frameLayoutAdmin"
         app:layout_constraintEnd_toStartOf="@+id/btnAdminLogOut"
         app:layout_constraintStart_toEndOf="@+id/btnPriority"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/baseline_supervised_user_circle_24" />
 
     <ImageView
         android:id="@+id/btnReports"
@@ -45,12 +45,12 @@
         android:layout_marginTop="10dp"
         android:layout_marginEnd="10dp"
         android:layout_marginBottom="10dp"
-        app:srcCompat="@drawable/baseline_insert_chart_24"
         android:contentDescription="Reports"
         app:layout_constraintBottom_toTopOf="@+id/frameLayoutAdmin"
         app:layout_constraintEnd_toStartOf="@+id/btnPriority"
         app:layout_constraintStart_toEndOf="@+id/btnDashboards"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/baseline_insert_chart_24" />
 
     <ImageView
         android:id="@+id/btnPriority"
@@ -60,12 +60,12 @@
         android:layout_marginTop="10dp"
         android:layout_marginEnd="10dp"
         android:layout_marginBottom="10dp"
-        app:srcCompat="@drawable/baseline_priority_high_24"
         android:contentDescription="Priorities"
         app:layout_constraintBottom_toTopOf="@+id/frameLayoutAdmin"
         app:layout_constraintEnd_toStartOf="@+id/btnUM"
         app:layout_constraintStart_toEndOf="@+id/btnReports"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/baseline_priority_high_24" />
 
     <ImageView
         android:id="@+id/btnAdminLogOut"
@@ -81,7 +81,7 @@
         app:layout_constraintStart_toEndOf="@+id/btnUM"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/baseline_login_24"
-        app:tint = "@color/white"/>
+        app:tint="@color/white" />
 
     <FrameLayout
         android:id="@+id/frameLayoutAdmin"

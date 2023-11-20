@@ -17,13 +17,13 @@
             android:id="@+id/parentImage2"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:src="@drawable/gulay_background"
+            android:src="@drawable/nutriassist_bg_"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             android:scaleType="centerCrop"
-            android:alpha="0.75"/>
+            />
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -35,15 +35,6 @@
             app:layout_constraintBottom_toTopOf="@id/down_layout"
             app:layout_constraintVertical_weight="0.4">
 
-            <ImageView
-                android:src="@drawable/profile_background"
-                android:scaleType="centerCrop"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent"/>
 
             <de.hdodenhof.circleimageview.CircleImageView
                 android:id="@+id/imageParent"
@@ -63,7 +54,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Abcde F. Ghij"
-                android:textColor="@color/white"
+                android:textColor="@color/black"
                 android:textStyle="bold"
                 android:textSize="25sp"
                 android:layout_marginBottom="25dp"
@@ -257,7 +248,7 @@
                 android:id="@+id/btnDeleteAccount"
                 android:layout_width="wrap_content"
                 android:layout_height="0dp"
-                android:backgroundTint="#33bc70"
+                android:backgroundTint="#51ADE5"
                 android:text="Delete Account"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"

@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/nutriassist_bg_"
     tools:context=".PriorityClicked">
 
     <TextView
@@ -136,6 +137,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="10dp"
         android:layout_marginTop="52dp"
+        android:backgroundTint="#51ADE5"
         android:text="Call"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/labelStatusDynamics" />
@@ -145,6 +147,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="generate referall form"
+        android:backgroundTint="#51ADE5"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/btnCallDynamics" />
 
@@ -154,6 +157,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
         android:text="view referall form"
+        android:backgroundTint="#51ADE5"
         app:layout_constraintEnd_toEndOf="@+id/btnReferralDynamics"
         app:layout_constraintStart_toStartOf="@+id/btnCallDynamics"
         app:layout_constraintTop_toBottomOf="@+id/btnReferralDynamics" />

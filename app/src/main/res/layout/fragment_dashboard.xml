@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/nutriassist_bg_"
     tools:context=".fragmentDashboard">
 
     <!-- TODO: Update blank fragment layout -->
@@ -175,6 +176,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="View"
+            android:backgroundTint="#51ADE5"
             android:layout_marginTop="10dp"
             app:layout_constraintEnd_toEndOf="@+id/textView40"
             app:layout_constraintHorizontal_bias="0.504"

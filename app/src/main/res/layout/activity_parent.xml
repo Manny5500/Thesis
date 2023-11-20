@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#6750A3"
+    android:background="#F48024"
     tools:context=".ParentActivity">
 
     <ImageView
@@ -49,7 +49,7 @@
         android:id="@+id/btnLogOut"
         android:layout_width="50dp"
         android:layout_height="50dp"
-        android:background="#6750A3"
+        android:background="#F48024"
         android:contentDescription="Logout"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/btnChildren"

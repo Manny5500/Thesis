@@ -13,65 +13,35 @@
         android:id="@+id/view3"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:background="#bfadcc"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toTopOf="@+id/view5"
         app:layout_constraintVertical_weight="1.5">
 
-        <ImageView
-            android:id="@+id/myImageView1"
+
+
+        <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:src="@drawable/pexels_fwstudio_172277"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="parent"
-            android:scaleType="centerCrop" />
+            app:layout_constraintTop_toBottomOf="parent">
 
-        <View
-            android:id="@+id/overlayView1"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:alpha="0.1"
-            android:background="@drawable/semi_transparent_white_overlay"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.959"
-            app:layout_constraintStart_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="parent"
-            app:layout_constraintVertical_bias="0.64" />
+            <ImageView
+                android:id="@+id/myImageView1"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:src="@drawable/nutri_assist_upper"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="parent"
+                android:scaleType="centerCrop" />
+        </androidx.cardview.widget.CardView>
 
-        <ImageView
-            android:id="@+id/myImageView2"
-            android:layout_width="250dp"
-            android:layout_height="250dp"
-            android:scaleType="centerCrop"
-            android:src="@drawable/electrocardiogram"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.712" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Nutri Assist"
-            android:textColor="#ffffff"
-            android:textSize="50sp"
-            android:textStyle="bold"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.873"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.27">
-
-        </TextView>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -95,64 +65,61 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/view4">
-
-            <ImageView
-                android:id="@+id/myImageView3"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:src="@drawable/front_view_vegetable"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                android:scaleType="centerCrop" />
-
-            <View
-                android:id="@+id/overlayView3"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@color/white"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                android:alpha="0.15"/>
-
             <Button
-                android:id="@+id/btnParent"
-                android:layout_width="137dp"
-                android:layout_height="99dp"
-                android:layout_marginTop="24dp"
-                android:backgroundTint="#80FFFFFF"
-                android:textColor="@color/black"
-                android:text="I'm a PARENT"
-                app:layout_constraintEnd_toEndOf="@+id/btnPERSONNEL"
-                app:layout_constraintStart_toStartOf="@+id/btnPERSONNEL"
-                app:layout_constraintTop_toBottomOf="@+id/btnPERSONNEL"
-                />
-
-            <Button
+                android:textSize="20sp"
+                android:layout_marginStart="25dp"
+                android:layout_marginEnd="25dp"
+                android:layout_marginTop="25dp"
+                android:layout_marginBottom="12.5dp"
                 android:id="@+id/btnAdmin"
-                android:layout_width="137dp"
-                android:layout_height="99dp"
-                android:layout_marginTop="24dp"
-                android:backgroundTint="#80FFFFFF"
-                android:textColor="@color/black"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:backgroundTint="#51ADE5"
+                android:textColor="@color/white"
                 android:text="I'm an ADMIN"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toTopOf="@id/btnParent"
+                app:layout_constraintVertical_weight="1"/>
+
             <Button
+                android:textSize="20sp"
+                android:layout_marginStart="25dp"
+                android:layout_marginEnd="25dp"
+                android:layout_marginTop="12.5dp"
+                android:layout_marginBottom="12.5dp"
+                android:id="@+id/btnParent"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:backgroundTint="#51ADE5"
+                android:textColor="@color/white"
+                android:text="I'm a PARENT"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintBottom_toTopOf="@+id/btnPERSONNEL"
+                app:layout_constraintTop_toBottomOf="@+id/btnAdmin"
+                app:layout_constraintVertical_weight="1"
+                />
+
+
+            <Button
+                android:textSize="20sp"
+                android:layout_marginStart="25dp"
+                android:layout_marginEnd="25dp"
+                android:layout_marginTop="12.5dp"
+                android:layout_marginBottom="25dp"
                 android:id="@+id/btnPERSONNEL"
-                android:layout_width="140dp"
-                android:layout_height="103dp"
-                android:layout_marginTop="24dp"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
                 android:text="I'm a PERSONNEL"
-                android:backgroundTint="#80FFFFFF"
-                android:textColor="@color/black"
-                app:layout_constraintEnd_toEndOf="@+id/btnAdmin"
-                app:layout_constraintStart_toStartOf="@+id/btnAdmin"
-                app:layout_constraintTop_toBottomOf="@+id/btnAdmin" />
+                android:backgroundTint="#51ADE5"
+                android:textColor="@color/white"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/btnParent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintVertical_weight="1"/>
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -163,32 +130,35 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/view6"
             app:layout_constraintTop_toBottomOf="parent"
-            app:layout_constraintHorizontal_weight="2">
+            app:layout_constraintHorizontal_weight="1.8">
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="parent"
+                >
+
 
             <ImageView
                 android:id="@+id/myImageView"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:src="@drawable/pexels_annelies_brouw_2920928"
+                android:src="@drawable/bg_photo_login"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="parent"
+                android:alpha="0.5"
                 android:scaleType="centerCrop" />
+            </androidx.cardview.widget.CardView>
 
-            <View
-                android:id="@+id/overlayView"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@drawable/semi_transparent_white_overlay"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="parent"
-                android:alpha="0.3"/>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

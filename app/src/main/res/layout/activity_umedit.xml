@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/nutriassist_bg_"
     tools:context=".UMEdit">
 
     <TextView
@@ -43,6 +44,7 @@
             android:textSize="18sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
+            android:background="#E6FFFFFF"
             app:layout_constraintTop_toBottomOf="@+id/txtTitleChild"/>
     </com.google.android.material.textfield.TextInputLayout>
 
@@ -62,6 +64,7 @@
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/textChildMiddleName"
+            android:background="#E6FFFFFF"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="textCapSentences"
@@ -84,6 +87,7 @@
         app:layout_constraintTop_toTopOf="@+id/textChildMiddleNameLayout">
 
         <com.google.android.material.textfield.TextInputEditText
+            android:background="#E6FFFFFF"
             android:id="@+id/textChildLastName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -119,6 +123,7 @@
         app:layout_constraintEnd_toStartOf="@+id/textDayLayout">
 
         <com.google.android.material.textfield.MaterialAutoCompleteTextView
+            android:background="#E6FFFFFF"
             android:id="@+id/textMonthlyIncome"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -143,6 +148,7 @@
         app:layout_constraintEnd_toStartOf="@id/textYearLayout">
 
         <com.google.android.material.textfield.MaterialAutoCompleteTextView
+            android:background="#E6FFFFFF"
             android:id="@+id/txtEmployment1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -167,6 +173,7 @@
         app:layout_constraintEnd_toEndOf="parent">
 
         <com.google.android.material.textfield.MaterialAutoCompleteTextView
+            android:background="#E6FFFFFF"
             android:id="@+id/txtEmployment2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -193,6 +200,7 @@
         app:layout_constraintTop_toBottomOf="@+id/textMonthLayout">
 
         <com.google.android.material.textfield.MaterialAutoCompleteTextView
+            android:background="#E6FFFFFF"
             android:id="@+id/textPregnant"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -217,6 +225,7 @@
         app:layout_constraintTop_toTopOf="@+id/textSexLayout">
 
         <com.google.android.material.textfield.MaterialAutoCompleteTextView
+            android:background="#E6FFFFFF"
             android:id="@+id/textBarangay"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -243,6 +252,7 @@
         app:layout_constraintTop_toBottomOf="@+id/textBarangayLayout">
 
         <com.google.android.material.textfield.TextInputEditText
+            android:background="#E6FFFFFF"
             android:id="@+id/textContact"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -254,6 +264,7 @@
 
 
     <Button
+        android:backgroundTint="#51ADE5"
         android:id="@+id/buttonEdit"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -268,6 +279,7 @@
         app:layout_constraintTop_toBottomOf="@+id/textContactLayout" />
 
     <Button
+        android:backgroundTint="#51ADE5"
         android:id="@+id/buttonArchive"
         android:layout_width="0dp"
         android:layout_height="wrap_content"

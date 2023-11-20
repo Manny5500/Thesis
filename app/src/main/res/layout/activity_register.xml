@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/nutriassist_bg_"
     tools:context=".Register">
 
 
@@ -37,6 +38,7 @@
         app:layout_constraintTop_toBottomOf="@+id/txtRole3">
 
         <com.google.android.material.textfield.TextInputEditText
+            android:background="#E6FFFFFF"
             android:id="@+id/textChildfirstName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -62,6 +64,7 @@
         app:layout_constraintTop_toBottomOf="@+id/textChildfirstNameLayout">
 
         <com.google.android.material.textfield.TextInputEditText
+            android:background="#E6FFFFFF"
             android:id="@+id/textChildMiddleName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -85,6 +88,7 @@
         app:layout_constraintTop_toTopOf="@+id/textChildMiddleNameLayout">
 
         <com.google.android.material.textfield.TextInputEditText
+            android:background="#E6FFFFFF"
             android:id="@+id/textChildLastName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -109,6 +113,7 @@
         app:layout_constraintTop_toBottomOf="@+id/textChildLastNameLayout">
 
         <com.google.android.material.textfield.TextInputEditText
+            android:background="#E6FFFFFF"
             android:id="@+id/textGmail"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -133,6 +138,7 @@
         app:layout_constraintTop_toBottomOf="@+id/textGmailLayout">
 
         <com.google.android.material.textfield.TextInputEditText
+            android:background="#E6FFFFFF"
             android:id="@+id/textPassword"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -157,6 +163,7 @@
         app:layout_constraintTop_toBottomOf="@+id/textPasswordLayout">
 
         <com.google.android.material.textfield.TextInputEditText
+            android:background="#E6FFFFFF"
             android:id="@+id/textFamilySize"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -190,6 +197,7 @@
         app:layout_constraintEnd_toStartOf="@+id/textDayLayout">
 
         <com.google.android.material.textfield.MaterialAutoCompleteTextView
+            android:background="#E6FFFFFF"
             android:id="@+id/textMonthlyIncome"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -214,6 +222,7 @@
         app:layout_constraintEnd_toStartOf="@id/textYearLayout">
 
         <com.google.android.material.textfield.MaterialAutoCompleteTextView
+            android:background="#E6FFFFFF"
             android:id="@+id/txtEmployment1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -238,6 +247,7 @@
         app:layout_constraintEnd_toEndOf="parent">
 
         <com.google.android.material.textfield.MaterialAutoCompleteTextView
+            android:background="#E6FFFFFF"
             android:id="@+id/txtEmployment2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -264,6 +274,7 @@
         app:layout_constraintTop_toBottomOf="@+id/textMonthLayout">
 
         <com.google.android.material.textfield.MaterialAutoCompleteTextView
+            android:background="#E6FFFFFF"
             android:id="@+id/textPregnant"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -288,6 +299,7 @@
         app:layout_constraintTop_toTopOf="@+id/textSexLayout">
 
         <com.google.android.material.textfield.MaterialAutoCompleteTextView
+            android:background="#E6FFFFFF"
             android:id="@+id/textBarangay"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -313,6 +325,7 @@
         app:layout_constraintTop_toBottomOf="@+id/textSexLayout">
 
         <com.google.android.material.textfield.MaterialAutoCompleteTextView
+            android:background="#E6FFFFFF"
             android:id="@+id/textUserRole"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -337,6 +350,7 @@
         app:layout_constraintTop_toTopOf="@+id/texUserRoleLayout">
 
         <com.google.android.material.textfield.TextInputEditText
+            android:background="#E6FFFFFF"
             android:id="@+id/textContact"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -355,6 +369,7 @@
         android:layout_marginTop="10dp"
         android:layout_marginEnd="10dp"
         android:layout_marginBottom="10dp"
+        android:backgroundTint="#51ADE5"
         android:text="Register"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

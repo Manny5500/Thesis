@@ -98,7 +98,7 @@ public class AdminActivity extends AppCompatActivity {
     }
 
     private void ButtonColorizer(ImageView button){
-        button.setColorFilter(ContextCompat.getColor(this, android.R.color.holo_blue_light));
+        button.setColorFilter(ContextCompat.getColor(this, android.R.color.white));
         if (color_flag ==1) {
             dashboard.setColorFilter(ContextCompat.getColor(this, android.R.color.white));
         }else if(color_flag==2){
