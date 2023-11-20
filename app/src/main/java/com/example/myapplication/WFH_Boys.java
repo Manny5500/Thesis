@@ -20,7 +20,8 @@ public class WFH_Boys {
                 115.0, 115.5, 116.0, 116.5, 117.0, 117.5, 118.0, 118.5, 119.0, 119.5, 120.0
         };
 
-        int position = formUtils.findElementPosition(height_array, height);
+        int position = formUtils.findElementPosition_H(height_array, height);
+
 
         double negasd3 [] = {
                 5.9, 6.0, 6.1, 6.1, 6.2, 6.3, 6.4, 6.5, 6.6, 6.7,

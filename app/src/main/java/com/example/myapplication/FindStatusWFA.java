@@ -30,7 +30,6 @@ public class FindStatusWFA {
         return status;
     }
 
-
     public String StatusFinder_Stunted(int age, double height,
                                double[] nsd3, double[] nsd2,
                                double[] nsd1, double[] median,

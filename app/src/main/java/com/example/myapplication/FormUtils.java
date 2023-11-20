@@ -292,8 +292,26 @@ public class FormUtils {
     }
 
     public static int findElementPosition(double[] array, double target) {
-        if(target<45 || target>120){
+        if(target<45 || target>110){
             if (target<45){
+                return 0;
+            }else if(target>120){
+                return array.length-1;
+            }
+
+        }else {
+            for (int i = 0; i < array.length; i++) {
+                if (array[i] == target) {
+                    return i;
+                }
+            }
+        }
+        return -1;
+    }
+
+    public static int findElementPosition_H(double[] array, double target) {
+        if(target<65 || target>120){
+            if (target<65){
                 return 0;
             }else if(target>120){
                 return array.length-1;

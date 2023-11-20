@@ -19,7 +19,7 @@ public class WFH_Girls {
                 110.0, 110.5, 111.0, 111.5, 112.0, 112.5, 113.0, 113.5, 114.0, 114.5,
                 115.0, 115.5, 116.0, 116.5, 117.0, 117.5, 118.0, 118.5, 119.0, 119.5,120.0
         };
-        int position = formUtils.findElementPosition(height_array, height);
+        int position = formUtils.findElementPosition_H(height_array, height);
         double negasd3[] = {
                 5.6, 5.7, 5.8, 5.8, 5.9, 6.0, 6.1, 6.2, 6.3, 6.3,
                 6.4, 6.5, 6.6, 6.7, 6.7, 6.8, 6.9, 7.0, 7.0, 7.1,

@@ -108,7 +108,7 @@ public class fradAddData extends Fragment {
                 if (parsedDate != null) {
                     monthdiff = formUtils.calculateMonthsDifference(parsedDate);
                 } else {
-                    Toast.makeText(requireContext(), "Failed to parse the date", Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(requireContext(), "Failed to parse the date", Toast.LENGTH_SHORT).show();
                 }
 
                 childFirstNameValue = childFirstName.getText().toString().trim();
