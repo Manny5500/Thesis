@@ -47,6 +47,7 @@ public class fragmentDashboard extends Fragment {
         view = inflater.inflate(R.layout.fragment_dashboard, container, false);
         db = FirebaseFirestore.getInstance();
         View recommendation = view.findViewById(R.id.ViewRecommendation);
+        View totalMalnourishedView = view.findViewById(R.id.viewTotalMalnourished);
         btnRecommendation = view.findViewById(R.id.buttonRecommendation);
 
         auth = FirebaseAuth.getInstance();
@@ -68,6 +69,14 @@ public class fragmentDashboard extends Fragment {
                 startActivity(intent);
             }
         });
+
+        totalMalnourishedView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(requireContext(), Malnourished_List.class);
+                startActivity(intent);
+            }
+        });
         btnRecommendation.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -77,6 +86,13 @@ public class fragmentDashboard extends Fragment {
         });
         dashboardData();
         View priorityView = view.findViewById(R.id.priorityView);
+        priorityView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(requireContext(), Prevailance_Reports.class);
+                startActivity(intent);
+            }
+        });
         /*
         priorityView.setOnClickListener(new View.OnClickListener() {
             @Override

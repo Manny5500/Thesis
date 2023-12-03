@@ -1,6 +1,7 @@
 package com.example.myapplication;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
@@ -21,7 +22,8 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 public class ParentActivity extends AppCompatActivity {
-    ImageView  parentProfile, children, parentLogout;
+    ConstraintLayout parentProfile, children, parentLogout;
+    ImageView profileImage, cImage, logOutImage;
     String email, userid;
     int color_flag = 0;
     FirebaseAuth auth;
@@ -47,7 +49,10 @@ public class ParentActivity extends AppCompatActivity {
         parentProfile = findViewById(R.id.btnParentProfile);
         children = findViewById(R.id.btnChildren);
         parentLogout = findViewById(R.id.btnLogOut);
-        ButtonColorizer(children);
+        profileImage = findViewById(R.id.profileImage);
+        cImage = findViewById(R.id.cImage);
+        logOutImage = findViewById(R.id.logOutImage);
+        ButtonColorizer(cImage);
         color_flag=2;
         replaceFragment(new ParentChildren());
         parentProfile.setOnClickListener(new View.OnClickListener() {
@@ -55,7 +60,7 @@ public class ParentActivity extends AppCompatActivity {
             public void onClick(View v) {
                 replaceFragment(new ParentProfile());
                 // Set the clicked button color to indicate selection
-                ButtonColorizer(parentProfile);
+                ButtonColorizer(profileImage);
                 color_flag = 1;
             }
         });
@@ -64,7 +69,7 @@ public class ParentActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 replaceFragment(new ParentChildren());
-                ButtonColorizer(children);
+                ButtonColorizer(cImage);
                 color_flag = 2;
             }
         });
@@ -72,7 +77,7 @@ public class ParentActivity extends AppCompatActivity {
         parentLogout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ButtonColorizer(parentLogout);
+                ButtonColorizer(logOutImage);
                 color_flag = 3;
                 showYesNoDialog();
             }
@@ -85,13 +90,12 @@ public class ParentActivity extends AppCompatActivity {
         fragmentTransaction.commit();
     }
     private void ButtonColorizer(ImageView button){
-        button.setColorFilter(ContextCompat.getColor(this, android.R.color.white));
         if (color_flag ==1) {
-            parentProfile.setColorFilter(ContextCompat.getColor(this, android.R.color.white));
+            profileImage.setColorFilter(ContextCompat.getColor(this, android.R.color.white));
         }else if(color_flag==2){
-            children.setColorFilter(ContextCompat.getColor(this, android.R.color.white));
+            cImage.setColorFilter(ContextCompat.getColor(this, android.R.color.white));
         }else if(color_flag ==3){
-            parentLogout.setColorFilter(ContextCompat.getColor(this, android.R.color.white));
+            logOutImage.setColorFilter(ContextCompat.getColor(this, android.R.color.white));
         }
     }
     private void showYesNoDialog() {

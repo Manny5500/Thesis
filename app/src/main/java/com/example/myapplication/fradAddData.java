@@ -11,8 +11,10 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.MaterialAutoCompleteTextView;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.firestore.DocumentReference;
@@ -170,6 +172,7 @@ public class fradAddData extends Fragment {
         db.collection("children").add(user).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
             @Override
             public void onSuccess(DocumentReference documentReference) {
+                savetoHistory();
                 clearInputs();
                 Toast.makeText(getContext(), "Form submitted successfully!", Toast.LENGTH_SHORT).show();
 
@@ -210,8 +213,30 @@ public class fradAddData extends Fragment {
         expectedDate.setText("");
         sexAC.setText("");
         belongAC.setText("");
-        submit.setText("");
         incomeAC.setText("");
         sitio.setText("");
+    }
+
+    private void savetoHistory(){
+        String child_full_name = childFirstNameValue + " " + childMiddleNameValue + " " + childLastNameValue;
+        String date_now = FormUtils.getCurrentDate();
+        DocumentReference childDocRef = db.collection("children_historical").document(child_full_name);
+        DocumentReference dateExaminedDocRef = childDocRef.collection("dates").document(date_now);
+        Map<String,Object> childData = new HashMap<>();
+        childData.put("height", height_true_val);
+        childData.put("weight", weight_true_val);
+        childData.put("dateid", Integer.parseInt(date_now));
+
+        dateExaminedDocRef.set(childData)
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if (task.isSuccessful()) {
+                            Toast.makeText(requireContext(), "Added Successfully to the History", Toast.LENGTH_SHORT).show();
+                        } else {
+                            Toast.makeText(requireContext(), ""+task.getException(), Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
     }
 }

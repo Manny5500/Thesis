@@ -24,6 +24,12 @@
         android:theme="@style/Theme.MyApplication"
         tools:targetApi="31">
         <activity
+            android:name=".Prevailance_Reports"
+            android:exported="false" />
+        <activity
+            android:name=".Malnourished_List"
+            android:exported="false" />
+        <activity
             android:name=".RecommendationAdmin"
             android:exported="false" />
         <activity

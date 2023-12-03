@@ -1,6 +1,7 @@
 package com.example.myapplication;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
@@ -20,7 +21,8 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 public class AdminActivity extends AppCompatActivity {
-    ImageView dashboard, priority, usermanage,  reports, logout;
+    ConstraintLayout dashboard, priority, usermanage,  reports, logout;
+    ImageView dashboardsImage, priorityImage, UMImage, reportsImage, logOutImage;
     FirebaseAuth auth;
     FirebaseUser user;
 
@@ -46,12 +48,18 @@ public class AdminActivity extends AppCompatActivity {
         logout = findViewById(R.id.btnAdminLogOut);
         reports = findViewById(R.id.btnReports);
 
+        dashboardsImage = findViewById(R.id.dashboardsImage);
+        priorityImage = findViewById(R.id.priorityImage);
+        UMImage = findViewById(R.id.UMImage);
+        reportsImage = findViewById(R.id.reportsImage);
+        logOutImage = findViewById(R.id.logOutImage);
+
         replaceFragment(new fragmentDashboard());
         dashboard.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 replaceFragment(new fragmentDashboard());
-                ButtonColorizer(dashboard);
+                ButtonColorizer(dashboardsImage);
                 color_flag = 1;
             }
         });
@@ -59,7 +67,7 @@ public class AdminActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 replaceFragment(new fragmentPriority());
-                ButtonColorizer(priority);
+                ButtonColorizer(priorityImage);
                 color_flag = 2;
             }
         });
@@ -67,7 +75,7 @@ public class AdminActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 replaceFragment(new fragmentUM());
-                ButtonColorizer(usermanage);
+                ButtonColorizer(UMImage);
                 color_flag = 3;
             }
         });
@@ -75,7 +83,7 @@ public class AdminActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 replaceFragment(new fragmentReports());
-                ButtonColorizer(reports);
+                ButtonColorizer(reportsImage);
                 color_flag = 5;
             }
         });
@@ -83,7 +91,7 @@ public class AdminActivity extends AppCompatActivity {
         logout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ButtonColorizer(logout);
+                ButtonColorizer(logOutImage);
                 color_flag = 4;
                 showYesNoDialog();
             }
@@ -100,15 +108,15 @@ public class AdminActivity extends AppCompatActivity {
     private void ButtonColorizer(ImageView button){
         button.setColorFilter(ContextCompat.getColor(this, android.R.color.white));
         if (color_flag ==1) {
-            dashboard.setColorFilter(ContextCompat.getColor(this, android.R.color.white));
+            dashboardsImage.setColorFilter(ContextCompat.getColor(this, android.R.color.white));
         }else if(color_flag==2){
-            priority.setColorFilter(ContextCompat.getColor(this, android.R.color.white));
+            priorityImage.setColorFilter(ContextCompat.getColor(this, android.R.color.white));
         }else if(color_flag ==3){
-            usermanage.setColorFilter(ContextCompat.getColor(this, android.R.color.white));
+            UMImage.setColorFilter(ContextCompat.getColor(this, android.R.color.white));
         }else if(color_flag ==4){
-            logout.setColorFilter(ContextCompat.getColor(this, android.R.color.white));
+            logOutImage.setColorFilter(ContextCompat.getColor(this, android.R.color.white));
         }else if(color_flag ==5){
-            reports.setColorFilter(ContextCompat.getColor(this, android.R.color.white));
+            reportsImage.setColorFilter(ContextCompat.getColor(this, android.R.color.white));
         }
     }
 

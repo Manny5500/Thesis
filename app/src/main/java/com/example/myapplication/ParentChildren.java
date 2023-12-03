@@ -2,6 +2,7 @@ package com.example.myapplication;
 
 import android.app.AlertDialog;
 import android.content.Context;
+import android.graphics.Color;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -19,12 +20,15 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.FirebaseApp;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.protobuf.StringValue;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
@@ -37,7 +41,8 @@ public class ParentChildren extends Fragment {
     private FirebaseFirestore db;
     private ArrayList<Child> childrenList;
     private int currentIndex = 0;
-    TextView childName, age, status, textCounts, textRecommendations;
+    TextView childName, age, status, textCounts, textRecommendations,
+    textHeight, textWeight;
     String dateString;
     int monthdiff;
 
@@ -58,6 +63,8 @@ public class ParentChildren extends Fragment {
         status = view.findViewById(R.id.textStatus);
         textCounts = view.findViewById(R.id.textCounts);
         textRecommendations = view.findViewById(R.id.textRecommendations);
+        textHeight = view.findViewById(R.id.textHeight);
+        textWeight = view.findViewById(R.id.textWeight);
 
         gmail = ((ParentActivity)getActivity()).email;
         if(!gmail.isEmpty()) {
@@ -141,6 +148,10 @@ public class ParentChildren extends Fragment {
         Child child = childrenList.get(index);
         childName.setText(child.getChildFirstName()+" " + child.getChildLastName());
         dateString = child.getBirthDate();
+        textHeight.setText(""+child.getHeight() + " cm");
+        textWeight.setText(""+child.getWeight() + " kg");
+        textHeight.setTextColor(Color.parseColor("#000000"));
+        textWeight.setTextColor(Color.parseColor("#000000"));
         FormUtils formUtils = new FormUtils();
         Date parsedDate = formUtils.parseDate(dateString);
         if (parsedDate != null) {
@@ -149,12 +160,13 @@ public class ParentChildren extends Fragment {
             Toast.makeText(requireContext(), "Failed to parse the date", Toast.LENGTH_SHORT).show();
         }
 
-
         if(monthdiff == 1){
             age.setText(String.valueOf(monthdiff)+ " " + "month");
         }else{
             age.setText(String.valueOf(monthdiff)+ " " + "months");
         }
+
+        getChildH(child.getChildFirstName()+" "+child.getChildMiddleName()+" "+child.getChildLastName());
 
         ArrayList<String> statusList = child.getStatusdb();
         Set<String> recommendation = new HashSet<>();
@@ -183,19 +195,63 @@ public class ParentChildren extends Fragment {
     }
 
     private void showDialog(String type){
-        AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
-        if(type.equals("gulayan")) {
-            builder.setTitle("Gulayan sa Bakuran")
-                    .setMessage("You are qualified to Gulayan sa Bakuran Program");
-            builder.setCancelable(true);
+        if(isAdded() && requireContext() != null){
+            AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
+            if(type.equals("gulayan")) {
+                builder.setTitle("Gulayan sa Bakuran")
+                        .setMessage("You are qualified to Gulayan sa Bakuran Program");
+                builder.setCancelable(true);
+            }
+            if(type.equals("feeding")){
+                builder.setTitle("Feeding Program")
+                        .setMessage("You're child is qualified to Program");
+                builder.setCancelable(true);
+            }
+            AlertDialog dialog = builder.create();
+            dialog.show();
         }
-        if(type.equals("feeding")){
-            builder.setTitle("Feeding Program")
-                    .setMessage("You're child is qualified to Program");
-            builder.setCancelable(true);
-        }
-        AlertDialog dialog = builder.create();
-        dialog.show();
     }
+    public void getChildH(String fullname){
+        db.collection("children_historical")
+                .document(fullname)
+                .collection("dates")
+                .orderBy("dateid", Query.Direction.DESCENDING)
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            ArrayList<ChildH> arrayList = new ArrayList<>();
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                ChildH childh =document.toObject(ChildH.class);
+                                childh.setId(document.getId());
+                                arrayList.add(childh);
+                            }
+                            if(arrayList.size()>1){
+                                if(arrayList.get(0).getHeight()>arrayList.get(1).getHeight()){
+                                    textHeight.setText(""+arrayList.get(0).getHeight() + " cm" + "(Increased)");
+                                    textHeight.setTextColor(Color.parseColor("#008000"));
+                                } else if(arrayList.get(0).getHeight()<arrayList.get(1).getHeight()){
+                                    textHeight.setText(""+arrayList.get(0).getHeight() + " cm" + "(Decreased)");
+                                    textHeight.setTextColor(Color.parseColor("#FF0000"));
+                                } else if(arrayList.get(0).getHeight()==arrayList.get(1).getHeight()){
+                                    textHeight.setText(""+arrayList.get(0).getHeight() + " cm" + "(Same)");
+                                }
 
+                                if(arrayList.get(0).getWeight()>arrayList.get(1).getWeight()){
+                                    textWeight.setText(""+arrayList.get(0).getWeight()+ " kg" + "(Increased)");
+                                } else if(arrayList.get(0).getWeight()<arrayList.get(1).getWeight()){
+                                    textWeight.setText(""+arrayList.get(0).getWeight()+ " kg" + "(Decreased)");
+                                } else if(arrayList.get(0).getWeight()==arrayList.get(1).getWeight()){
+                                    textWeight.setText(""+arrayList.get(0).getWeight()+ " kg" + "(Same)");
+
+                                }
+                            }
+                        }else {
+                            Toast.makeText(requireContext(), ""+task.getException(), Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
+
+    }
 }

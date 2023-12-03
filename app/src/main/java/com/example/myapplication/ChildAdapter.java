@@ -53,8 +53,6 @@ public class ChildAdapter extends RecyclerView.Adapter<ChildAdapter.ViewHolder> 
             }
 
         FormUtils formUtils = new FormUtils();
-
-
         String firstNames = exampleList.get(position).getChildFirstName();
         String lastNames = exampleList.get(position).getChildLastName();
         String expectedDates = exampleList.get(position).getExpectedDate();
@@ -78,7 +76,6 @@ public class ChildAdapter extends RecyclerView.Adapter<ChildAdapter.ViewHolder> 
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder{
-
         TextView name,status, expectedDate;
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -127,8 +124,6 @@ public class ChildAdapter extends RecyclerView.Adapter<ChildAdapter.ViewHolder> 
 
             return results;
         }
-
-
         @Override
         protected void publishResults(CharSequence constraint, FilterResults results) {
             exampleList.clear();

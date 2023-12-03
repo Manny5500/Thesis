@@ -190,7 +190,7 @@ public class FindStatusWFA {
         String[] recommendations = {
                 "Exclusive breastfeeding", "Refer to pediatrician",
                 "Regularly monitor your child's growth", "Immediate Medical Care",
-                "Go to the nearest medical facility", "Emergency",
+                "Go to the nearest medical facility", "Emergency Cases",
                 "Portion control", "Give nutritious food",
                 "Frequent, Balanced Meal", "Refer to pediatrician if necessary",
                 "Encourage balanced diet", "Control the food portion",

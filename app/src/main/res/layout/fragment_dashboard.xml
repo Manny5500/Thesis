@@ -23,9 +23,9 @@
             android:layout_marginEnd="10dp"
             android:layout_marginBottom="15dp"
             android:background="#bfadcc"
-            app:layout_constraintBottom_toTopOf="@+id/view2"
-            app:layout_constraintEnd_toEndOf="@+id/view2"
-            app:layout_constraintStart_toStartOf="@+id/view2"
+            app:layout_constraintBottom_toTopOf="@+id/viewTotalMalnourished"
+            app:layout_constraintEnd_toEndOf="@+id/viewTotalMalnourished"
+            app:layout_constraintStart_toStartOf="@+id/viewTotalMalnourished"
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
@@ -55,7 +55,7 @@
 
 
         <View
-            android:id="@+id/view2"
+            android:id="@+id/viewTotalMalnourished"
             android:layout_width="match_parent"
             android:layout_height="130dp"
             android:layout_marginStart="10dp"
@@ -76,9 +76,9 @@
             android:textColor="@color/white"
             android:textSize="25sp"
             android:textStyle="bold"
-            app:layout_constraintBottom_toBottomOf="@+id/view2"
-            app:layout_constraintEnd_toEndOf="@+id/view2"
-            app:layout_constraintTop_toTopOf="@+id/view2" />
+            app:layout_constraintBottom_toBottomOf="@+id/viewTotalMalnourished"
+            app:layout_constraintEnd_toEndOf="@+id/viewTotalMalnourished"
+            app:layout_constraintTop_toTopOf="@+id/viewTotalMalnourished" />
 
         <TextView
             android:id="@+id/txtTotalMalnourished"
@@ -88,10 +88,10 @@
             android:textColor="@color/white"
             android:textSize="50sp"
             android:textStyle="bold"
-            app:layout_constraintBottom_toBottomOf="@+id/view2"
+            app:layout_constraintBottom_toBottomOf="@+id/viewTotalMalnourished"
             app:layout_constraintEnd_toStartOf="@+id/textView38"
-            app:layout_constraintStart_toStartOf="@+id/view2"
-            app:layout_constraintTop_toTopOf="@+id/view2" />
+            app:layout_constraintStart_toStartOf="@+id/viewTotalMalnourished"
+            app:layout_constraintTop_toTopOf="@+id/viewTotalMalnourished" />
 
         <View
             android:id="@+id/ViewRecommendation"
@@ -106,7 +106,7 @@
             app:layout_constraintEnd_toEndOf="@+id/priorityView"
             app:layout_constraintHorizontal_bias="0.2"
             app:layout_constraintStart_toStartOf="@+id/priorityView"
-            app:layout_constraintTop_toBottomOf="@+id/view2" />
+            app:layout_constraintTop_toBottomOf="@+id/viewTotalMalnourished" />
 
         <TextView
             android:id="@+id/textView40"

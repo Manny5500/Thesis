@@ -1,6 +1,7 @@
 package com.example.myapplication;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
@@ -21,7 +22,8 @@ import com.google.firebase.auth.FirebaseUser;
 
 public class PersonnelActivity extends AppCompatActivity {
 
-    ImageView personnelProfile, addData, manageData, logOut;
+    ConstraintLayout personnelProfile, addData, manageData, logOut;
+    ImageView profileImage, addDataImage, manageDataImage, logOutImage;
     FirebaseAuth auth;
     FirebaseUser user;
 
@@ -46,13 +48,17 @@ public class PersonnelActivity extends AppCompatActivity {
         addData = findViewById(R.id.btnAddData);
         manageData = findViewById(R.id.btnManageData);
         logOut = findViewById(R.id.btnLogout);
+        profileImage = findViewById(R.id.profileImage);
+        addDataImage = findViewById(R.id.addDataImage);
+        manageDataImage = findViewById(R.id.manageDataImage);
+        logOutImage = findViewById(R.id.logOutImage);
 
         replaceFragment(new ManageData());
         personnelProfile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 replaceFragment(new fragmentPersonnelProfile());
-                ButtonColorizer(personnelProfile);
+                ButtonColorizer(profileImage);
                 color_flag = 1;
             }
         });
@@ -60,7 +66,7 @@ public class PersonnelActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 replaceFragment(new fradAddData());
-                ButtonColorizer(addData);
+                ButtonColorizer(addDataImage);
                 color_flag = 2;
             }
 
@@ -69,7 +75,7 @@ public class PersonnelActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 replaceFragment(new ManageData());
-                ButtonColorizer(manageData);
+                ButtonColorizer(manageDataImage);
                 color_flag = 3;
             }
         });
@@ -77,7 +83,7 @@ public class PersonnelActivity extends AppCompatActivity {
         logOut.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ButtonColorizer(logOut);
+                ButtonColorizer(logOutImage);
                 color_flag = 4;
                 showYesNoDialog();
             }
@@ -95,13 +101,13 @@ public class PersonnelActivity extends AppCompatActivity {
     private void ButtonColorizer(ImageView button){
         button.setColorFilter(ContextCompat.getColor(this, android.R.color.white));
         if (color_flag ==1) {
-            personnelProfile.setColorFilter(ContextCompat.getColor(this, android.R.color.white));
+            profileImage.setColorFilter(ContextCompat.getColor(this, android.R.color.white));
         }else if(color_flag==2){
-            addData.setColorFilter(ContextCompat.getColor(this, android.R.color.white));
+            addDataImage.setColorFilter(ContextCompat.getColor(this, android.R.color.white));
         }else if(color_flag ==3){
-            manageData.setColorFilter(ContextCompat.getColor(this, android.R.color.white));
+            manageDataImage.setColorFilter(ContextCompat.getColor(this, android.R.color.white));
         }else if(color_flag ==4){
-            logOut.setColorFilter(ContextCompat.getColor(this, android.R.color.white));
+            logOutImage.setColorFilter(ContextCompat.getColor(this, android.R.color.white));
         }
     }
 

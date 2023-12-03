@@ -74,6 +74,7 @@ public class ManageData extends Fragment {
             }
         });
 
+
         return view;
     }
 
@@ -98,7 +99,6 @@ public class ManageData extends Fragment {
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 if (task.isSuccessful()){
                     ArrayList<Child> arrayList = new ArrayList<>();
-
                     for (QueryDocumentSnapshot doc: task.getResult()){
                         Child child = doc.toObject(Child.class);
                         child.setId(doc.getId());
@@ -122,6 +122,7 @@ public class ManageData extends Fragment {
             }
         });
     }
+
     @Override
     public void onResume(){
         super.onResume();

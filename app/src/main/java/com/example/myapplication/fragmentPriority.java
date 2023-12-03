@@ -103,7 +103,6 @@ public class fragmentPriority extends Fragment {
 
                     userAdapter = new ChildAdapter(getContext(), arrayList);
                     recyclerView.setAdapter(userAdapter);
-
                     userAdapter.setOnItemClickListener(new ChildAdapter.OnItemClickListener() {
                         @Override
                         public void onClick(Child child) {
@@ -125,5 +124,4 @@ public class fragmentPriority extends Fragment {
         super.onResume();
         Populate();
     }
-
 }

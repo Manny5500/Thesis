@@ -11,8 +11,8 @@ android {
         applicationId = "com.nutriassist.myapplication"
         minSdk = 29
         targetSdk = 33
-        versionCode = 3
-        versionName = "1.2"
+        versionCode = 4
+        versionName = "1.3"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -48,4 +48,5 @@ dependencies {
     implementation("de.hdodenhof:circleimageview:3.1.0")
     implementation("com.github.mhiew:android-pdf-viewer:3.2.0-beta.3")
     implementation("commons-io:commons-io:2.15.0")
+    implementation("com.itextpdf:itextpdf:5.5.13.3")
 }
