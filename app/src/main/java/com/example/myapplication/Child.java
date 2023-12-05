@@ -8,7 +8,7 @@ public class Child {
             parentFirstName, parentMiddleName, parentLastName,
             id, barangay, parentName, gmail, houseNumber, sex, belongtoIP, birthDate,
             expectedDate, forfeeding, monthlyIncome, forgulayan, phoneNumber, downloadUrl,
-            sitio;
+            sitio, monthAdded;
     double weight, height;
 
 
@@ -16,6 +16,13 @@ public class Child {
 
     public Child(){
 
+    }
+    public String getMonthAdded() {
+        return monthAdded;
+    }
+
+    public void setMonthAdded(String monthAdded) {
+        this.monthAdded = monthAdded;
     }
     public String getSitio(){return sitio;}
     public void setSitio(String sitio){this.sitio = sitio; }

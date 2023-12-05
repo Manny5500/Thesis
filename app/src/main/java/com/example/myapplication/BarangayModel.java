@@ -15,7 +15,22 @@ public class BarangayModel {
     private int SevereStunted;
     private int Normal;
 
+
+    private int totalCase;
     private String barangay;
+
+
+
+    private String queryType;
+
+    private int rank;
+
+
+
+    private int population;
+
+
+    private int estimatedChildren;
 
     // Constructor
     /*
@@ -37,13 +52,53 @@ public class BarangayModel {
         this.Normal = Normal;
     }**/
 
+    public int getEstimatedChildren() {
+        return estimatedChildren;
+    }
+
+    public void setEstimatedChildren(int estimatedChildren) {
+        this.estimatedChildren = estimatedChildren;
+    }
+
+
+    public int getPopulation() {
+        return population;
+    }
+
+    public void setPopulation(int population) {
+        this.population = population;
+    }
+    public String getQueryType() {
+        return queryType;
+    }
+
+    public void setQueryType(String queryType) {
+        this.queryType = queryType;
+    }
+
+    public int getRank() {
+        return rank;
+    }
+
+    public void setRank(int rank) {
+        this.rank = rank;
+    }
+
+    public int getTotalCase() {
+        return totalCase;
+    }
+
+    public void setTotalCase(int totalCase) {
+        this.totalCase = totalCase;
+    }
+
     public String getBarangay(){return barangay;}
     public void setBarangay(String barangay){this.barangay = barangay;}
 
     public int getNormal(){return Normal;}
 
-    public void setNormal(int normal) {
-        Normal = normal;
+    public void setNormal(int Normal) {
+        this.Normal = Normal;
     }
 
     // Getters and setters
