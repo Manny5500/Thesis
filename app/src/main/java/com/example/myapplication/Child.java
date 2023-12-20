@@ -1,6 +1,10 @@
 package com.example.myapplication;
 
+import com.google.firebase.Timestamp;
+
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 public class Child {
 
@@ -12,10 +16,43 @@ public class Child {
     double weight, height;
 
 
+
+    String dateString;
+
+
+
     ArrayList<String> statusdb;
+
+
+
+    ArrayList<String> status;
+
+
+  Date dateAdded;
 
     public Child(){
 
+    }
+
+
+    public Date getDateAdded() {
+        return dateAdded;
+    }
+
+    public String dateString(){
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        return sdf.format(dateAdded);
+    }
+
+    public void setDateAdded(Date dateAdded) {
+        this.dateAdded = dateAdded;
+    }
+    public ArrayList<String> getStatus() {
+        return status;
+    }
+
+    public void setStatus(ArrayList<String> status) {
+        this.status = status;
     }
     public String getMonthAdded() {
         return monthAdded;

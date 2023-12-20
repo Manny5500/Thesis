@@ -1,52 +1,65 @@
 package com.example.myapplication;
 
 import android.content.Context;
+import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
-import android.util.TypedValue;
-import android.view.Gravity;
+
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CompoundButton;
+import android.widget.Switch;
 import android.widget.TableLayout;
-import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.github.mikephil.charting.charts.BarChart;
+import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.charts.PieChart;
-import com.github.mikephil.charting.components.XAxis;
-import com.github.mikephil.charting.components.YAxis;
-import com.github.mikephil.charting.data.BarData;
-import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
-import com.github.mikephil.charting.data.PieData;
-import com.github.mikephil.charting.data.PieDataSet;
-import com.github.mikephil.charting.data.PieEntry;
-import com.github.mikephil.charting.formatter.IndexAxisValueFormatter;
 import com.github.mikephil.charting.utils.ColorTemplate;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.FirebaseApp;
+import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Random;
+import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 public class fragmentReports extends Fragment {
     View view;
     FirebaseFirestore db;
     int lightBlueColor, darkBlueColor, whiteColor;
     private Context applicationContext;
+
+    TextView dateWeek, dateMonth, dateYear, labelTotalCase, labelObservation;
+
+    Switch switchToggle;
+    private static String periodType = "week";
+    private static String switchStatus = "off";
+    int duration = 6;
 
     public void onAttach(Context context) {
         super.onAttach(context);
@@ -61,28 +74,127 @@ public class fragmentReports extends Fragment {
                              Bundle savedInstanceState) {
         view =  inflater.inflate(R.layout.fragment_reports, container, false);
         db = FirebaseFirestore.getInstance();
-        String [] barangay = getResources().getStringArray(R.array.barangay);
-        db.collection("children").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+        dateWeek = view.findViewById(R.id.dateWeeks);
+        dateMonth = view.findViewById(R.id.dateMonth);
+        dateYear = view.findViewById(R.id.dateYear);
+        labelTotalCase = view.findViewById(R.id.labelTotalCase);
+        labelObservation = view.findViewById(R.id.labelObservation);
+        switchToggle = view.findViewById(R.id.switchToggle);
+
+        switchToggle.setVisibility(View.GONE);
+
+        setPressed(dateWeek);
+        configData(duration);
+        final Drawable defaultBackground = ContextCompat.getDrawable(requireContext(), R.drawable.textview_default_background);
+        dateWeek.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                if (task.isSuccessful()) {
-
-                    ArrayList<Child> childrenList = new ArrayList<>();
-                    CategoryBarangay(task, childrenList, barangay);
-                    childrenList.clear();
-                    GetSexAgeStats(task, childrenList);
-
-                } else {
-                    Toast.makeText(requireContext(), "Failed to get children data", Toast.LENGTH_SHORT).show();
-                }
+            public void onClick(View v) {
+                setPressed(dateWeek);
+                periodType = "week";
+                duration = 6;
+                configData(duration);
+                switchToggle.setVisibility(View.GONE);
             }
-        }).addOnFailureListener(new OnFailureListener() {
+        });
+
+        dateMonth.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onFailure(@NonNull Exception e) {
-                Toast.makeText(requireContext(), "Failed to get children data", Toast.LENGTH_SHORT).show();
+            public void onClick(View v) {
+                setPressed(dateMonth);
+                periodType = "month";
+                duration = 29;
+                configData(duration);
+                switchToggle.setVisibility(View.VISIBLE);
+                switchToggle.setText("Whole Month");
+            }
+        });
+
+        dateYear.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setPressed(dateYear);
+                periodType = "year";
+                duration = 364;
+                configData(duration);
+                switchToggle.setVisibility(View.GONE);
+
+            }
+        });
+        switchToggle.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    switchStatus = "on";
+                } else {
+                    switchStatus = "off";
+                }
+                configData(duration);
             }
         });
         return view;
+    }
+
+    private void configData(long duration){
+        String[] barangay = getResources().getStringArray(R.array.barangay);
+        ArrayList<Timestamp> timestampArrayList = new ArrayList<>();
+        timestampArrayList = DateParser.createDate(duration, periodType);
+        displayData(timestampArrayList, barangay, duration);
+    }
+    private void displayData(ArrayList<Timestamp> timestampArrayList, String[] barangay, long duration){
+        db.collection("children") .whereGreaterThanOrEqualTo("dateAdded", timestampArrayList.get(0))
+                .whereLessThanOrEqualTo("dateAdded", timestampArrayList.get(1))
+                .get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+
+                            ArrayList<Child> childrenList = new ArrayList<>();
+                            CategoryBarangay(task, childrenList, barangay);
+                            childrenList.clear();
+                            GetSexAgeStats(task, childrenList);
+
+                            Map<String, Integer> aggregatedData = new LinkedHashMap<>();
+                            ArrayList<Date> startCurrentDate = DateParser.createCurrentStartDate(duration, periodType);
+
+                            if(periodType.equals("year")){
+                                aggregatedData = aggregateDataByMonth(childrenList, startCurrentDate.get(1), startCurrentDate.get(0));
+
+                            }else{
+                                aggregatedData = aggregateDataByDay(childrenList, startCurrentDate.get(1), startCurrentDate.get(0));
+
+                            }
+                            getPreviousPeriod(timestampArrayList, task.getResult().size(), aggregatedData);
+
+                        } else {
+                            Toast.makeText(requireContext(), "Failed to get children data", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Toast.makeText(requireContext(), "Failed to get children data", Toast.LENGTH_SHORT).show();
+                    }
+                });
+
+    }
+
+    private void setPressed(TextView textView){
+        textView.setBackground(ContextCompat.getDrawable(requireContext(), R.drawable.textview_pressed_background));
+        textView.setTextColor(Color.parseColor("#FFFFFF"));
+        removePressed(textView);
+    }
+    private void removePressed( TextView currentTextView){
+        ArrayList<TextView> textViews = new ArrayList<>();
+        textViews.add(dateWeek);
+        textViews.add(dateMonth);
+        textViews.add(dateYear);
+        for(TextView textView: textViews){
+            if(textView==currentTextView){
+                continue;
+            }
+            textView.setBackground(ContextCompat.getDrawable(requireContext(), R.drawable.textview_default_background));
+            textView.setTextColor(Color.parseColor("#000000"));
+        }
     }
     private void GetSexAgeStats(Task<QuerySnapshot> task, ArrayList<Child> childrenList){
         int count_Male = 0, count_Female = 0;
@@ -134,6 +246,7 @@ public class fragmentReports extends Fragment {
                 {"Female", String.valueOf(count_Female), testPercentage[1]}
         };
         TableSetter.generateTable(applicationContext, sextableLayout, sexHeaders, sexData);
+
 
         ArrayList<BarEntry> entries2 = new ArrayList<>();
         int[] ages_number = {age0_5, age6_11, age12_23, age24_35, age36_47, age48_59};
@@ -243,6 +356,7 @@ public class fragmentReports extends Fragment {
         }
         int[] colors = ColorTemplate.COLORFUL_COLORS;
         BarChart barChart = ChartMaker.createBarChart(view, R.id.barChart, entries, labels, colors, "Malnourished per month");
+
     }
     private void RankBarangay(int[] malnutrition_perbarangay, int[] index, String[] barangay){
         for (int i = 0; i < malnutrition_perbarangay.length - 1; i++) {
@@ -286,6 +400,104 @@ public class fragmentReports extends Fragment {
                 {category[6], Integer.toString(numberCategory[6])},
         };
         TableSetter.generateTable(applicationContext,tableLayout1, categoryHeaders, categoryData);
+    }
+
+    private static Map<String, Integer> aggregateDataByDay(List<Child> dataList,
+                                                           Date startDate, Date currentDate) {
+        String[] dateArray = DateParser.createDateArray(startDate, currentDate);
+        Map<String, Integer> aggregatedData = new LinkedHashMap<>();
+
+        for (String day: dateArray){
+            int count = 0;
+            for(Child child: dataList){
+                if(child.dateString().equals(day)){
+                    count++;
+                }
+            }
+            aggregatedData.put(day, count);
+        }
+
+        return aggregatedData;
+    }
+
+    private static Map<String, Integer> aggregateDataByMonth(List<Child>dataList, Date startDate, Date currentDate){
+        String[] dateArray = DateParser.createDateArrayForMonth(startDate, currentDate);
+        Map<String, Integer> aggregatedData = new LinkedHashMap<>();
+
+        for (String month: dateArray){
+            int count = 0;
+            for(Child child: dataList){
+                if(child.dateString().substring(0,7).equals(month)){
+                    count++;
+                }
+            }
+            aggregatedData.put(month, count);
+        }
+        return aggregatedData;
+    }
+
+    private void getPreviousPeriod(ArrayList<Timestamp> timestampArrayList, int currentrecord, Map<String, Integer> aggregatedData){
+        db.collection("children") .whereGreaterThanOrEqualTo("dateAdded", timestampArrayList.get(2))
+                .whereLessThanOrEqualTo("dateAdded", timestampArrayList.get(3))
+                .get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+
+                            ArrayList<Child> childrenList = new ArrayList<>();
+                            for (QueryDocumentSnapshot doc : task.getResult()) {
+                                Child child = doc.toObject(Child.class);
+                                child.setId(doc.getId());
+                                childrenList.add(child);}
+
+                            int observation = task.getResult().size() - currentrecord;
+                            String observeStatus = "";
+                            float differences = Math.abs(differences(currentrecord, task.getResult().size()));
+                            String withPercent = "" + String.format("%.2f", differences) + " %";
+                            int colorNow = Color.parseColor("#000000");
+                            if(currentrecord == observation){
+                                observeStatus = "Just as the same";
+                            } else if (currentrecord > observation) {
+                                observeStatus = "" + withPercent + " more than previous " + periodType;
+                                colorNow = Color.parseColor("#FF0000");
+                            } else if (currentrecord < observation){
+                                observeStatus = "" + withPercent + " less than previous " + periodType;
+                                colorNow = Color.parseColor("#097969");
+                            }
+                            labelTotalCase.setText(""+currentrecord);
+                            labelObservation.setText(observeStatus);
+                            labelObservation.setTextColor(colorNow);
+
+                            ArrayList<Date> startCurrentDate = DateParser.createCurrentStartDate(6,periodType);
+                            Map<String, Integer> aggregatedData2 = new LinkedHashMap<>();
+                            if(periodType.equals("year")){
+                                aggregatedData2 = aggregateDataByMonth(childrenList, startCurrentDate.get(3), startCurrentDate.get(2));
+                            }else{
+                                aggregatedData2 = aggregateDataByDay(childrenList, startCurrentDate.get(3), startCurrentDate.get(2));
+                            }
+
+                            LineChart lineChart = ChartMaker.createLineChart(view, R.id.lineChart, aggregatedData, aggregatedData2, periodType, switchStatus);
+
+                        } else {
+                            Toast.makeText(requireContext(), "Failed to get children data", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Toast.makeText(requireContext(), "Failed to get children data", Toast.LENGTH_SHORT).show();
+                    }
+                });
+    }
+    private float differences(int currentrecord, int previousrecord){
+        float difference = currentrecord - previousrecord;
+        float rate = 0.00f;
+        if(previousrecord==0){
+            rate = 1.00f;
+        } else{
+            rate = difference / (float) previousrecord ;
+        }
+        return rate * 100;
     }
 
 }

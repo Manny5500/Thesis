@@ -3,6 +3,7 @@ package com.example.myapplication;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.Dialog;
@@ -16,6 +17,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.Window;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.Toast;
@@ -131,6 +133,8 @@ public class Malnourished_List extends AppCompatActivity {
                                     dialog.setContentView(R.layout.pdf_viewer);
                                     PDFView pdfView = dialog.findViewById(R.id.pdfView);
                                     ProgressBar progressBar = dialog.findViewById(R.id.progressBar);
+                                    Window window = dialog.getWindow();
+                                    window.setLayout(ConstraintLayout.LayoutParams.MATCH_PARENT, ConstraintLayout.LayoutParams.MATCH_PARENT);
                                     if(pdfUrl!=null){
                                         dialog.show();
                                         displayFromUrl(pdfUrl, pdfView, progressBar);

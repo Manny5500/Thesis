@@ -15,6 +15,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.Window;
 import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -22,6 +23,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
@@ -98,6 +100,8 @@ public class PriorityClicked extends AppCompatActivity {
                 dialog.setContentView(R.layout.pdf_viewer);
                 PDFView pdfView = dialog.findViewById(R.id.pdfView);
                 ProgressBar progressBar = dialog.findViewById(R.id.progressBar);
+                Window window = dialog.getWindow();
+                window.setLayout(ConstraintLayout.LayoutParams.MATCH_PARENT, ConstraintLayout.LayoutParams.MATCH_PARENT);
                 if(pdfUrl!=null){
                     dialog.show();
                     displayFromUrl(pdfUrl, pdfView, progressBar);

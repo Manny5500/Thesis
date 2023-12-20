@@ -148,8 +148,8 @@ public class fradAddData extends Fragment {
     private void AddtoFirestore(String barangayString){
         height_true_val = Double.parseDouble(heightValue);
         weight_true_val = Double.parseDouble(weightValue);
-
         statusdb = FindStatusWFA.CalculateMalnourished(requireContext(), monthdiff, weight_true_val, height_true_val, sexACValue);
+        String[] individualTest = FindStatusWFA.individualTest(requireContext(), monthdiff, weight_true_val, height_true_val, sexACValue);
         Map<String, Object> user = new HashMap<>();
         user.put("childFirstName", childFirstNameValue);
         user.put("childMiddleName", childMiddleNameValue);
@@ -169,6 +169,8 @@ public class fradAddData extends Fragment {
         user.put("expectedDate", expectedDateValue);
         user.put("statusdb", statusdb);
         user.put("monthlyIncome", incomeVal);
+        user.put("dateAdded", DateParser.getCurrentTimeStamp());
+        user.put("monthAdded", DateParser.getMonthYear());
         db.collection("children").add(user).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
             @Override
             public void onSuccess(DocumentReference documentReference) {

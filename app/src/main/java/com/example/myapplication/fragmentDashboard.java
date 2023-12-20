@@ -18,6 +18,7 @@ import android.widget.Toast;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.card.MaterialCardView;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -32,8 +33,11 @@ import java.util.ArrayList;
 
 public class fragmentDashboard extends Fragment {
     View view;
+    MaterialCardView viewTotalAssessment, viewTotalMalnourished,
+    viewDashRecommendation, viewPriorityCases, viewPrevalanceReport;
+
     TextView priority, totalAssessment, totalMalnourished;
-    Button btnRecommendation;
+
     FirebaseFirestore db;
     FirebaseAuth auth;
     FirebaseUser user;
@@ -46,9 +50,12 @@ public class fragmentDashboard extends Fragment {
                              Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_dashboard, container, false);
         db = FirebaseFirestore.getInstance();
-        View recommendation = view.findViewById(R.id.ViewRecommendation);
-        View totalMalnourishedView = view.findViewById(R.id.viewTotalMalnourished);
-        btnRecommendation = view.findViewById(R.id.buttonRecommendation);
+        viewTotalAssessment = view.findViewById(R.id.totalAssessment);
+        viewTotalMalnourished = view.findViewById(R.id.totalMalnourished);
+        viewDashRecommendation = view.findViewById(R.id.dashRecommendation);
+        viewPriorityCases = view.findViewById(R.id.priorityCases);
+        viewPrevalanceReport = view.findViewById(R.id.prevalanceReport);
+
 
         auth = FirebaseAuth.getInstance();
         user = auth.getCurrentUser();
@@ -62,7 +69,8 @@ public class fragmentDashboard extends Fragment {
         priority = view.findViewById(R.id.textPriority);
         totalAssessment = view.findViewById(R.id.txtTotalAssessment);
         totalMalnourished = view.findViewById(R.id.txtTotalMalnourished);
-        recommendation.setOnClickListener(new View.OnClickListener() {
+
+        viewDashRecommendation.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(requireContext(), RecommendationAdmin.class);
@@ -70,29 +78,24 @@ public class fragmentDashboard extends Fragment {
             }
         });
 
-        totalMalnourishedView.setOnClickListener(new View.OnClickListener() {
+        viewTotalMalnourished.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(requireContext(), Malnourished_List.class);
                 startActivity(intent);
             }
         });
-        btnRecommendation.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(requireContext(), RecommendationAdmin.class);
-                startActivity(intent);
-            }
-        });
-        dashboardData();
-        View priorityView = view.findViewById(R.id.priorityView);
-        priorityView.setOnClickListener(new View.OnClickListener() {
+
+        viewPrevalanceReport.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(requireContext(), Prevailance_Reports.class);
                 startActivity(intent);
             }
         });
+
+        dashboardData();
+
         /*
         priorityView.setOnClickListener(new View.OnClickListener() {
             @Override

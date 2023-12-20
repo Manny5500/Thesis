@@ -1,25 +1,38 @@
 package com.example.myapplication;
 
+
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.ActionBar;
+
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.content.Intent;
+import android.app.Dialog;
+import android.content.ContentResolver;
+import android.content.ContentValues;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
+import android.provider.MediaStore;
+import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.github.barteksc.pdfviewer.PDFView;
+import com.github.barteksc.pdfviewer.scroll.DefaultScrollHandle;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.textfield.MaterialAutoCompleteTextView;
@@ -27,14 +40,34 @@ import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
+import com.itextpdf.text.BaseColor;
+import com.itextpdf.text.Document;
+import com.itextpdf.text.DocumentException;
+import com.itextpdf.text.Element;
+import com.itextpdf.text.Font;
+import com.itextpdf.text.Paragraph;
+import com.itextpdf.text.Phrase;
+import com.itextpdf.text.Rectangle;
+import com.itextpdf.text.pdf.PdfPCell;
+import com.itextpdf.text.pdf.PdfPTable;
+import com.itextpdf.text.pdf.PdfWriter;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.concurrent.Executors;
 
 public class Prevailance_Reports extends AppCompatActivity {
     MaterialAutoCompleteTextView textType, textDate;
@@ -43,12 +76,15 @@ public class Prevailance_Reports extends AppCompatActivity {
     View up_View;
     TextView textThisMonth,  textTypeTitle, textDataThisMonth,
             textIncreased, textDataIncreased;
+
     FloatingActionButton pdfMaker;
     FirebaseFirestore db;
     RecyclerView barangayRecycler;
     private BarangayAdapter userAdapter;
     private int statusPointer = -1;
 
+    Dialog dialog2;
+    String methodType = "WEIGHT FOR AGE";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,6 +101,11 @@ public class Prevailance_Reports extends AppCompatActivity {
         textTypeTitle = findViewById(R.id.textTypeTitle);
         textDataThisMonth = findViewById(R.id.textDataThisMonth);
         textDataIncreased = findViewById(R.id.textDataIncreased);
+
+        dialog2 = new Dialog(Prevailance_Reports.this);
+        dialog2.setContentView(R.layout.dialog_loader);
+        dialog2.setCanceledOnTouchOutside(false);
+        dialog2.setCancelable(false);
 
         String[] mType = {"Underweight", "Overweight", "Stunting", "Wasting"};
         FormUtils.setAdapter(mType, textType, this);
@@ -96,21 +137,26 @@ public class Prevailance_Reports extends AppCompatActivity {
             themeSetter("Stunting");
             query_Type = setQueryType("S");
             statusPointer = 1;
+            methodType = "HEIGHT FOR AGE";
         } else if (text_Status.equals("Overweight")) {
             themeSetter("Overweight");
             query_Type = setQueryType("O");
             statusPointer = 2;
+            methodType = "WEIGHT FOR LENGTH/HEIGHT";
         } else if (text_Status.equals("Underweight")) {
             themeSetter("Underweight");
             query_Type = setQueryType("U");
             statusPointer = 3;
+            methodType = "WEIGHT FOR LENGTH/HEIGHT";
         } else if (text_Status.equals("Wasting")){
             themeSetter("Wasting");
             query_Type = setQueryType("W");
             statusPointer = 4;
+            methodType = "WEIGHT FOR AGE";
         }
         String[] status_array = getStatusArray();
         Populate(status_array, query_Type, text_Date);
+
     }
     public String[] getStatusArray(){
         String[] status_arrays = {"",""};
@@ -207,6 +253,7 @@ public class Prevailance_Reports extends AppCompatActivity {
     }
 
     public void Populate(String[] status_array, String query_Type, String text_Date){
+        dialog2.show();
         db.collection("children")
                 .whereEqualTo("monthAdded", text_Date)
                 .get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
@@ -220,7 +267,7 @@ public class Prevailance_Reports extends AppCompatActivity {
                         arrayList.add(child);
                     }
                     ArrayList<BarangayModel> barangayModels = dataFiltering(arrayList, status_array ,query_Type);
-                    barangayQuery(barangayModels, arrayList.size());
+                    barangayQuery(barangayModels, arrayList.size(), status_array);
                 }
             }
         }).addOnFailureListener(new OnFailureListener() {
@@ -237,33 +284,41 @@ public class Prevailance_Reports extends AppCompatActivity {
         for(String barangay: barangayList){
             BarangayModel barangayModel = new BarangayModel();
             int count = 0;
-            int count_Normal_WFH = 0;
+            int count_normal = 0;
             int count_barangay = 0;
             for(Child arrayList1: arrayList){
                 boolean isBarangay = arrayList1.getBarangay().equals(barangay);
-                boolean isStatus1 = arrayList1.getStatusdb().contains(status_array[0]);
-                boolean isStatus2 = arrayList1.getStatusdb().contains(status_array[1]);
-                boolean isOW = arrayList1.getStatusdb().contains("Overweight");
-                boolean isOB = arrayList1.getStatusdb().contains("Obese");
-                boolean isW = arrayList1.getStatusdb().contains("Wasted");
-                boolean isSW = arrayList1.getStatusdb().contains("Severe Wasted");
+                boolean isStatus1 = arrayList1.getStatus().contains(status_array[0]);
+                boolean isStatus2 = arrayList1.getStatus().contains(status_array[1]);
+                boolean isNormalWFA = arrayList1.getStatus().get(0).equals("Normal");
+                boolean isNormalHFA = arrayList1.getStatus().get(1).equals("Normal");
+                boolean isNormalWFH = arrayList1.getStatus().get(2).equals("Normal");
 
-                if(isBarangay){
-                    count_barangay++;
-                }
-                if(isBarangay && (isStatus1 || isStatus2)){
+                if(isBarangay && (isStatus1|| isStatus2)){
                     count++;
                 }
-                if(isBarangay && (isOW || isOB || isW || isSW)){
-                    count_Normal_WFH++;
+                if(isBarangay){
+                    count_barangay++;
+                    if(queryType.equals("U and SU")){
+                        if(isNormalWFA){
+                            count_normal++;
+                        }
+                    } else if (queryType.equals("OW and OB")) {
+                        if(isNormalWFH){
+                            count_normal++;
+                        }
+                    } else if (queryType.equals(("S and SS"))) {
+                        if(isNormalHFA){
+                            count_normal++;
+                        }
+                    } else if (queryType.equals("W and SW")) {
+                        if(isNormalWFH){
+                            count_normal++;
+                        }
+                    }
                 }
             }
-            if(status_array[0].equals("Overweight")||status_array[0].equals("Obese")
-            || status_array[1].equals("Wasted")||status_array[1].equals("Severe Wasted")){
-                barangayModel.setNormal(count_barangay-count_Normal_WFH);
-            }else{
-                barangayModel.setNormal(count_barangay-count);
-            }
+            barangayModel.setNormal(count_normal);
             barangayModel.setTotalAssess(count_barangay);
             barangayModel.setBarangay(barangay);
             barangayModel.setTotalCase(count);
@@ -300,13 +355,15 @@ public class Prevailance_Reports extends AppCompatActivity {
         return  queryType;
     }
 
-    public void barangayQuery(ArrayList<BarangayModel> barangayModels, int childTotal){
+    public void barangayQuery(ArrayList<BarangayModel> barangayModels, int childTotal, String[] status_array){
         db.collection("barangay")
                 .whereNotEqualTo("identifier", "All Beneficiaries")
                 .get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         if (task.isSuccessful()){
+
+
                             ArrayList<BarangayModel> arrayList = new ArrayList<>();
                             for (QueryDocumentSnapshot doc: task.getResult()){
                                 BarangayModel barangayModel = doc.toObject(BarangayModel.class);
@@ -330,6 +387,14 @@ public class Prevailance_Reports extends AppCompatActivity {
                             textDataIncreased.setText("" + prevPer + "%");
                             userAdapter = new BarangayAdapter(Prevailance_Reports.this, barangayModels);
                             barangayRecycler.setAdapter(userAdapter);
+                            dialog2.dismiss();
+
+                            pdfMaker.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    createAndUploadPdf(barangayModels, status_array);
+                                }
+                            });
                             userAdapter.setOnItemClickListener(new BarangayAdapter.OnItemClickListener() {
                                 @Override
                                 public void onClick(BarangayModel barangayModel) {
@@ -345,4 +410,197 @@ public class Prevailance_Reports extends AppCompatActivity {
                     }
                 });
     }
+
+
+    public void createAndUploadPdf(ArrayList<BarangayModel> arrayList, String[] status_array){
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        Rectangle customsize = new Rectangle(
+                8.5f*72,
+                13.0f*72
+        );
+
+        String type = status_array[0] + " + " + status_array[1];
+        try {
+            // Create a PDF document
+            Document document = new Document(customsize);
+            PdfWriter.getInstance(document, byteArrayOutputStream);
+            document.open();
+            addText("Region IVA: CALABARZON", document);
+            addText("MUNICIPALITY OF MAGDALENA", document, true);
+            addText("PROVINCE: LAGUNA", document);
+            addText("OPERATION TIMBANG PLUS 2023", document);
+            addText(type.toUpperCase(), document, true);
+            addText("PREVALANCE AND NUMBER OF AFFECTED CHILDREN UNDER FIVE, BY BARANGAY", document);
+            addText("\n", document);
+
+            PdfPTable table = new PdfPTable(6);
+            table.setWidthPercentage(100);
+            float[] columnWidths = {10f, 24f, 15f, 17f, 17f, 17f};
+            table.setWidths(columnWidths);
+
+            BaseColor baseColor = getBaseColor("#a6aa91");
+            addCell(table, "Rank", baseColor, BaseColor.BLACK,0,2);
+            addCell(table, "Barangay", baseColor, BaseColor.BLACK,0,2);
+            addCell(table, "0-59 Months OPT Plus Coverage (%)", baseColor, BaseColor.BLACK, 0, 2);
+            addCell(table, "" + methodType, getBaseColor("#c4c6bb"), BaseColor.BLACK, 3,1);
+            addCell(table, "Normal" + " (%)", baseColor, BaseColor.BLACK);
+            addCell(table, status_array[0] + " + " + status_array[1] + " (%)", baseColor, BaseColor.BLACK);
+            addCell(table, "Number of " + status_array[0] + " + " + status_array[1] , baseColor, BaseColor.BLACK);
+            baseColor = getBaseColor("#c4c6bb");
+            for(BarangayModel barangayModel: arrayList){
+                int position = arrayList.indexOf(barangayModel) + 1;
+                addCell(table,"" + position );
+                leftAlignedCell(table, "" + barangayModel.getBarangay());
+                addCell(table,"" + percentage(barangayModel.getTotalAssess(),barangayModel.getEstimatedChildren()) + "%" );
+                addCell(table,"" + percentage(barangayModel.getNormal(), barangayModel.getTotalAssess())+ "%" );
+                specificCell(table, "" + percentage(barangayModel.getTotalCase(),barangayModel.getTotalAssess()) + "%", baseColor);
+                addCell(table,"" + barangayModel.getTotalCase());
+            }
+
+            document.add(table);
+            document.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        byte[] pdfBytes = byteArrayOutputStream.toByteArray();
+        FirebaseStorage storage = FirebaseStorage.getInstance();
+        StorageReference storageRef = storage.getReference();
+        StorageReference pdfRef = storageRef.child("pdfs/" + "PdfTestListChild");
+
+        final Dialog dialog = new Dialog(Prevailance_Reports.this);
+        dialog.setContentView(R.layout.pdf_viewer);
+        PDFView pdfView = dialog.findViewById(R.id.pdfView);
+        ProgressBar progressBar = dialog.findViewById(R.id.progressBar);
+        Button cancelBtn = dialog.findViewById(R.id.btnCancel);
+        Button exportBtn = dialog.findViewById(R.id.btnSavePdf);
+        Window window = dialog.getWindow();
+        window.setLayout(ConstraintLayout.LayoutParams.MATCH_PARENT, ConstraintLayout.LayoutParams.MATCH_PARENT);
+        dialog.show();
+        displayPdfFromBytes(pdfBytes, pdfView, progressBar);
+
+        exportBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                savePDFToStorage(pdfBytes, status_array);
+            }
+        });
+
+        cancelBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+    }
+
+    private static void addCell(PdfPTable table, String text, BaseColor backgroundColor, BaseColor textColor) {
+        PdfPCell cell = new PdfPCell(new Paragraph(text, new Font(Font.FontFamily.HELVETICA, 12, Font.BOLD, textColor)));
+        cell.setBackgroundColor(backgroundColor);
+        cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+        cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+        cell.setPadding(6);
+        cell.setBorderColor(BaseColor.BLACK);
+        table.addCell(cell);
+    }
+    private static void addCell(PdfPTable table, String text, BaseColor backgroundColor, BaseColor textColor, int colspan, int rowspan) {
+        PdfPCell cell = new PdfPCell(new Paragraph(text, new Font(Font.FontFamily.HELVETICA, 12, Font.BOLD, textColor)));
+        cell.setBackgroundColor(backgroundColor);
+        cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+        cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+        cell.setPadding(6);
+        cell.setColspan(colspan);
+        cell.setRowspan(rowspan);
+        cell.setBorderColor(BaseColor.BLACK);
+        table.addCell(cell);
+    }
+    private static void addText(String text, Document document)throws DocumentException {
+        Paragraph paragraph = new Paragraph(text, new Font(Font.FontFamily.HELVETICA, 12));
+        paragraph.setAlignment(paragraph.ALIGN_CENTER);
+        document.add(paragraph);
+    }
+    private static void addText(String text, Document document, boolean isBold )throws DocumentException {
+        Paragraph paragraph = new Paragraph(text, new Font(Font.FontFamily.HELVETICA, 12, Font.BOLD));
+        paragraph.setAlignment(paragraph.ALIGN_CENTER);
+        document.add(paragraph);
+    }
+
+    public float percentage(int number1, int number2){
+        float result = (float) number1 / number2;
+        float percentage = Math.round(result * 100.0f);
+        return percentage;
+    }
+
+    public static void addCell(PdfPTable table, String text){
+        PdfPCell cell = new PdfPCell(new Phrase(text));
+        cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+        cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+        cell.setPadding(6);
+        table.addCell(cell);
+    }
+    public static void specificCell(PdfPTable table, String text, BaseColor cellColor){
+        PdfPCell cell = new PdfPCell(new Phrase(text));
+        cell.setBackgroundColor(cellColor);
+        cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+        cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+        cell.setPadding(6);
+        table.addCell(cell);
+    }
+    public static void leftAlignedCell(PdfPTable table, String text){
+        PdfPCell cell = new PdfPCell(new Phrase(text));
+        cell.setHorizontalAlignment(Element.ALIGN_LEFT);
+        cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+        cell.setPadding(6);
+        table.addCell(cell);
+    }
+
+    public BaseColor getBaseColor(String hexColor){
+        int red = Integer.valueOf(hexColor.substring(1, 3), 16);
+        int green = Integer.valueOf(hexColor.substring(3, 5), 16);
+        int blue = Integer.valueOf(hexColor.substring(5, 7), 16);
+        BaseColor baseColor = new BaseColor(red, green, blue);
+        return baseColor;
+    }
+
+    private void displayPdfFromBytes(byte[] pdfBytes, PDFView pdfView, ProgressBar progressBar) {
+        progressBar.setVisibility(View.VISIBLE);
+        Executors.newSingleThreadExecutor().execute(() -> {
+            try {
+                runOnUiThread(() -> {
+                    progressBar.setVisibility(View.GONE);
+
+                    pdfView.fromBytes(pdfBytes)
+                            .scrollHandle(new DefaultScrollHandle(this))
+                            .load();
+                });
+            } catch (Exception e) {
+                runOnUiThread(() -> {
+                    e.printStackTrace();
+                    Log.e("PDFViewer", "Error loading PDF: " + e.getMessage());
+                });
+            }
+        });
+    }
+    private void savePDFToStorage(byte[] byteArray, String[] status_array) {
+        ContentValues values = new ContentValues();
+        values.put(MediaStore.MediaColumns.DISPLAY_NAME, "PrevailanceReports" + status_array[0] + "_" + status_array[1] +
+                LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddHHmmssSSSS")) + ".pdf");
+        values.put(MediaStore.MediaColumns.MIME_TYPE, "NutriAssist");
+        values.put(MediaStore.MediaColumns.RELATIVE_PATH, Environment.DIRECTORY_DOCUMENTS + File.separator + "NutriAssist");
+
+        ContentResolver resolver = getContentResolver();
+        Uri externalUri = MediaStore.Files.getContentUri(MediaStore.VOLUME_EXTERNAL);
+        Uri pdfUri = resolver.insert(externalUri, values);
+        try {
+            if (pdfUri != null) {
+                resolver.openOutputStream(pdfUri).write(byteArray);
+                Toast.makeText(this, "PDF Saved Successfully", Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(this, "Error Creating PDF", Toast.LENGTH_SHORT).show();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            Toast.makeText(this, "Error Saving PDF", Toast.LENGTH_SHORT).show();
+        }
+    }
+
 }

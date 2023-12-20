@@ -13,13 +13,17 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.MaterialAutoCompleteTextView;
 import com.google.android.material.textfield.TextInputEditText;
+import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 public class EditChild extends AppCompatActivity {
 
@@ -106,6 +110,8 @@ public class EditChild extends AppCompatActivity {
                 } else {
                     Toast.makeText(EditChild.this, "Failed to parse the date", Toast.LENGTH_SHORT).show();
                 }
+
+
                 childFirstNameValue = childFirstName.getText().toString().trim();
                 childMiddleNameValue = childMiddleName.getText().toString().trim();
                 childLastNameValue = childLastName.getText().toString().trim();
@@ -130,6 +136,13 @@ public class EditChild extends AppCompatActivity {
                     height_true_val = Double.parseDouble(heightValue);
                     weight_true_val = Double.parseDouble(weightValue);
                     statusdb = FindStatusWFA.CalculateMalnourished(EditChild.this, monthdiff, weight_true_val, height_true_val, sexACValue);
+                    String[] individualTest = FindStatusWFA.individualTest(EditChild.this, monthdiff, weight_true_val, height_true_val, sexACValue);
+                    ArrayList<String> status = new ArrayList<>();
+                    for(String status_element: individualTest){
+                        status.add(status_element);
+                    }
+
+
                     Map<String, Object> user = new HashMap<>();
                     user.put("childFirstName", childFirstNameValue);
                     user.put("childMiddleName", childMiddleNameValue);
@@ -148,6 +161,9 @@ public class EditChild extends AppCompatActivity {
                     user.put("sex", sexACValue);
                     user.put("expectedDate", expectedDateValue);
                     user.put("statusdb", statusdb);
+                    user.put("status", status);
+                    user.put("dateAdded", DateParser.getCurrentTimeStamp());
+                    user.put("monthAdded", DateParser.getMonthYear());
                     db.collection("children").document(App.child.getId()).update(user).addOnSuccessListener(new OnSuccessListener<Void>() {
                         @Override
                         public void onSuccess(Void unused) {

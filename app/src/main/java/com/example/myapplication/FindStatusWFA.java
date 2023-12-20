@@ -5,8 +5,10 @@ import android.content.Context;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
+import java.util.Map;
 import java.util.Set;
 
 public class FindStatusWFA {
@@ -25,6 +27,8 @@ public class FindStatusWFA {
             } else if (weight < nsd3[age]) {
                 status = "Severe Underweight";
                 break;
+            } else if(weight > median[age]){
+                status = "Overweight";
             }
         }
         return status;
@@ -45,7 +49,7 @@ public class FindStatusWFA {
                 status = "Severe Stunted";
                 break;
             } else if (height >= sd3[age]) {
-                status = "Above Normal";
+                status = "Total";
                 break;
             }
         }
@@ -115,6 +119,9 @@ public class FindStatusWFA {
             if(status.isEmpty()){
                 status.add("Normal");
             }
+            if(status.get(0).equals("Overweight")){
+                status.remove(0);
+            }
             statusdb = showDialogMalnourished(context, status);
 
         } else if (sex.equals("Female") && age<60 && age>=0) {
@@ -149,6 +156,9 @@ public class FindStatusWFA {
             if(status.isEmpty()){
                 status.add("Normal");
             }
+            if(status.get(0).equals("Overweight")){
+                status.remove(0);
+            }
             statusdb = showDialogMalnourished(context, status);
 
         } else {
@@ -157,6 +167,77 @@ public class FindStatusWFA {
 
         return statusdb;
     }
+
+
+    public static String[] individualTest(Context context, int age, double weight, double height, String sex){
+        String[] status = {"Normal","Normal","Normal"};
+        if(sex.equals("Male") && age<60 && age>= 0){
+            WFA_Boys wfa = new WFA_Boys();
+            if(!wfa.WFA_Boys_M(age,weight).equals("")){
+                status[0] = wfa.WFA_Boys_M(age, weight);
+            }
+            if(age>=0 && age<24)
+            {
+                LFA_Boys lfaBoys = new LFA_Boys();
+                if(!lfaBoys.LFA_Boys_M(height,age).equals("")){
+                    status[1] = lfaBoys.LFA_Boys_M(height, age);
+                }
+
+                WFL_Boys wflBoys = new WFL_Boys();
+                if(!wflBoys.WFL_Boys_M(weight,height).equals("")){
+                    status[2] =wflBoys.WFL_Boys_M(weight, height);
+                }
+
+            } else if (age>= 24 && age <60) {
+                HFA_Boys hfaBoys = new HFA_Boys();
+                if(!hfaBoys.HFA_Boys_M(height, age).equals("")){
+                    status[1] = hfaBoys.HFA_Boys_M(height, age);
+                }
+
+                WFH_Boys wfhBoys = new WFH_Boys();
+                if(!wfhBoys.WFH_Boys_M(weight, height).equals("")){
+                    status[2] = wfhBoys.WFH_Boys_M(weight, height);
+                }
+            }else{
+                //Toast.makeText(context, "Invalid age", Toast.LENGTH_SHORT).show();
+            }
+
+        } else if (sex.equals("Female") && age<60 && age>=0) {
+            WFA_Girls wfag = new WFA_Girls();
+            if(!wfag.WFA_Girls_M(age,weight).equals("")){
+                status[0] = wfag.WFA_Girls_M(age, weight);
+            }
+            if(age>=0 && age<24)
+            {
+                LFA_Girls lfaGirls = new LFA_Girls();
+                if(!lfaGirls.LFA_Girls_M(height,age).equals("")){
+                    status[1] = lfaGirls.LFA_Girls_M(height, age);
+                }
+                WFL_Girls wflGirls = new WFL_Girls();
+                if(!wflGirls.WFL_Girls_M(weight, age).equals("")){
+                    status[2] = wflGirls.WFL_Girls_M(weight, height);
+                }
+
+            } else if (age>= 24 && age <60) {
+                HFA_Girls  hfaGirls = new HFA_Girls();
+                if(!hfaGirls.HFA_Girls_M(height,age).equals("")){
+                    status[1] = hfaGirls.HFA_Girls_M(height, age);
+                }
+                WFH_Girls wfhGirls = new WFH_Girls();
+                if(!wfhGirls.WFH_Girls_M(weight, height).equals("")){
+                   status[2] =  wfhGirls.WFH_Girls_M(weight, height);
+                }
+            }else{
+                //Toast.makeText(context, "Invalid age", Toast.LENGTH_SHORT).show();
+            }
+
+        } else {
+            //Toast.makeText(context, "Invalid ages", Toast.LENGTH_SHORT).show();
+        }
+
+        return status;
+    }
+
 
     public static ArrayList<String> showDialogMalnourished(Context context, ArrayList<String> status){
         AlertDialog.Builder builder = new AlertDialog.Builder(context);

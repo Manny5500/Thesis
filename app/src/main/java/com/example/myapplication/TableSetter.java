@@ -3,12 +3,14 @@ package com.example.myapplication;
 import android.content.Context;
 import android.util.TypedValue;
 import android.view.Gravity;
+import android.view.View;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 
 public class TableSetter {
     public static void generateTable(Context context, TableLayout tableLayout, String[] headers, String[][] data) {
+       clearTable(tableLayout);
         TableRow headerRow = new TableRow(context);
 
         for (int i = 0; i < headers.length; i++) {
@@ -62,5 +64,20 @@ public class TableSetter {
                     TableRow.LayoutParams.WRAP_CONTENT, 1f));
         }
     }
+
+    public static void clearTable(TableLayout tableLayout) {
+        // Get the number of rows in the table
+        int rowCount = tableLayout.getChildCount();
+
+        // Remove all rows starting from index 1 (index 0 is the header row)
+        for (int i = 1; i < rowCount; i++) {
+            View child = tableLayout.getChildAt(1);
+            if (child instanceof TableRow) {
+                // Remove the TableRow from the TableLayout
+                tableLayout.removeViewAt(1);
+            }
+        }
+    }
+
 
 }
