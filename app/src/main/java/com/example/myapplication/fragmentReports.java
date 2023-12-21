@@ -1,11 +1,13 @@
 package com.example.myapplication;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.cardview.widget.CardView;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
@@ -29,6 +31,7 @@ import com.github.mikephil.charting.utils.ColorTemplate;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.card.MaterialCardView;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -54,12 +57,16 @@ public class fragmentReports extends Fragment {
     int lightBlueColor, darkBlueColor, whiteColor;
     private Context applicationContext;
 
-    TextView dateWeek, dateMonth, dateYear, labelTotalCase, labelObservation;
+    TextView dateWeek, dateMonth, dateYear, labelTotalCase,
+            labelObservation, categorySeeMore, genderSeeMore,
+    barangaySeeMore, agesSeeMore ;
+
 
     Switch switchToggle;
     private static String periodType = "week";
     private static String switchStatus = "off";
     int duration = 6;
+    ArrayList<Timestamp> timestampArrayList;
 
     public void onAttach(Context context) {
         super.onAttach(context);
@@ -80,7 +87,39 @@ public class fragmentReports extends Fragment {
         labelTotalCase = view.findViewById(R.id.labelTotalCase);
         labelObservation = view.findViewById(R.id.labelObservation);
         switchToggle = view.findViewById(R.id.switchToggle);
+        categorySeeMore = view.findViewById(R.id.categorySeeMore);
+        genderSeeMore = view.findViewById(R.id.genderSeeMore);
+        barangaySeeMore = view.findViewById(R.id.barangaySeeMore);
+        agesSeeMore = view.findViewById(R.id.agesSeeMore);
 
+        timestampArrayList = new ArrayList<>();
+
+        categorySeeMore.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(applicationContext, "SeeMore", Toast.LENGTH_SHORT).show();
+            }
+        });
+        genderSeeMore.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getActivity(), genderCharts.class);
+                intent.putParcelableArrayListExtra("timestampArrayList", timestampArrayList);
+                startActivity(intent);
+            }
+        });
+        barangaySeeMore.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(applicationContext, "SeeMore", Toast.LENGTH_SHORT).show();
+            }
+        });
+        agesSeeMore.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(applicationContext, "SeeMore", Toast.LENGTH_SHORT).show();
+            }
+        });
         switchToggle.setVisibility(View.GONE);
 
         setPressed(dateWeek);
@@ -136,7 +175,6 @@ public class fragmentReports extends Fragment {
 
     private void configData(long duration){
         String[] barangay = getResources().getStringArray(R.array.barangay);
-        ArrayList<Timestamp> timestampArrayList = new ArrayList<>();
         timestampArrayList = DateParser.createDate(duration, periodType);
         displayData(timestampArrayList, barangay, duration);
     }
@@ -234,12 +272,22 @@ public class fragmentReports extends Fragment {
             }
         }
         int[] colors1 = {lightBlueColor, darkBlueColor, whiteColor};
-        PieChart sexChart =  ChartMaker.createPieChart(view, R.id.pieChart, colors1, count_Male, count_Female, childrenList);
+        PieChart sexChart =  ChartMaker.createPieChart(view, R.id.pieChart, colors1, count_Male, count_Female, childrenList, "Gender Distribution");
         TableLayout sextableLayout = view.findViewById(R.id.sextableLayout);
         String[] sexHeaders = {"Sex", "Total", "Percentage"};
+        double male_Percentage;
+        double female_Percentage;
+        if(count_Male==0 && count_Female == 0) {
+            male_Percentage = 0;
+            female_Percentage = 0;
+        }
+        else{
+            male_Percentage = (double) count_Male/childrenList.size() * 100;
+            female_Percentage = (double) count_Female/childrenList.size() * 100;
+        }
         String[] testPercentage = {
-                String.format("%.2f",(double) count_Male/childrenList.size() * 100) + " %",
-                String.format("%.2f",(double) count_Female/childrenList.size() * 100) + " %"
+                String.format("%.2f", male_Percentage) + " %",
+                String.format("%.2f", female_Percentage) + " %"
         };
         String[][] sexData = {
                 {"Male", String.valueOf(count_Male), testPercentage[0]},

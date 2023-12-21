@@ -26,8 +26,7 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/parentConstraint"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            tools:context=".MainActivity">
+            android:layout_height="match_parent">
 
             <com.google.android.material.card.MaterialCardView
                 app:cardCornerRadius="8dp"
@@ -114,7 +113,6 @@
 
             </com.google.android.material.card.MaterialCardView>
 
-
             <com.google.android.material.card.MaterialCardView
                 app:cardCornerRadius="8dp"
                 app:cardElevation="2dp"
@@ -182,7 +180,7 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/barChart"
-                    app:layout_constraintBottom_toBottomOf="parent">
+                    app:layout_constraintBottom_toTopOf="@id/categorySeeMore">
 
                     <TableRow
                         android:layout_width="match_parent"
@@ -200,6 +198,20 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent" />
                 </TableLayout>
+
+                <TextView
+                    android:id="@+id/categorySeeMore"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="15dp"
+                    android:layout_marginBottom="10dp"
+                    android:textSize="18sp"
+                    android:textColor="@color/blueColor"
+                    android:layout_centerHorizontal="true"
+                    app:layout_constraintTop_toBottomOf="@id/tableLayout"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    android:text=">> See More" />
 
 
             </androidx.constraintlayout.widget.ConstraintLayout>
@@ -273,8 +285,8 @@
                     android:layout_margin="10dp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/pieChart"
-                    app:layout_constraintBottom_toBottomOf="parent">
+                    app:layout_constraintTop_toBottomOf="@id/pieChart"
+                    app:layout_constraintBottom_toTopOf="@id/genderSeeMore">
 
                     <TableRow
                         android:layout_width="match_parent"
@@ -292,6 +304,21 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent" />
                 </TableLayout>
+
+
+                <TextView
+                    android:id="@+id/genderSeeMore"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="15dp"
+                    android:layout_marginBottom="10dp"
+                    android:textSize="18sp"
+                    android:textColor="@color/blueColor"
+                    android:layout_centerHorizontal="true"
+                    app:layout_constraintTop_toBottomOf="@id/sextableLayout"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    android:text=">> See More" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
             </com.google.android.material.card.MaterialCardView>
@@ -353,7 +380,7 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/barLine3"
-                    app:layout_constraintBottom_toBottomOf="parent">
+                    app:layout_constraintBottom_toTopOf="@id/barangaySeeMore">
 
                     <TableRow
                         android:layout_width="match_parent"
@@ -371,6 +398,19 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent" />
                 </TableLayout>
+                <TextView
+                    android:id="@+id/barangaySeeMore"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="15dp"
+                    android:layout_marginBottom="10dp"
+                    android:textSize="18sp"
+                    android:textColor="@color/blueColor"
+                    android:layout_centerHorizontal="true"
+                    app:layout_constraintTop_toBottomOf="@id/tableLayout3"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    android:text=">> See More" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -429,11 +469,25 @@
                     android:layout_width="match_parent"
                     android:layout_margin="10dp"
                     android:layout_height="286dp"
-                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintBottom_toTopOf="@id/agesSeeMore"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/barLine4" />
 
+
+                <TextView
+                    android:id="@+id/agesSeeMore"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="15dp"
+                    android:layout_marginBottom="10dp"
+                    android:textSize="18sp"
+                    android:textColor="@color/blueColor"
+                    android:layout_centerHorizontal="true"
+                    app:layout_constraintTop_toBottomOf="@id/barChart2"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    android:text=">> See More" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             </com.google.android.material.card.MaterialCardView>

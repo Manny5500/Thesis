@@ -12,6 +12,7 @@
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.CALL_PHONE" />
     <uses-permission android:name="android.permission.INTERNET" />
+
     <application
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
@@ -19,10 +20,13 @@
         android:icon="@drawable/nutriassist_logo"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
+        android:screenOrientation="portrait"
         android:supportsRtl="true"
         android:theme="@style/Theme.MyApplication"
-        tools:targetApi="31"
-        android:screenOrientation="portrait">
+        tools:targetApi="31">
+        <activity
+            android:name=".genderCharts"
+            android:exported="false" />
         <activity
             android:name=".Prevailance_Reports"
             android:exported="false" />
