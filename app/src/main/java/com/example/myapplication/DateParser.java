@@ -113,6 +113,7 @@ public class DateParser {
         Timestamp previousStartTimestamp = new Timestamp(previousStartDate);
 
         ArrayList<Timestamp> timestamps = new ArrayList<>();
+
         timestamps.add(startTimestamp);
         timestamps.add(currentTimestamp);
         timestamps.add(previousStartTimestamp);
@@ -243,6 +244,15 @@ public class DateParser {
 
 
         if(periodType.equals("year")){
+
+            //this 5-line code is to set the date to December 31, currentyear
+            //purpose is to show the line chart the whole year instead of the current month
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(currentDate);
+            int years = calendar.get(Calendar.YEAR);
+            currentDate  = specificDate(years, 12, 31, startDate);
+
+
             ArrayList<Date> yearlyDates = yearlyPeriod(currentDate, startDate,
                     previousStartDate, elevenFiftyNine, previousDate, oneDayMillis);
             startDate = yearlyDates.get(0);

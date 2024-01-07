@@ -24,8 +24,10 @@ import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter;
 import com.github.mikephil.charting.formatter.ValueFormatter;
+import com.github.mikephil.charting.interfaces.datasets.IBarDataSet;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -111,8 +113,8 @@ public class ChartMaker {
             overall_count = overall_count + count_Status[i];
         }
 
-        status1 = labelChanger(status1);
-        status2 = labelChanger(status2);
+        status1 = StringUtils.labelChanger(status1);
+        status2 = StringUtils.labelChanger(status2);
 
         if(isChecked){
             for(int i = 0; i<4;i++){
@@ -130,7 +132,7 @@ public class ChartMaker {
                     label = label + status2;
                 }
                 if(n>=0){
-                    pieEntries.add(new PieEntry(25, String.format( "%.2f", ((double)n/(overall_count)) * 100) + label));
+                    pieEntries.add(new PieEntry(count_Status[i], String.format( "%.2f", ((double)n/(overall_count)) * 100) + label));
                 }
             }
         }
@@ -139,8 +141,8 @@ public class ChartMaker {
                 pieEntries.add(new PieEntry(count_Status[0], String.format( "%.2f", ((double)count_Status[0]/(overall_count)) * 100)
                         + "% - M" + status1));
             }
-            if(count_Status[1]>0){
-                pieEntries.add(new PieEntry(count_Status[1], String.format( "%.2f", ((double)count_Status[1]/(overall_count)) * 100)
+            if(count_Status[2]>0){
+                pieEntries.add(new PieEntry(count_Status[2], String.format( "%.2f", ((double)count_Status[1]/(overall_count)) * 100)
                         + "% - F" + status1));
             }
         }
@@ -172,6 +174,7 @@ public class ChartMaker {
         pieChart.getLegend().setEnabled(false);
         pieChart.invalidate();
     }
+
 
     public static void editPieChart(PieChart pieChart, int[] colors, int count_Male,
                                     int count_Female, int count_Result, String pieType ){
@@ -207,6 +210,128 @@ public class ChartMaker {
         pieChart.getLegend().setEnabled(false);
         pieChart.invalidate();
     }
+
+
+    public static void editBarChart(BarChart barChart,  ArrayList<BarEntry> entries, String[] labels, int[] colors ){
+        BarDataSet barDataSet = new BarDataSet(entries, "Bar Chart");
+        barDataSet.setColors(colors);
+
+        BarData barData = new BarData(barDataSet);
+        barChart.setData(barData);
+
+        barChart.setFitBars(true);
+        barChart.getDescription().setText("");
+        barChart.animateY(2000);
+        barChart.setHighlightPerTapEnabled(false);
+
+        XAxis xAxis = barChart.getXAxis();
+        xAxis.setValueFormatter(new IndexAxisValueFormatter(labels));
+        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
+
+        YAxis leftYAxis = barChart.getAxisLeft();
+        YAxis rightYAxis = barChart.getAxisRight();
+        leftYAxis.setAxisMinimum(0f);
+        rightYAxis.setAxisMinimum(0f);
+
+        xAxis.setDrawGridLines(false);
+
+        integerValues(barChart, barDataSet);
+
+        barChart.getLegend().setEnabled(false);
+        barChart.invalidate();
+    }
+
+    public static void editBarChart(BarChart barChart, ArrayList<BarEntry> entries1,
+                                    ArrayList<BarEntry> entries2, String[] labels, int[] colors) {
+        barChart.setDrawBarShadow(false);
+        barChart.setDrawValueAboveBar(true);
+        barChart.getDescription().setEnabled(false);
+
+        XAxis xAxis = barChart.getXAxis();
+        xAxis.setValueFormatter(new IndexAxisValueFormatter(labels));
+        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
+        xAxis.setDrawGridLines(false);
+        xAxis.setGranularity(1f);
+
+        BarDataSet dataSet1 = new BarDataSet(entries1, "Data Set 1");
+        dataSet1.setColor(colors[0]);
+
+        BarDataSet dataSet2 = new BarDataSet(entries2, "Data Set 2");
+        dataSet2.setColor(colors[1]);
+
+        integerValues(barChart,dataSet1,dataSet2);
+
+        // Adjust bar width and group spacing
+        float barWidth = 0.4f;
+        float groupSpace = 1.0f - ((barWidth)*2.0f);
+
+        BarData barData = new BarData(dataSet1, dataSet2);
+        barData.setBarWidth(barWidth);
+
+        // Set bar group properties
+        barChart.setData(barData);
+        barChart.groupBars(-0.5f, groupSpace, 0f);
+
+        barChart.invalidate();
+    }
+
+
+    public static void editLineChart(LineChart lineChart, Map<String, Integer> map,
+                                     Map<String, Integer> map2, String periodType){
+        ArrayList<Entry> entries = new ArrayList<>();
+        ArrayList<Entry> entries2 = new ArrayList<>();
+
+
+        lineChart.setPinchZoom(false);
+        lineChart.setDoubleTapToZoomEnabled(false);
+        ArrayList<String> labels = new ArrayList<>();
+        ArrayList<String> labels2 = new ArrayList<>();
+        int i = 0;
+        for (String key : map.keySet()) {
+            Integer value = map.get(key);
+            entries.add(new Entry(i, value));
+            labels.add(i,key.substring(5, key.length()));
+            i++;
+        }
+        int j = 0;
+        for (String key : map2.keySet()) {
+            Integer value = map2.get(key);
+            entries2.add(new Entry(j, value));
+            labels2.add(j, key.substring(5, key.length()));
+            if(j>=i && periodType.equals("month")){
+                entries.add(new Entry(j, 0));
+                if(labels.get(0).length()==5){
+                    labels.add(j, labels.get(0).substring(0,3) + key.substring(8, key.length()));
+                }
+            }
+            j++;
+        }
+
+        LineDataSet dataSet = new LineDataSet(entries, "Current " + periodType);
+        LineDataSet dataSet2 = new LineDataSet(entries2, "Previous " + periodType);
+
+        XAxis xAxis = lineChart.getXAxis();
+        xAxis.setValueFormatter(new IndexAxisValueFormatter(labels));
+        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
+
+
+        integerValues(lineChart, dataSet, dataSet2);
+        descriptionRemover(lineChart);
+
+
+        lineChart.animateX(1000);
+        for(int a=0; a<2; a++){
+            customizeChartLine(dataSet, Color.parseColor("#41b4d9"));
+        }
+        customizeChartLine(dataSet, Color.parseColor("#41b4d9"));
+        customizeChartLine(dataSet2, Color.parseColor("#00FF00"));
+
+        xAxis.setDrawGridLines(false);
+
+        LineData lineData = new LineData(dataSet2, dataSet);
+        lineChart.setData(lineData);
+    }
+
 
 
 
@@ -282,6 +407,92 @@ public class ChartMaker {
         return lineChart;
     }
 
+
+    public static void fourDataLineChart(LineChart lineChart, Map<String, Integer> map,
+                                         Map<String, Integer> map2, Map<String,Integer> map3,
+                                            Map<String, Integer> map4, String periodType){
+
+        ArrayList<Entry> entries = new ArrayList<>();
+        ArrayList<Entry> entries2 = new ArrayList<>();
+        ArrayList<Entry> entries3 = new ArrayList<>();
+        ArrayList<Entry> entries4 = new ArrayList<>();
+
+
+        lineChart.setPinchZoom(false);
+        lineChart.setDoubleTapToZoomEnabled(false);
+
+        ArrayList<String> labels = new ArrayList<>();
+        ArrayList<String> labels2 = new ArrayList<>();
+        ArrayList<String> labels3 = new ArrayList<>();
+        ArrayList<String> labels4 = new ArrayList<>();
+
+        int i = 0;
+        for (String key : map.keySet()) {
+            Integer value = map.get(key);
+            entries.add(new Entry(i, value));
+            labels.add(i,key.substring(5, key.length()));
+            i++;
+        }
+        int j = 0;
+
+        for (String key : map2.keySet()) {
+            Integer value = map2.get(key);
+            entries2.add(new Entry(j, value));
+            labels2.add(j, key.substring(5, key.length()));
+            if(j>=i && periodType.equals("month")){
+                entries.add(new Entry(j, 0));
+                if(labels.get(0).length()==5){
+                    labels.add(j, labels.get(0).substring(0,3) + key.substring(8, key.length()));
+                }
+            }
+            j++;
+        }
+
+        i = 0;
+        for (String key : map3.keySet()) {
+            Integer value = map3.get(key);
+            entries3.add(new Entry(i, value));
+            labels3.add(i,key.substring(5, key.length()));
+            i++;
+        }
+        i = 0;
+        for (String key : map4.keySet()) {
+            Integer value = map4.get(key);
+            entries4.add(new Entry(i, value));
+            labels4.add(i,key.substring(5, key.length()));
+            i++;
+        }
+
+        LineDataSet dataSet = new LineDataSet(entries, "Current " + periodType);
+        LineDataSet dataSet2 = new LineDataSet(entries2, "Previous " + periodType);
+        LineDataSet dataSet3 = new LineDataSet(entries3, "Current " + periodType);
+        LineDataSet dataSet4 = new LineDataSet(entries4, "Previous " + periodType);
+
+        XAxis xAxis = lineChart.getXAxis();
+        xAxis.setValueFormatter(new IndexAxisValueFormatter(labels));
+        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
+
+
+        integerValues(lineChart, dataSet, dataSet2, dataSet3, dataSet4);
+        descriptionRemover(lineChart);
+
+
+        lineChart.getLegend().setEnabled(false);
+        lineChart.animateX(1000);
+        customizeChartLine(dataSet, Color.parseColor("#1f7cb5"));
+        customizeChartLine(dataSet2, Color.parseColor("#64c484"));
+        customizeChartLine(dataSet3, Color.parseColor("#f6d96d"));
+        customizeChartLine(dataSet4, Color.parseColor("#ef6945"));
+
+        xAxis.setDrawGridLines(false);
+
+
+        LineData lineData = new LineData(dataSet4, dataSet3, dataSet2, dataSet);
+        lineChart.setData(lineData);
+
+    }
+
+
     private static void customizeChartLine(LineDataSet dataSet, int color){
         dataSet.setColor(color);
         dataSet.setLineWidth(3f);
@@ -351,31 +562,4 @@ public class ChartMaker {
         chart.setDescription(description);
     }
 
-    public static String labelChanger(String status){
-        if(status.equals("Underweight")){
-            status = "UW";
-        }
-        if(status.equals("Severe Underweight")){
-            status = "SU";
-        }
-        if(status.equals("Overweight")){
-            status = "OW";
-        }
-        if(status.equals("Obese")){
-            status = "OB";
-        }
-        if(status.equals("Stunted")){
-            status = "ST";
-        }
-        if(status.equals("Severe Stunted")){
-            status = "SS";
-        }
-        if(status.equals("Wasted")){
-            status = "W";
-        }
-        if(status.equals("Severe Wasted")){
-            status = "SW";
-        }
-        return  status;
-    }
 }

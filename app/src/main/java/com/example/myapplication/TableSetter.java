@@ -28,6 +28,7 @@ public class TableSetter {
 
         tableLayout.addView(headerRow);
 
+
         // Populate table rows with data
         for (String[] rowData : data) {
             TableRow tableRow = new TableRow(context);

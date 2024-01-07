@@ -94,10 +94,39 @@ public class fragmentReports extends Fragment {
 
         timestampArrayList = new ArrayList<>();
 
+        barangaySeeMore.setTextColor(Color.parseColor("#FF0000"));
+
+        seeMoreEvents();
+
+        switchToggle.setVisibility(View.GONE);
+        setPressed(dateWeek);
+        configData(duration);
+        final Drawable defaultBackground = ContextCompat.getDrawable(requireContext(), R.drawable.textview_default_background);
+
+        periodEvents();
+
+        switchToggle.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    switchStatus = "on";
+                } else {
+                    switchStatus = "off";
+                }
+                configData(duration);
+            }
+        });
+        return view;
+    }
+
+    private void seeMoreEvents(){
         categorySeeMore.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(applicationContext, "SeeMore", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(getActivity(), casesCharts.class);
+                intent.putParcelableArrayListExtra("timestampArrayList", timestampArrayList);
+                intent.putExtra("periodType", periodType);
+                startActivity(intent);
             }
         });
         genderSeeMore.setOnClickListener(new View.OnClickListener() {
@@ -111,20 +140,20 @@ public class fragmentReports extends Fragment {
         barangaySeeMore.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(applicationContext, "SeeMore", Toast.LENGTH_SHORT).show();
+                Toast.makeText(applicationContext, "Not yet Available", Toast.LENGTH_SHORT).show();
             }
         });
         agesSeeMore.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(applicationContext, "SeeMore", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(getActivity(), agesCharts.class);
+                intent.putParcelableArrayListExtra("timestampArrayList", timestampArrayList);
+                startActivity(intent);
             }
         });
-        switchToggle.setVisibility(View.GONE);
+    }
 
-        setPressed(dateWeek);
-        configData(duration);
-        final Drawable defaultBackground = ContextCompat.getDrawable(requireContext(), R.drawable.textview_default_background);
+    private void periodEvents(){
         dateWeek.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -159,20 +188,7 @@ public class fragmentReports extends Fragment {
 
             }
         });
-        switchToggle.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked) {
-                    switchStatus = "on";
-                } else {
-                    switchStatus = "off";
-                }
-                configData(duration);
-            }
-        });
-        return view;
     }
-
     private void configData(long duration){
         String[] barangay = getResources().getStringArray(R.array.barangay);
         timestampArrayList = DateParser.createDate(duration, periodType);
@@ -424,29 +440,24 @@ public class fragmentReports extends Fragment {
         }
         TableLayout tableLayout = view.findViewById(R.id.tableLayout3);
         String[] barangayHeaders = {"Barangay", "Total"};
-        String[][] barangayData = {
-                {barangay[index[23]], Integer.toString(malnutrition_perbarangay[23])},
-                {barangay[index[22]], Integer.toString(malnutrition_perbarangay[22])},
-                {barangay[index[21]], Integer.toString(malnutrition_perbarangay[21])},
-                {barangay[index[20]], Integer.toString(malnutrition_perbarangay[20])},
-                {barangay[index[19]], Integer.toString(malnutrition_perbarangay[19])},
-                {barangay[index[18]], Integer.toString(malnutrition_perbarangay[18])}
-        };
+        String[][] barangayData = new String[6][2];
+        int k=0;
+        for(int i=23; i>17; i--){
+            barangayData[k][0] = barangay[index[i]];
+            barangayData[k][1] = Integer.toString(malnutrition_perbarangay[i]);
+            k++;
+        }
         TableSetter.generateTable(applicationContext, tableLayout, barangayHeaders, barangayData);
     }
     private void CategoryTable(int[] numberCategory){
         TableLayout tableLayout1 = view.findViewById(R.id.tableLayout);
         String[] category = {"Underweight", "Severe Underweight", "Overweight", "Stunted", "Severe Stunted", "Wasted", "Severe Wasted"};
         String[] categoryHeaders = {"Category", "Total"};
-        String[][] categoryData = {
-                {category[0], Integer.toString(numberCategory[0])},
-                {category[1], Integer.toString(numberCategory[1])},
-                {category[2], Integer.toString(numberCategory[2])},
-                {category[3], Integer.toString(numberCategory[3])},
-                {category[4], Integer.toString(numberCategory[4])},
-                {category[5], Integer.toString(numberCategory[5])},
-                {category[6], Integer.toString(numberCategory[6])},
-        };
+        String[][] categoryData = new String[7][2];
+        for(int i=0; i<7; i++){
+            categoryData[i][0] = category[i];
+            categoryData[i][1] = Integer.toString(numberCategory[i]);
+        }
         TableSetter.generateTable(applicationContext,tableLayout1, categoryHeaders, categoryData);
     }
 
@@ -483,6 +494,7 @@ public class fragmentReports extends Fragment {
         }
         return aggregatedData;
     }
+
 
     private void getPreviousPeriod(ArrayList<Timestamp> timestampArrayList, int currentrecord, Map<String, Integer> aggregatedData){
         db.collection("children") .whereGreaterThanOrEqualTo("dateAdded", timestampArrayList.get(2))
@@ -547,5 +559,4 @@ public class fragmentReports extends Fragment {
         }
         return rate * 100;
     }
-
 }

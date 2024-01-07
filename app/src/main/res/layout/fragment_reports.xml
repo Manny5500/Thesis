@@ -27,7 +27,6 @@
             android:id="@+id/parentConstraint"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
-
             <com.google.android.material.card.MaterialCardView
                 app:cardCornerRadius="8dp"
                 app:cardElevation="2dp"

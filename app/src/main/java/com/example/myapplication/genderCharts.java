@@ -119,6 +119,7 @@ public class genderCharts extends AppCompatActivity {
                 status1, status2, statusCount, checked);
 
     }
+
     private void tableSetter(int tableId){
         TableLayout sextableLayout = findViewById(tableId);
         int totalCount = 0;
@@ -128,7 +129,6 @@ public class genderCharts extends AppCompatActivity {
         String[][] sexData;
         sexData = dataSex(totalCount);
         TableSetter.generateTable(this, sextableLayout, tableHeader, sexData);
-
     }
     private void tableSetterAll(int tableId){
         TableLayout sextableLayout = findViewById(tableId);
@@ -172,12 +172,13 @@ public class genderCharts extends AppCompatActivity {
         return updateSexData(sexData,testPercentage);
     }
     private String[][] updateSexData(String[][] sexData, String[] testPercentage){
+        StringUtils stringUtils = new StringUtils(status1,status2,query);
         for(int i = 0; i<testPercentage.length;i++){
             String label = "";
                 if(testPercentage.length==2){
-                    label = labelFormat(i);
+                    label = stringUtils.labelFormat(i);
                 } else if (testPercentage.length==4) {
-                    label = labelFormatFour(i);
+                    label = stringUtils.labelFormatFour(i);
                 }
                 sexData[i][0] = label;
                 sexData[i][1] = String.valueOf(statusCount[i]);
@@ -203,6 +204,7 @@ public class genderCharts extends AppCompatActivity {
         }
         return counts;
     }
+
     private int[] getCountCat(Task<QuerySnapshot> task){
         int count1 = 0;
         int count2 = 0;
@@ -238,35 +240,5 @@ public class genderCharts extends AppCompatActivity {
         return arrayColor;
     }
 
-    private String labelFormat(int i){
-        String label;
-        if(i>0){
-            if(query.equals("all")){
-                label = "Female";
-            }else{
-                label = "Female (" + ChartMaker.labelChanger(status1)+")";
-            }
-        }else{
-            if(query.equals("all")){
-                label = "Male";
-            }else{
-                label = "Male (" + ChartMaker.labelChanger(status1)+")";
-            }
-        }
-        return label;
-    }
-    private  String labelFormatFour(int i){
-        String label;
-        if(i>1){
-            label = "Female (";
-        }else{
-            label = "Male (";
-        }
-        if(i%2==0){
-            label = label + ChartMaker.labelChanger(status1) + ")";
-        }else{
-            label = label + ChartMaker.labelChanger(status2) + ")";
-        }
-        return label;
-    }
+
 }

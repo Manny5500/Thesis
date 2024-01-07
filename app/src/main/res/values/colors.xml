@@ -11,4 +11,22 @@
     <color name="viola">#6854a4</color>
     <color name="themeup">#F48024</color>
     <color name="blueColor">#51ADE5</color>
+    <color name="orange1">#FF7000</color>
+    <color name="orange2">#FFAC4A</color>
+    <color name="orange3">#FFE9C9</color>
+    <color name="orange4">#F9C87C</color>
+    <color name="red1">#F8858B</color>
+    <color name="red2">#FF6663</color>
+    <color name="red3">#E54C38</color>
+    <color name="red4">#C23A22</color>
+    <color name="green1">#0E361C</color>
+    <color name="green2">#19541F</color>
+    <color name="green3">#446C48</color>
+    <color name="green4">#7C9060</color>
+    <color name="violet1">#bf8bff</color>
+    <color name="violet2">#cca3ff</color>
+    <color name="violet3">#dabcff</color>
+    <color name="violet4">#e5d0ff</color>
+
+
 </resources>
