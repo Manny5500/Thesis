@@ -16,9 +16,11 @@ import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -37,7 +39,10 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.ListenerRegistration;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -45,7 +50,11 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+
 import android.Manifest;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -76,7 +85,7 @@ public class fragmentPersonnelProfile extends Fragment {
         requestPermissionLauncher = registerForActivityResult(
                 new ActivityResultContracts.RequestPermission(),
                 isGranted -> {
-                    if (isGranted) {
+                    if (!isGranted) {
                         // Permission granted, proceed with capturing image
                     } else {
                         Toast.makeText(requireContext(), "Camera permission required", Toast.LENGTH_SHORT).show();
@@ -104,15 +113,90 @@ public class fragmentPersonnelProfile extends Fragment {
         dialog2.setContentView(R.layout.dialog_loader);
         dialog2.setCanceledOnTouchOutside(false);
         dialog2.setCancelable(false);
+
+        userid = ((PersonnelActivity)getActivity()).userid;
+        realtime();
+        imageClicked();
+
+        gmail = ((PersonnelActivity)getActivity()).email;
+
+
+        pickImageLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
+                new ActivityResultCallback<ActivityResult>() {
+                    @Override
+                    public void onActivityResult(ActivityResult result) {
+                        if (result.getResultCode() == Activity.RESULT_OK) {
+                            Intent data = result.getData();
+                            if (data != null && data.getData() != null) {
+
+                                Uri imageUri = data.getData();
+                                ImageProcessUtils.uploadImage(imageUri, storageRef, dialog2, gmail, db, requireContext(), userid);
+                            }
+                        }
+                    }
+                });
+
+        return view;
+    }
+
+    private void realtime(){
+        final DocumentReference docRef = db.collection("users").document(userid);
+        docRef.addSnapshotListener(new EventListener<DocumentSnapshot>() {
+            @Override
+            public void onEvent(@Nullable DocumentSnapshot snapshot,
+                                @Nullable FirebaseFirestoreException e) {
+
+                if (!isAdded()) {
+                    return;
+                }
+                if (e != null) {
+                    Log.d("FIREBASE Denied", ""+e);
+                    return;
+                }
+                updateImageandButtonStatus(snapshot);
+            }
+        });
+    }
+
+
+    private void updateImageandButtonStatus(DocumentSnapshot snapshot){
+        boolean isRequested = false;
+        if (snapshot != null && snapshot.exists()) {
+            if(snapshot.get("deletionRequest")!=null &&
+                    snapshot.get("deletionRequest").equals("true")){
+                btnDelete.setBackgroundColor(Color.parseColor("#FF6961"));
+                btnDelete.setText("Undo Deletion Request");
+                isRequested = true;
+            } else {
+                btnDelete.setBackgroundColor(Color.parseColor("#51ADE5"));
+                btnDelete.setText("Request for Account Deletion");
+            }
+            if(!userid.isEmpty()) {
+                //nasa image query upload ito originally pagtapos ng dialog2.dismiss
+                ProfileUtils.getProfile(db, userid, getContext(), textage, textname, textaddress,
+                        textemail, textcontact, imagePersonnel);
+            }
+
+            buttonRequestDeleteEvent(isRequested);
+        }else {
+            Toast.makeText(requireContext(), "No data"+snapshot.getData(), Toast.LENGTH_SHORT).show();
+        }
+    }
+
+
+    private void buttonRequestDeleteEvent(boolean finalIsRequested){
         btnDelete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                showYesNoDialog();
+                if(!finalIsRequested)
+                    requestDeleteDialog();
+                else
+                    DeleteUser.undoRequestForDeletion(db, userid, requireContext());
             }
         });
+    }
 
-
-
+    private void imageClicked(){
         imagePersonnel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -142,9 +226,9 @@ public class fragmentPersonnelProfile extends Fragment {
                     public void onClick(View v) {
                         // Handle take photo option
                         // TODO: Implement your logic here
-                            Intent intent = new Intent (requireContext(), CameraTests.class);
-                            intent.putExtra("email", gmail);
-                            startActivity(intent);
+                        Intent intent = new Intent (requireContext(), CameraTests.class);
+                        intent.putExtra("email", gmail);
+                        startActivity(intent);
                         dialog.dismiss();
                     }
                 });
@@ -162,31 +246,6 @@ public class fragmentPersonnelProfile extends Fragment {
             }
         });
 
-        gmail = ((PersonnelActivity)getActivity()).email;
-
-        userid = ((PersonnelActivity)getActivity()).userid;
-        if(!userid.isEmpty()) {
-           ProfileUtils.getProfile(db, userid, getContext(), textage, textname, textaddress,
-                   textemail, textcontact, imagePersonnel);
-        }
-
-        pickImageLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
-                new ActivityResultCallback<ActivityResult>() {
-                    @Override
-                    public void onActivityResult(ActivityResult result) {
-                        if (result.getResultCode() == Activity.RESULT_OK) {
-                            Intent data = result.getData();
-                            if (data != null && data.getData() != null) {
-                                Uri imageUri = data.getData();
-                                uploadImage(imageUri);
-                            }
-                        }
-                    }
-                });
-
-
-
-        return view;
     }
 
     private void openFileChooser() {
@@ -195,60 +254,9 @@ public class fragmentPersonnelProfile extends Fragment {
         pickImageLauncher.launch(intent);
     }
 
-    private void uploadImage(Uri imageUri) {
-        // Create a unique filename for the image (optional)
-        String fileName = "image_" + System.currentTimeMillis() + ".jpg";
-        StorageReference imageRef = storageRef.child("images/" + fileName);
-        dialog2.show();
-
-        // Upload the image to Firebase Storage
-        imageRef.putFile(imageUri)
-                .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                    @Override
-                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                        imageRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                            @Override
-                            public void onSuccess(Uri uri) {
-                                String imageUrl = uri.toString();
-                                if (gmail != null) {
-                                    Query query = db.collection("users").whereEqualTo("email", gmail);
-                                    ImageQueryUpload(imageUrl);
-                                } else {
-                                    Toast.makeText(requireContext(), "User ID is null", Toast.LENGTH_SHORT).show();
-                                }
-                            }
-                        });
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                    }
-                });
-    }
-    private void ImageQueryUpload(String imageUrl){
-        db.collection("users").document(userid).update("imageUrl", imageUrl)
-                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void aVoid) {
-                        // Image URL updated successfully in the matching documents
-                        dialog2.dismiss();
-                        ProfileUtils.getProfile(db, userid, getContext(), textage, textname, textaddress,
-                                textemail, textcontact, imagePersonnel);
-                        Toast.makeText(requireContext(), "Successfully changed the profile picture", Toast.LENGTH_SHORT).show();
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        // Handle failures
-                        Toast.makeText(requireContext(), "Failed to update image URL in user documents", Toast.LENGTH_SHORT).show();
-                    }
-                });
-    }
 
 
-    private void showYesNoDialog() {
+    private void requestDeleteDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
         builder.setTitle("Confirmation");
         builder.setMessage("Do you want to delete your account?");
@@ -256,18 +264,7 @@ public class fragmentPersonnelProfile extends Fragment {
         builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                user.delete()
-                        .addOnCompleteListener(new OnCompleteListener<Void>() {
-                            @Override
-                            public void onComplete(@NonNull Task<Void> task) {
-                                if (task.isSuccessful()) {
-                                    Toast.makeText(requireContext(), "User account is deleted", Toast.LENGTH_SHORT).show();
-                                    FirebaseAuth.getInstance().signOut();
-                                    requireActivity().finish();
-                                }
-                            }
-                        });
-                deleteFirestoreData();
+                DeleteUser.requestForDeletion(db, userid, requireContext());
                 dialog.dismiss();
             }
         });
@@ -283,23 +280,4 @@ public class fragmentPersonnelProfile extends Fragment {
         dialog.show();
     }
 
-    public void deleteFirestoreData(){
-        db.collection("users").document(userid).delete().addOnSuccessListener(new OnSuccessListener<Void>() {
-            @Override
-            public void onSuccess(Void unused) {
-                Toast.makeText(requireContext(), "User deleted sucessfully", Toast.LENGTH_SHORT).show();
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                Toast.makeText(requireContext(), "Failed to delete user", Toast.LENGTH_SHORT).show();
-            }
-        });
-    }
-    @Override
-    public void onResume() {
-        super.onResume();
-        ProfileUtils.getProfile(db, userid, getContext(), textage, textname, textaddress,
-                textemail, textcontact, imagePersonnel);
-    }
 }

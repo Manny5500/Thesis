@@ -3,6 +3,8 @@ package com.example.myapplication;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -29,7 +31,9 @@ public class UMEdit extends AppCompatActivity {
 
     String fnameVal, mnameVal, lnameVal, contactVal, monthVal, dayVal, yearVal, sexVal, barangayVal, bdayfull, motono;
 
-    Button edit, archive;
+    Button edit, archive, delete;
+
+    String requestDeletion;
     private FirebaseFirestore db;
 
     @Override
@@ -53,6 +57,12 @@ public class UMEdit extends AppCompatActivity {
         sex = findViewById(R.id.textPregnant);
         edit = findViewById(R.id.buttonEdit);
         archive = findViewById(R.id.buttonArchive);
+        delete = findViewById(R.id.buttonDelete);
+
+        requestDeletion = getIntent().getStringExtra("requestDeletion");
+
+        if(!requestDeletion.equals("true"))
+            delete.setVisibility(View.GONE);
 
         firstName.setText(App.user.getFirstName());
         middleName.setText(App.user.getLastName());
@@ -158,7 +168,41 @@ public class UMEdit extends AppCompatActivity {
                 });
                 }
         });
+
+        delete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                deleteAccountDialog();
+            }
+        });
     }
+
+    private void deleteAccountDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Confirmation");
+        builder.setMessage("Allow the user to delete account");
+
+        builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                DeleteUser.grantRequestForDeletionAdmin(db, UMEdit.this, UMEdit.this);
+                dialog.dismiss();
+            }
+        });
+
+        builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                DeleteUser.undoRequestForDeletionAdmin(db, App.user.getId(), UMEdit.this, UMEdit.this);
+                dialog.dismiss();
+            }
+        });
+
+        AlertDialog dialog = builder.create();
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.show();
+    }
+
     private List<Integer> generateNumbers(int start, int end) {
         List<Integer> numbers = new ArrayList<>();
         for (int i = end; i >= start; i--) {
@@ -166,4 +210,5 @@ public class UMEdit extends AppCompatActivity {
         }
         return numbers;
     }
+
 }

@@ -65,20 +65,9 @@ public class Login extends AppCompatActivity {
         forgotPassword = findViewById(R.id.txtForgotPassword);
         progressBar = findViewById(R.id.progressBar);
 
-        Intent intention = getIntent();
-        if(intention != null) {
-            receivedData = intention.getStringExtra("role");
-        }
-        //admin, personnel or parent
-        if(receivedData.equals("admin")){
-            admin.setText("a d m i n");
-        }
-        if(receivedData.equals("parent")){
-            admin.setText("p a r e n t");
-        }
-        if(receivedData.equals("personnel")){
-            admin.setText("p e r s o n n e l");
-        }
+
+        admin.setText("l o g i n");
+
 
         admin.setGravity(Gravity.CENTER);
         admin.setAllCaps(true);
@@ -169,15 +158,20 @@ public class Login extends AppCompatActivity {
                 if (documentSnapshot.exists()) {
                     String userRole = documentSnapshot.getString("user");
                     // Check the user's role and redirect accordingly
-                    if(receivedData.equals("admin") && userRole.equals("admin")) {
+                    if(userRole.equals("admin")) {
                         redirectToActivity(AdminActivity.class);
                         Toast.makeText(Login.this, "Login Successfully", Toast.LENGTH_SHORT).show();
-                    } else if (receivedData.equals("personnel") && userRole.equals("personnel")) {
+                        Toast.makeText(Login.this, "Admin", Toast.LENGTH_SHORT).show();
+                    } else if (userRole.equals("personnel")) {
                         redirectToActivity(PersonnelActivity.class);
-                    } else if (receivedData.equals("parent") && userRole.equals("parent")) {
+                        Toast.makeText(Login.this, "Login Successfully", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(Login.this, "Personnel", Toast.LENGTH_SHORT).show();
+                    } else if (userRole.equals("parent")) {
                         Intent intent = new Intent(Login.this, ParentActivity.class);
                         intent.putExtra("email", txtGmail.getText().toString());
                         redirectToActivity(intent);
+                        Toast.makeText(Login.this, "Login Successfully", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(Login.this, "Parent", Toast.LENGTH_SHORT).show();
                     } else {
                         handleInvalidUserRole();
                     }

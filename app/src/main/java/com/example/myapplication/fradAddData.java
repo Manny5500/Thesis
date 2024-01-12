@@ -50,6 +50,8 @@ public class fradAddData extends Fragment {
             parentFirstNameValue, parentMiddleNameValue, parentLastNameValue,
             gmailValue, houseNumberValue, bdateValue, expectedDateValue,
             sexACValue, belongACValue,  heightValue, weightValue, incomeVal, sitioVal;
+
+    ArrayList<String> status = new ArrayList<>();
     
     @Override
 
@@ -102,34 +104,8 @@ public class fradAddData extends Fragment {
         submit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                dateString = bdate.getText().toString();
-                FormUtils formUtils = new FormUtils();
-                Date parsedDate = formUtils.parseDate(dateString);
-
-                if (parsedDate != null) {
-                    monthdiff = formUtils.calculateMonthsDifference(parsedDate);
-                } else {
-                    //Toast.makeText(requireContext(), "Failed to parse the date", Toast.LENGTH_SHORT).show();
-                }
-
-                childFirstNameValue = childFirstName.getText().toString().trim();
-                childMiddleNameValue = childMiddleName.getText().toString().trim();
-                childLastNameValue = childLastName.getText().toString().trim();
-                parentFirstNameValue = parentFirstName.getText().toString().trim();
-                parentMiddleNameValue = parentMiddleName.getText().toString().trim();
-                parentLastNameValue = parentLastName.getText().toString().trim();
-                gmailValue = gmail.getText().toString().trim();
-                houseNumberValue = houseNumber.getText().toString().trim();
-                bdateValue = bdate.getText().toString().trim();
-                expectedDateValue = expectedDate.getText().toString().trim();
-                sexACValue = sexAC.getText().toString().trim();
-                belongACValue = belongAC.getText().toString().trim();
-                heightValue = height.getText().toString().trim();
-                weightValue = weight.getText().toString().trim();
-                incomeVal = incomeAC.getText().toString().trim();
-                sitioVal = sitio.getText().toString().trim();
-
+                setMonthdiff();
+                setAllTextInputData();
                 boolean isFormValid = FormUtils.validateForm(childFirstNameValue, childMiddleNameValue, childLastNameValue,
                         parentFirstNameValue, parentMiddleNameValue, parentLastNameValue,
                         gmailValue, houseNumberValue, bdateValue, expectedDateValue,
@@ -137,7 +113,6 @@ public class fradAddData extends Fragment {
 
                 if (isFormValid) {
                     getBarangay();
-
                 } else {
                     Toast.makeText(getContext(), "Please fill out all fields and provide valid information", Toast.LENGTH_SHORT).show();
                 }
@@ -145,11 +120,64 @@ public class fradAddData extends Fragment {
         });
         return view;
     }
-    private void AddtoFirestore(String barangayString){
+
+    private void setMonthdiff(){
+        dateString = bdate.getText().toString();
+        FormUtils formUtils = new FormUtils();
+        Date parsedDate = formUtils.parseDate(dateString);
+
+        if (parsedDate != null) {
+            monthdiff = formUtils.calculateMonthsDifference(parsedDate);
+        } else {
+            Toast.makeText(requireContext(), "Failed to parse the date", Toast.LENGTH_SHORT).show();
+        }
+    }
+    private void setAllTextInputData(){
+        //the only diff of edit here is incomeVal
+        childFirstNameValue = childFirstName.getText().toString().trim();
+        childMiddleNameValue = childMiddleName.getText().toString().trim();
+        childLastNameValue = childLastName.getText().toString().trim();
+        parentFirstNameValue = parentFirstName.getText().toString().trim();
+        parentMiddleNameValue = parentMiddleName.getText().toString().trim();
+        parentLastNameValue = parentLastName.getText().toString().trim();
+        gmailValue = gmail.getText().toString().trim();
+        houseNumberValue = houseNumber.getText().toString().trim();
+        bdateValue = bdate.getText().toString().trim();
+        expectedDateValue = expectedDate.getText().toString().trim();
+        sexACValue = sexAC.getText().toString().trim();
+        belongACValue = belongAC.getText().toString().trim();
+        heightValue = height.getText().toString().trim();
+        weightValue = weight.getText().toString().trim();
+        incomeVal = incomeAC.getText().toString().trim();
+        sitioVal = sitio.getText().toString().trim();
+    }
+
+    private void AddNewFirestore(String barangayString){
+        Map<String,Object> user = createMap(barangayString);
+        db.collection("children").add(user).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+            @Override
+            public void onSuccess(DocumentReference documentReference) {
+                clearInputs();
+                Toast.makeText(getContext(), "Form submitted successfully!", Toast.LENGTH_SHORT).show();
+
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Toast.makeText(requireContext(), "Failed to add user", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private Map<String, Object> createMap(String barangayString){
         height_true_val = Double.parseDouble(heightValue);
         weight_true_val = Double.parseDouble(weightValue);
         statusdb = FindStatusWFA.CalculateMalnourished(requireContext(), monthdiff, weight_true_val, height_true_val, sexACValue);
         String[] individualTest = FindStatusWFA.individualTest(requireContext(), monthdiff, weight_true_val, height_true_val, sexACValue);
+
+        for(String status_element: individualTest){
+            status.add(status_element);
+        }
         Map<String, Object> user = new HashMap<>();
         user.put("childFirstName", childFirstNameValue);
         user.put("childMiddleName", childMiddleNameValue);
@@ -168,30 +196,17 @@ public class fradAddData extends Fragment {
         user.put("sex", sexACValue);
         user.put("expectedDate", expectedDateValue);
         user.put("statusdb", statusdb);
-        user.put("monthlyIncome", incomeVal);
+        user.put("status", status);
         user.put("dateAdded", DateParser.getCurrentTimeStamp());
         user.put("monthAdded", DateParser.getMonthYear());
-        db.collection("children").add(user).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
-            @Override
-            public void onSuccess(DocumentReference documentReference) {
-                savetoHistory();
-                clearInputs();
-                Toast.makeText(getContext(), "Form submitted successfully!", Toast.LENGTH_SHORT).show();
-
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                Toast.makeText(requireContext(), "Failed to add user", Toast.LENGTH_SHORT).show();
-            }
-        });
+        return user;
     }
-    private void getBarangay(){
 
+    private void getBarangay(){
         db.collection("users").document(userid).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) {
-                AddtoFirestore(String.valueOf(documentSnapshot.getString("barangay")));
+                AddNewFirestore(String.valueOf(documentSnapshot.getString("barangay")));
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override

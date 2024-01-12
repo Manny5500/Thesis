@@ -14,12 +14,14 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.textfield.MaterialAutoCompleteTextView;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -34,9 +36,14 @@ public class fragmentUM extends Fragment  {
     private SearchView searchView;
     private List<ComponentModel> originalComponents;
 
+    MaterialAutoCompleteTextView userPicker;
+
     FirebaseFirestore db;
     int whiteColor;
     View view;
+
+    String userType = "personnel";
+    String[] userList;
 
     @Override
     public void onAttach(Context context) {
@@ -53,8 +60,13 @@ public class fragmentUM extends Fragment  {
 
         db = FirebaseFirestore.getInstance();
         umrecyclerView = view.findViewById(R.id.recycler);
+        userPicker = view.findViewById(R.id.userPicker);
 
-        Populate();
+        userList = new String[]{"personnel", "parent", "Request for Deletion"};
+        FormUtils.setAdapter(userList, userPicker, requireContext());
+        userPicker.setText("personnel", false);
+
+
         SearchView searchView = view.findViewById(R.id.searchView);
         EditText searchEditText = searchView.findViewById(androidx.appcompat.R.id.search_src_text);
 
@@ -73,10 +85,23 @@ public class fragmentUM extends Fragment  {
             }
         });
 
+
+        userPickerEvent();
+
         return view;
     }
+
+    public void userPickerEvent(){
+        userPicker.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                userType = (String) parent.getItemAtPosition(position);
+                Populate();
+            }
+        });
+    }
     public void Populate(){
-        db.collection("users").whereEqualTo("user", "personnel").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+        db.collection("users").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 if (task.isSuccessful()){
@@ -88,13 +113,31 @@ public class fragmentUM extends Fragment  {
                         arrayList.add(child);
                     }
 
-                    adapter = new UMAdapter(getContext(), arrayList);
+                    ArrayList<User> filteredUser = new ArrayList<>();
+
+                    for(User user:arrayList){
+                        if(user.getUser() != null && user.getUser().equals(userType))
+                            filteredUser.add(user);
+
+                        if(user.getDeletionRequest() != null
+                                && userType.equals(userList[2])
+                                && user.getDeletionRequest().equals("true"))
+                            filteredUser.add(user);
+                    }
+
+
+                    adapter = new UMAdapter(getContext(), filteredUser);
                     umrecyclerView.setAdapter(adapter);
                     adapter.setOnItemClickListener(new UMAdapter.OnItemClickListener() {
                         @Override
                         public void onClick(User child) {
                             App.user = child;
-                            startActivity(new Intent(requireContext(), UMEdit.class));
+                            Intent intent = new Intent(requireContext(), UMEdit.class);
+                            if(userType.equals(userList[2]))
+                                intent.putExtra("requestDeletion", "true");
+                            else
+                                intent.putExtra("requestDeletion", "false");
+                            startActivity(intent);
                         }
                     });
                 }

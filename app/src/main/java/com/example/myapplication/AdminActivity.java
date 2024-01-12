@@ -130,7 +130,7 @@ public class AdminActivity extends AppCompatActivity {
             public void onClick(DialogInterface dialog, int which) {
 
                 FirebaseAuth.getInstance().signOut();
-                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                Intent intent = new Intent(getApplicationContext(), Login.class);
                 startActivity(intent);
                 finish();
                 dialog.dismiss();

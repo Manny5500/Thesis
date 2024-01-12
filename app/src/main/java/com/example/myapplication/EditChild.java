@@ -43,6 +43,7 @@ public class EditChild extends AppCompatActivity {
             sexACValue, belongACValue, barangayACValue, heightValue, weightValue, sitioVal;
 
     ArrayList<String> statusdb;
+    ArrayList<String> status = new ArrayList<>();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -97,86 +98,21 @@ public class EditChild extends AppCompatActivity {
         FormUtils.dateClicked(bdate,this);
         FormUtils.dateClicked(expectedDate, this);
 
-
         edit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                dateString = bdate.getText().toString();
-                FormUtils formUtils = new FormUtils();
-                Date parsedDate = formUtils.parseDate(dateString);
-
-                if (parsedDate != null) {
-                    monthdiff = formUtils.calculateMonthsDifference(parsedDate);
-                } else {
-                    Toast.makeText(EditChild.this, "Failed to parse the date", Toast.LENGTH_SHORT).show();
-                }
-
-
-                childFirstNameValue = childFirstName.getText().toString().trim();
-                childMiddleNameValue = childMiddleName.getText().toString().trim();
-                childLastNameValue = childLastName.getText().toString().trim();
-                parentFirstNameValue = parentFirstName.getText().toString().trim();
-                parentMiddleNameValue = parentMiddleName.getText().toString().trim();
-                parentLastNameValue = parentLastName.getText().toString().trim();
-                gmailValue = gmail.getText().toString().trim();
-                houseNumberValue = houseNumber.getText().toString().trim();
-                bdateValue = bdate.getText().toString().trim();
-                expectedDateValue = expectedDate.getText().toString().trim();
-                sexACValue = sexAC.getText().toString().trim();
-                belongACValue = belongAC.getText().toString().trim();
-                heightValue = height.getText().toString().trim();
-                weightValue = weight.getText().toString().trim();
-                sitioVal = sitio.getText().toString().trim();
+                setMonthdiff();
+                setAllTextInputData();
                 boolean isFormValid = FormUtils.validateForm(childFirstNameValue, childMiddleNameValue, childLastNameValue,
                         parentFirstNameValue, parentMiddleNameValue, parentLastNameValue,
                         gmailValue, houseNumberValue, bdateValue, expectedDateValue,
                         sexACValue, belongACValue, heightValue, weightValue, monthdiff, sitioVal, EditChild.this);
 
                 if (isFormValid) {
-                    height_true_val = Double.parseDouble(heightValue);
-                    weight_true_val = Double.parseDouble(weightValue);
-                    statusdb = FindStatusWFA.CalculateMalnourished(EditChild.this, monthdiff, weight_true_val, height_true_val, sexACValue);
-                    String[] individualTest = FindStatusWFA.individualTest(EditChild.this, monthdiff, weight_true_val, height_true_val, sexACValue);
-                    ArrayList<String> status = new ArrayList<>();
-                    for(String status_element: individualTest){
-                        status.add(status_element);
-                    }
-
-
-                    Map<String, Object> user = new HashMap<>();
-                    user.put("childFirstName", childFirstNameValue);
-                    user.put("childMiddleName", childMiddleNameValue);
-                    user.put("childLastName", childLastNameValue);
-                    user.put("parentFirstName", parentFirstNameValue);
-                    user.put("parentMiddleName", parentMiddleNameValue);
-                    user.put("parentLastName", parentLastNameValue);
-                    user.put("gmail", gmailValue);
-                    user.put("houseNumber", houseNumberValue);
-                    user.put("height", height_true_val);
-                    user.put("weight", weight_true_val);
-                    user.put("birthDate", bdateValue);
-                    user.put("belongtoIP", belongACValue);
-                    user.put("barangay", barangayACValue);
-                    user.put("sitio", sitioVal);
-                    user.put("sex", sexACValue);
-                    user.put("expectedDate", expectedDateValue);
-                    user.put("statusdb", statusdb);
-                    user.put("status", status);
-                    user.put("dateAdded", DateParser.getCurrentTimeStamp());
-                    user.put("monthAdded", DateParser.getMonthYear());
-                    db.collection("children").document(App.child.getId()).update(user).addOnSuccessListener(new OnSuccessListener<Void>() {
-                        @Override
-                        public void onSuccess(Void unused) {
-                            Toast.makeText(EditChild.this, "Saved successfully", Toast.LENGTH_SHORT).show();
-                            savetoHistory();
-                            finish();
-                        }
-                    }).addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                            Toast.makeText(EditChild.this, "Failed to save changes", Toast.LENGTH_SHORT).show();
-                        }
-                    });
+                    if(DateParser.getMonthYear().equals(App.child.getMonthAdded()))
+                        updateFirestore(createMap());
+                    else
+                        addNewFirestore(createMap());
                 }else {
                     Toast.makeText(EditChild.this, "Please fill out all fields and provide valid information", Toast.LENGTH_SHORT).show();
                 }
@@ -186,18 +122,113 @@ public class EditChild extends AppCompatActivity {
         remove.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                db.collection("children").document(App.child.getId()).delete().addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void unused) {
-                        Toast.makeText(EditChild.this, "Child deleted sucessfully", Toast.LENGTH_SHORT).show();
-                        finish();
-                    }
-                }).addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Toast.makeText(EditChild.this, "Failed to delete user", Toast.LENGTH_SHORT).show();
-                    }
-                });
+             removeFirestoreData();
+            }
+        });
+    }
+    private void removeFirestoreData(){
+        db.collection("children").document(App.child.getId()).delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void unused) {
+                Toast.makeText(EditChild.this, "Child deleted sucessfully", Toast.LENGTH_SHORT).show();
+                finish();
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Toast.makeText(EditChild.this, "Failed to delete user", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+    private void setMonthdiff(){
+        dateString = bdate.getText().toString();
+        FormUtils formUtils = new FormUtils();
+        Date parsedDate = formUtils.parseDate(dateString);
+
+        if (parsedDate != null) {
+            monthdiff = formUtils.calculateMonthsDifference(parsedDate);
+        } else {
+            Toast.makeText(EditChild.this, "Failed to parse the date", Toast.LENGTH_SHORT).show();
+        }
+    }
+    private void setAllTextInputData(){
+        childFirstNameValue = childFirstName.getText().toString().trim();
+        childMiddleNameValue = childMiddleName.getText().toString().trim();
+        childLastNameValue = childLastName.getText().toString().trim();
+        parentFirstNameValue = parentFirstName.getText().toString().trim();
+        parentMiddleNameValue = parentMiddleName.getText().toString().trim();
+        parentLastNameValue = parentLastName.getText().toString().trim();
+        gmailValue = gmail.getText().toString().trim();
+        houseNumberValue = houseNumber.getText().toString().trim();
+        bdateValue = bdate.getText().toString().trim();
+        expectedDateValue = expectedDate.getText().toString().trim();
+        sexACValue = sexAC.getText().toString().trim();
+        belongACValue = belongAC.getText().toString().trim();
+        heightValue = height.getText().toString().trim();
+        weightValue = weight.getText().toString().trim();
+        sitioVal = sitio.getText().toString().trim();
+
+    }
+    private Map<String, Object> createMap(){
+        height_true_val = Double.parseDouble(heightValue);
+        weight_true_val = Double.parseDouble(weightValue);
+        statusdb = FindStatusWFA.CalculateMalnourished(EditChild.this, monthdiff, weight_true_val, height_true_val, sexACValue);
+        String[] individualTest = FindStatusWFA.individualTest(EditChild.this, monthdiff, weight_true_val, height_true_val, sexACValue);
+
+        for(String status_element: individualTest){
+            status.add(status_element);
+        }
+        Map<String, Object> user = new HashMap<>();
+        user.put("childFirstName", childFirstNameValue);
+        user.put("childMiddleName", childMiddleNameValue);
+        user.put("childLastName", childLastNameValue);
+        user.put("parentFirstName", parentFirstNameValue);
+        user.put("parentMiddleName", parentMiddleNameValue);
+        user.put("parentLastName", parentLastNameValue);
+        user.put("gmail", gmailValue);
+        user.put("houseNumber", houseNumberValue);
+        user.put("height", height_true_val);
+        user.put("weight", weight_true_val);
+        user.put("birthDate", bdateValue);
+        user.put("belongtoIP", belongACValue);
+        user.put("barangay", barangayACValue);
+        user.put("sitio", sitioVal);
+        user.put("sex", sexACValue);
+        user.put("expectedDate", expectedDateValue);
+        user.put("statusdb", statusdb);
+        user.put("status", status);
+        user.put("dateAdded", DateParser.getCurrentTimeStamp());
+        user.put("monthAdded", DateParser.getMonthYear());
+        return user;
+    }
+    private void addNewFirestore(Map<String, Object> user){
+        db.collection("children").add(user).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+            @Override
+            public void onSuccess(DocumentReference documentReference) {
+                Toast.makeText(EditChild.this, "Saved successfully!", Toast.LENGTH_SHORT).show();
+                finish();
+
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Toast.makeText(EditChild.this, "Failed to add user", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+    }
+    private void updateFirestore(Map<String, Object> user){
+        db.collection("children").document(App.child.getId()).update(user).addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void unused) {
+                Toast.makeText(EditChild.this, "Saved successfully", Toast.LENGTH_SHORT).show();
+                //savetoHistory();
+                finish();
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Toast.makeText(EditChild.this, "Failed to save changes", Toast.LENGTH_SHORT).show();
             }
         });
     }

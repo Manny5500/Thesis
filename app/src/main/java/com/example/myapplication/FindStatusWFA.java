@@ -49,7 +49,7 @@ public class FindStatusWFA {
                 status = "Severe Stunted";
                 break;
             } else if (height >= sd3[age]) {
-                status = "Total";
+                status = "Tall";
                 break;
             }
         }

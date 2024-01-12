@@ -1,5 +1,7 @@
 package com.example.myapplication;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
@@ -12,14 +14,26 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.ListenerRegistration;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class ParentActivity extends AppCompatActivity {
     ConstraintLayout parentProfile, children, parentLogout;
@@ -28,6 +42,10 @@ public class ParentActivity extends AppCompatActivity {
     int color_flag = 0;
     FirebaseAuth auth;
     FirebaseUser user;
+
+    private ListenerRegistration listenerRegistration;
+
+    private FirebaseFirestore db;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -37,6 +55,8 @@ public class ParentActivity extends AppCompatActivity {
         email="";
         auth = FirebaseAuth.getInstance();
         user = auth.getCurrentUser();
+
+        db = FirebaseFirestore.getInstance();
         if (user == null){
             Intent intent = new Intent(getApplicationContext(), MainActivity.class);
             startActivity(intent);
@@ -45,6 +65,25 @@ public class ParentActivity extends AppCompatActivity {
             email = user.getEmail();
             userid = user.getUid();
         }
+
+        final DocumentReference docRef = db.collection("users").document(userid);
+        listenerRegistration = docRef.addSnapshotListener(new EventListener<DocumentSnapshot>() {
+            @Override
+            public void onEvent(@Nullable DocumentSnapshot snapshot,
+                                @Nullable FirebaseFirestoreException e) {
+                if (e != null) {
+                    Log.d("Firebase EXCEPTION", ""+e);
+                    return;
+                }
+
+                if (snapshot != null && snapshot.exists()) {
+                    if(snapshot.get("readyToDelete") != null &&
+                            snapshot.get("readyToDelete").equals("true"))
+                        deleteAccountDialog();
+                }
+
+            }
+        });
 
         parentProfile = findViewById(R.id.btnParentProfile);
         children = findViewById(R.id.btnChildren);
@@ -108,10 +147,13 @@ public class ParentActivity extends AppCompatActivity {
             public void onClick(DialogInterface dialog, int which) {
 
                 FirebaseAuth.getInstance().signOut();
-                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                Intent intent = new Intent(getApplicationContext(), Login.class);
                 startActivity(intent);
                 finish();
                 dialog.dismiss();
+                if (listenerRegistration != null) {
+                    listenerRegistration.remove();
+                }
             }
         });
 
@@ -123,6 +165,37 @@ public class ParentActivity extends AppCompatActivity {
         });
 
         AlertDialog dialog = builder.create();
+        dialog.show();
+    }
+
+
+    private void deleteAccountDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Confirmation");
+        builder.setMessage("The admin grants your request to delete your account.\n" +
+                "Are you sure you want to permanently delete your account?");
+
+        builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                DeleteUser.deleteUserAccount(user, ParentActivity.this, ParentActivity.this);
+                DeleteUser.deleteFirestoreData(db, userid, ParentActivity.this);
+                dialog.dismiss();
+            }
+        });
+
+
+        builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                DeleteUser.undoRequestForDeletion(db, userid, ParentActivity.this);
+                dialog.dismiss();
+            }
+        });
+
+        AlertDialog dialog = builder.create();
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.setCancelable(false);
         dialog.show();
     }
 

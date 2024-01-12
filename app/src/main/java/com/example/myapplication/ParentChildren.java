@@ -67,50 +67,8 @@ public class ParentChildren extends Fragment {
         textWeight = view.findViewById(R.id.textWeight);
 
         gmail = ((ParentActivity)getActivity()).email;
-        if(!gmail.isEmpty()) {
-            db.collection("children").whereEqualTo("gmail", gmail).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                @Override
-                public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                    if (task.isSuccessful()) {
-                        ArrayList getGulayanStatus = new ArrayList<>();
-                        ArrayList getFeedingStatus = new ArrayList<>();
-                        for (QueryDocumentSnapshot doc : task.getResult()) {
-                            Child child = doc.toObject(Child.class);
-                            child.setId(doc.getId());
-                            childrenList.add(child);
-
-                            if(child.getForgulayan()!=null){
-                                if(child.getForgulayan().equals("Yes")){
-                                    getGulayanStatus.add("Yes");
-                                }
-                            }
-
-                            if(child.getForfeeding()!=null){
-                                if(child.getForfeeding().equals("Yes")){
-                                    getFeedingStatus.add("Yes");
-                                }
-                            }
-                        }
-                        if(task.getResult().size()>0){
-                            displayChildData(currentIndex);
-                        }
-                        if(getGulayanStatus.contains("Yes")){
-                            showDialog("gulayan");
-                        }
-                        if(getFeedingStatus.contains("Yes")){
-                            showDialog("feeding");
-                        }
-
-                    }
-                }
-            }).addOnFailureListener(new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception e) {
-                    Toast.makeText(requireContext(), "Failed to get all users", Toast.LENGTH_SHORT).show();
-                }
-            });
-
-        }
+        if(!gmail.isEmpty())
+            firstFetch();
 
         ImageView nextButton = view.findViewById(R.id.btnnext);
         nextButton.setOnClickListener(new View.OnClickListener() {
@@ -143,6 +101,45 @@ public class ParentChildren extends Fragment {
 
         return view;
     }
+
+    private void firstFetch(){
+        db.collection("children").whereEqualTo("gmail", gmail).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if (task.isSuccessful()) {
+                    String gulayanStatus = "";
+                    String feedingStatus = "";
+                    for (QueryDocumentSnapshot doc : task.getResult()) {
+                        Child child = doc.toObject(Child.class);
+                        child.setId(doc.getId());
+                        childrenList.add(child);
+
+                        if(child.getForgulayan()!=null && child.getForgulayan().equals("Yes"))
+                            gulayanStatus = "Yes";
+                        if(child.getForfeeding()!=null && child.getForfeeding().equals("Yes"))
+                            feedingStatus = "Yes";
+                    }
+
+                    if(task.getResult().size()>0)
+                        displayChildData(currentIndex);
+
+                    if(gulayanStatus.equals("Yes"))
+                        showDialog("gulayan");
+
+                    if(feedingStatus.equals("Yes"))
+                        showDialog("feeding");
+
+                }
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Toast.makeText(requireContext(), "Failed to get all users", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+
 
     private void displayChildData(int index) {
         Child child = childrenList.get(index);
@@ -211,6 +208,8 @@ public class ParentChildren extends Fragment {
             dialog.show();
         }
     }
+
+    
     public void getChildH(String fullname){
         db.collection("children_historical")
                 .document(fullname)

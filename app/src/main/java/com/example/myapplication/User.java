@@ -17,6 +17,8 @@ public class User {
 
     private String imageUrl;
 
+    private String deletionRequest;
+
 
     public User(){}
 
@@ -123,5 +125,15 @@ public class User {
     public void setImageUrl(String imageUrl) {
         this.imageUrl = imageUrl;
     }
+
+
+    public String getDeletionRequest(){
+        return deletionRequest;
+    }
+
+    public void setDeletionRequest(String deletionRequest) {
+        this.deletionRequest = deletionRequest;
+    }
+
 
 }
