@@ -2,6 +2,7 @@ package com.example.myapplication;
 
 import android.app.AlertDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 
@@ -42,9 +43,10 @@ public class ParentChildren extends Fragment {
     private ArrayList<Child> childrenList;
     private int currentIndex = 0;
     TextView childName, age, status, textCounts, textRecommendations,
-    textHeight, textWeight;
+    textHeight, textWeight, viewProgress;
     String dateString;
     int monthdiff;
+
 
     @Override
     public void onAttach(Context context) {
@@ -65,6 +67,7 @@ public class ParentChildren extends Fragment {
         textRecommendations = view.findViewById(R.id.textRecommendations);
         textHeight = view.findViewById(R.id.textHeight);
         textWeight = view.findViewById(R.id.textWeight);
+        viewProgress = view.findViewById(R.id.viewProgress);
 
         gmail = ((ParentActivity)getActivity()).email;
         if(!gmail.isEmpty())
@@ -109,16 +112,19 @@ public class ParentChildren extends Fragment {
                 if (task.isSuccessful()) {
                     String gulayanStatus = "";
                     String feedingStatus = "";
+                    ArrayList<Child> arrayList = new ArrayList<>();
                     for (QueryDocumentSnapshot doc : task.getResult()) {
                         Child child = doc.toObject(Child.class);
                         child.setId(doc.getId());
-                        childrenList.add(child);
+                        arrayList.add(child);
 
                         if(child.getForgulayan()!=null && child.getForgulayan().equals("Yes"))
                             gulayanStatus = "Yes";
                         if(child.getForfeeding()!=null && child.getForfeeding().equals("Yes"))
                             feedingStatus = "Yes";
                     }
+
+                    childrenList = RemoveDuplicates.removeDuplicates(arrayList);
 
                     if(task.getResult().size()>0)
                         displayChildData(currentIndex);
@@ -162,6 +168,14 @@ public class ParentChildren extends Fragment {
         }else{
             age.setText(String.valueOf(monthdiff)+ " " + "months");
         }
+
+        viewProgress.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                App.child = child;
+                startActivity(new Intent(requireContext(), ProgressMonitoring.class));
+            }
+        });
 
         getChildH(child.getChildFirstName()+" "+child.getChildMiddleName()+" "+child.getChildLastName());
 
@@ -253,4 +267,6 @@ public class ParentChildren extends Fragment {
                 });
 
     }
+
+
 }

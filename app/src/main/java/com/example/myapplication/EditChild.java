@@ -93,6 +93,7 @@ public class EditChild extends AppCompatActivity {
         expectedDate.setText(App.child.getExpectedDate());
         sitio.setText(App.child.getSitio());
 
+
         FormUtils.setAdapter(sex, sexAC, this);
         FormUtils.setAdapter(belongs,belongAC,this);
         FormUtils.dateClicked(bdate,this);
@@ -206,6 +207,7 @@ public class EditChild extends AppCompatActivity {
             @Override
             public void onSuccess(DocumentReference documentReference) {
                 Toast.makeText(EditChild.this, "Saved successfully!", Toast.LENGTH_SHORT).show();
+                savetoHistory();
                 finish();
 
             }
@@ -222,7 +224,7 @@ public class EditChild extends AppCompatActivity {
             @Override
             public void onSuccess(Void unused) {
                 Toast.makeText(EditChild.this, "Saved successfully", Toast.LENGTH_SHORT).show();
-                //savetoHistory();
+                savetoHistory();
                 finish();
             }
         }).addOnFailureListener(new OnFailureListener() {

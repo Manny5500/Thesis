@@ -10,6 +10,7 @@ import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,6 +24,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
@@ -94,7 +96,8 @@ public class ManageData extends Fragment {
 
     }
     private void Populate_now(String barangayString){
-        db.collection("children").whereEqualTo("barangay", barangayString).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+        db.collection("children").whereEqualTo("barangay", barangayString).orderBy("dateAdded", Query.Direction.DESCENDING)
+                .get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 if (task.isSuccessful()){
@@ -104,7 +107,8 @@ public class ManageData extends Fragment {
                         child.setId(doc.getId());
                         arrayList.add(child);
                     }
-                    userAdapter = new ChildAdapter(getContext(), arrayList);
+
+                    userAdapter = new ChildAdapter(getContext(), RemoveDuplicates.removeDuplicates(arrayList));
                     recyclerView.setAdapter(userAdapter);
                     userAdapter.setOnItemClickListener(new ChildAdapter.OnItemClickListener() {
                         @Override
@@ -118,7 +122,8 @@ public class ManageData extends Fragment {
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
-                Toast.makeText(requireContext(), "Failed to get all users", Toast.LENGTH_SHORT).show();
+                Log.d("Firebase myexception", ""+e);
+                Toast.makeText(requireContext(), ""+e, Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -128,4 +133,7 @@ public class ManageData extends Fragment {
         super.onResume();
         Populate();
     }
+
+
+
 }

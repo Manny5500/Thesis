@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    style="@style/Widget.Material3.CardView.Elevated"
+    android:backgroundTint="@color/white"
+    app:cardCornerRadius="10sp"
+    app:cardElevation="10sp"
+    android:layout_marginEnd="10sp"
+    android:layout_marginStart="10sp"
+    android:layout_marginTop="5sp"
+    android:layout_marginBottom="5sp"
+   >
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="10dp">
+
+        <TextView
+            android:id="@+id/progressDate"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Date"
+            android:textSize="25sp"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/progressHeight">
+        </TextView>
+
+        <TextView
+            android:id="@+id/progressHeight"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Height"
+            android:textSize="18sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/progressDate"
+            app:layout_constraintBottom_toTopOf="@id/progressWeight">
+        </TextView>
+
+
+        <TextView
+            android:id="@+id/progressWeight"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Weight"
+            android:textSize="18sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/progressHeight"
+            app:layout_constraintBottom_toBottomOf="parent">
+        </TextView>
+
+
+
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</com.google.android.material.card.MaterialCardView>

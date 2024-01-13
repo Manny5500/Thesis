@@ -82,9 +82,8 @@ public class ParentProfile extends Fragment {
                 new ActivityResultContracts.RequestPermission(),
                 isGranted -> {
                     if (!isGranted) {
-                        // Permission granted, proceed with capturing image
-                    } else {
                         Toast.makeText(requireContext(), "Camera permission required", Toast.LENGTH_SHORT).show();
+                    } else {
                     }
                 });
     }
@@ -277,5 +276,7 @@ public class ParentProfile extends Fragment {
         AlertDialog dialog = builder.create();
         dialog.show();
     }
+
+
 
 }

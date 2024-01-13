@@ -39,7 +39,7 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/up_layout"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
+            android:layout_height="wrap_content"
             android:layout_marginStart="25dp"
             android:layout_marginEnd="25dp"
             app:layout_constraintBottom_toTopOf="@id/recommendation"
@@ -47,18 +47,9 @@
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/childrenRecord"
+            android:background="@drawable/rounded_corner"
+            android:backgroundTint="#90FFFFFF"
             app:layout_constraintVertical_weight="2.50">
-
-            <ImageView
-                android:id="@+id/alpha_makerup"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:alpha="0.60"
-                android:background="@drawable/rounded_corner"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
                 android:id="@+id/textView6"
@@ -217,6 +208,18 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/textView4" />
 
+            <TextView
+                android:id="@+id/viewProgress"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="30dp"
+                android:text=">>View Progress"
+                android:textColor="@color/blueColor"
+                android:textSize="18sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/textStatus"/>
+
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <ImageView
@@ -243,17 +246,9 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/recommendation">
-        <ImageView
-            android:id="@+id/alpha_makerdown"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            android:alpha="0.60"
-            android:background="@drawable/rounded_corner"/>
+        app:layout_constraintTop_toBottomOf="@+id/recommendation"
+        android:background="@drawable/rounded_corner"
+        android:backgroundTint="#90FFFFFF">
 
         <TextView
             android:id="@+id/textRecommendations"

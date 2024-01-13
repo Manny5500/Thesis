@@ -158,6 +158,7 @@ public class fradAddData extends Fragment {
             @Override
             public void onSuccess(DocumentReference documentReference) {
                 clearInputs();
+                savetoHistory();
                 Toast.makeText(getContext(), "Form submitted successfully!", Toast.LENGTH_SHORT).show();
 
             }
