@@ -1,5 +1,8 @@
 package com.example.myapplication;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -17,6 +20,7 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.MaterialAutoCompleteTextView;
 import com.google.android.material.textfield.TextInputEditText;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -38,21 +42,23 @@ public class fradAddData extends Fragment {
             parentFirstName, parentMiddleName, parentLastName,
             gmail, houseNumber, height, weight, bdate, expectedDate, sitio;
 
-    MaterialAutoCompleteTextView sexAC, belongAC,  incomeAC;
+    MaterialAutoCompleteTextView sexAC, belongAC, incomeAC;
     ArrayList<String> statusdb;
     Button submit;
     private FirebaseFirestore db;
     String barangays, sexchose, belongchose, dateString;
     SimpleDateFormat dateFormat;
     private int bdatevalue, monthdiff;
-    private double  height_true_val, weight_true_val;
+    private double height_true_val, weight_true_val;
     String childFirstNameValue, childMiddleNameValue, childLastNameValue,
             parentFirstNameValue, parentMiddleNameValue, parentLastNameValue,
             gmailValue, houseNumberValue, bdateValue, expectedDateValue,
-            sexACValue, belongACValue,  heightValue, weightValue, incomeVal, sitioVal;
+            sexACValue, belongACValue, heightValue, weightValue, incomeVal, sitioVal;
 
+    boolean isRelated = false;
     ArrayList<String> status = new ArrayList<>();
-    
+    String tempEmailVal;
+
     @Override
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -64,15 +70,15 @@ public class fradAddData extends Fragment {
         height_true_val = 0;
 
 
-        personnelgmail = ((PersonnelActivity)getActivity()).email;
-        userid = ((PersonnelActivity)getActivity()).userid;
+        personnelgmail = ((PersonnelActivity) getActivity()).email;
+        userid = ((PersonnelActivity) getActivity()).userid;
         userlist = new ArrayList<>();
 
         String[] barangay = getResources().getStringArray(R.array.barangay);
         String[] sex = getResources().getStringArray(R.array.sex);
         String[] belongs = getResources().getStringArray(R.array.yes_or_no);
         String[] monthlyIncome = {"Less than 9,100", "9,100 to 18,200", "18,200 to 36,400",
-        "36,400 to 63,700", "63,700 to 109,200", "109,200 to 182,000", "Above 182,000"};
+                "36,400 to 63,700", "63,700 to 109,200", "109,200 to 182,000", "Above 182,000"};
 
         db = FirebaseFirestore.getInstance();
 
@@ -95,11 +101,13 @@ public class fradAddData extends Fragment {
         sitio = view.findViewById(R.id.spinnerSitio);
 
         FormUtils.setAdapter(sex, sexAC, requireContext());
-        FormUtils.setAdapter(belongs,belongAC, requireContext());
+        FormUtils.setAdapter(belongs, belongAC, requireContext());
         FormUtils.setAdapter(monthlyIncome, incomeAC, requireContext());
 
         FormUtils.dateClicked(bdate, requireContext());
         FormUtils.dateClicked(expectedDate, requireContext());
+
+
 
         submit.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -111,8 +119,9 @@ public class fradAddData extends Fragment {
                         gmailValue, houseNumberValue, bdateValue, expectedDateValue,
                         sexACValue, belongACValue, heightValue, weightValue, monthdiff, sitioVal, requireContext());
 
+
                 if (isFormValid) {
-                    getBarangay();
+                    checkName();
                 } else {
                     Toast.makeText(getContext(), "Please fill out all fields and provide valid information", Toast.LENGTH_SHORT).show();
                 }
@@ -121,7 +130,7 @@ public class fradAddData extends Fragment {
         return view;
     }
 
-    private void setMonthdiff(){
+    private void setMonthdiff() {
         dateString = bdate.getText().toString();
         FormUtils formUtils = new FormUtils();
         Date parsedDate = formUtils.parseDate(dateString);
@@ -132,7 +141,8 @@ public class fradAddData extends Fragment {
             Toast.makeText(requireContext(), "Failed to parse the date", Toast.LENGTH_SHORT).show();
         }
     }
-    private void setAllTextInputData(){
+
+    private void setAllTextInputData() {
         //the only diff of edit here is incomeVal
         childFirstNameValue = childFirstName.getText().toString().trim();
         childMiddleNameValue = childMiddleName.getText().toString().trim();
@@ -152,12 +162,15 @@ public class fradAddData extends Fragment {
         sitioVal = sitio.getText().toString().trim();
     }
 
-    private void AddNewFirestore(String barangayString){
-        Map<String,Object> user = createMap(barangayString);
+    private void AddNewFirestore(String barangayString) {
+        Map<String, Object> user = createMap(barangayString);
         db.collection("children").add(user).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
             @Override
             public void onSuccess(DocumentReference documentReference) {
                 clearInputs();
+                if(tempEmailVal==null){
+                    savetoTempEmail();
+                }
                 savetoHistory();
                 Toast.makeText(getContext(), "Form submitted successfully!", Toast.LENGTH_SHORT).show();
 
@@ -170,15 +183,8 @@ public class fradAddData extends Fragment {
         });
     }
 
-    private Map<String, Object> createMap(String barangayString){
-        height_true_val = Double.parseDouble(heightValue);
-        weight_true_val = Double.parseDouble(weightValue);
-        statusdb = FindStatusWFA.CalculateMalnourished(requireContext(), monthdiff, weight_true_val, height_true_val, sexACValue);
-        String[] individualTest = FindStatusWFA.individualTest(requireContext(), monthdiff, weight_true_val, height_true_val, sexACValue);
-
-        for(String status_element: individualTest){
-            status.add(status_element);
-        }
+    private Map<String, Object> createMap(String barangayString) {
+        setStatuses();
         Map<String, Object> user = new HashMap<>();
         user.put("childFirstName", childFirstNameValue);
         user.put("childMiddleName", childMiddleNameValue);
@@ -200,10 +206,22 @@ public class fradAddData extends Fragment {
         user.put("status", status);
         user.put("dateAdded", DateParser.getCurrentTimeStamp());
         user.put("monthAdded", DateParser.getMonthYear());
+        user.put("monthlyIncome", incomeVal);
         return user;
     }
 
-    private void getBarangay(){
+    private void setStatuses() {
+        height_true_val = Double.parseDouble(heightValue);
+        weight_true_val = Double.parseDouble(weightValue);
+        statusdb = FindStatusWFA.CalculateMalnourished(requireContext(), monthdiff, weight_true_val, height_true_val, sexACValue);
+        String[] individualTest = FindStatusWFA.individualTest(requireContext(), monthdiff, weight_true_val, height_true_val, sexACValue);
+
+        for (String status_element : individualTest) {
+            status.add(status_element);
+        }
+    }
+
+    private void getBarangay() {
         db.collection("users").document(userid).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) {
@@ -216,7 +234,8 @@ public class fradAddData extends Fragment {
             }
         });
     }
-    private void clearInputs(){
+
+    private void clearInputs() {
         childFirstName.setText("");
         childMiddleName.setText("");
         childLastName.setText("");
@@ -235,15 +254,19 @@ public class fradAddData extends Fragment {
         sitio.setText("");
     }
 
-    private void savetoHistory(){
+
+
+    private void savetoHistory() {
         String child_full_name = childFirstNameValue + " " + childMiddleNameValue + " " + childLastNameValue;
         String date_now = FormUtils.getCurrentDate();
         DocumentReference childDocRef = db.collection("children_historical").document(child_full_name);
         DocumentReference dateExaminedDocRef = childDocRef.collection("dates").document(date_now);
-        Map<String,Object> childData = new HashMap<>();
+        Map<String, Object> childData = new HashMap<>();
         childData.put("height", height_true_val);
         childData.put("weight", weight_true_val);
         childData.put("dateid", Integer.parseInt(date_now));
+        childData.put("status", status);
+        childData.put("statusdb", statusdb);
 
         dateExaminedDocRef.set(childData)
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
@@ -252,9 +275,104 @@ public class fradAddData extends Fragment {
                         if (task.isSuccessful()) {
                             Toast.makeText(requireContext(), "Added Successfully to the History", Toast.LENGTH_SHORT).show();
                         } else {
-                            Toast.makeText(requireContext(), ""+task.getException(), Toast.LENGTH_SHORT).show();
+                            Toast.makeText(requireContext(), "" + task.getException(), Toast.LENGTH_SHORT).show();
                         }
                     }
                 });
     }
+
+    private void savetoTempEmail() {
+        Map<String, Object> tempEmail = new HashMap<>();
+        tempEmail.put("parentFirstName", parentFirstNameValue);
+        tempEmail.put("parentMiddleName", parentMiddleNameValue);
+        tempEmail.put("parentLastName", parentLastNameValue);
+
+        db.collection("tempEmail").document(gmailValue)
+                .set(tempEmail)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Toast.makeText(getContext(), "Email submitted successfully!", Toast.LENGTH_SHORT).show();
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Toast.makeText(requireContext(), "Failed to add user", Toast.LENGTH_SHORT).show();
+                    }
+                });
+    }
+
+    private void getTempEmail() {
+        db.collection("tempEmail").document(gmailValue).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+            @Override
+            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                if (documentSnapshot.exists()) {
+                    TempEmail tempEmail = documentSnapshot.toObject(TempEmail.class);
+                    tempEmail.setGmail(documentSnapshot.getId());
+                    tempEmailVal = tempEmail.getGmail();
+                    if(checkEmail(tempEmail)){
+                        getBarangay();
+                    }
+                } else {
+
+                }
+            }
+        });
+    }
+
+    private boolean checkEmail(TempEmail tempEmail){
+        boolean check = true;
+        if(tempEmail!=null){
+            boolean isParentFirstNameMatch = parentFirstNameValue.equals(tempEmail.getParentFirstName());
+            boolean isParentMiddleNameMatch = parentMiddleNameValue.equals(tempEmail.getParentMiddleName());
+            boolean isParentLastNameMatch = parentLastNameValue.equals(tempEmail.getParentLastName());
+            if(isParentFirstNameMatch && isParentMiddleNameMatch && isParentLastNameMatch){
+                check = true;
+            }else{
+                Toast.makeText(requireContext(), "Email and Parent Name are not matched", Toast.LENGTH_SHORT).show();
+                check = false;
+            }
+        }
+        return check;
+    }
+
+    private void checkName(){
+        boolean isMiddleNameMatch = parentMiddleNameValue.equals(childMiddleNameValue);
+        boolean isLastNameMatch = parentLastNameValue.equals(childLastNameValue);
+        if(isRelated || (isMiddleNameMatch && isLastNameMatch)){
+            isRelated = true;
+            getTempEmail();
+        }else{
+            showYesNoDialog();
+        }
+    }
+
+    private void showYesNoDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
+        builder.setTitle("Confirmation");
+        builder.setMessage("Is this child related to parent/guardian");
+
+        builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+               isRelated = true;
+                dialog.dismiss();
+                getTempEmail();
+            }
+        });
+
+        builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+               isRelated = false;
+                dialog.dismiss();
+            }
+        });
+
+        builder.setCancelable(false);
+        AlertDialog dialog = builder.create();
+        dialog.show();
+    }
+
 }

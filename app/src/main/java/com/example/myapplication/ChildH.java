@@ -1,10 +1,20 @@
 package com.example.myapplication;
 
+import java.util.ArrayList;
+
 public class ChildH {
     double weight, height;
 
 
     String id;
+
+
+    ArrayList<String> statusdb;
+
+
+
+    ArrayList<String> status;
+
 
     public ChildH(){};
     public double getWeight() {
@@ -29,6 +39,22 @@ public class ChildH {
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    public ArrayList<String> getStatusdb() {
+        return statusdb;
+    }
+
+    public void setStatusdb(ArrayList<String> statusdb) {
+        this.statusdb = statusdb;
+    }
+
+    public ArrayList<String> getStatus() {
+        return status;
+    }
+
+    public void setStatus(ArrayList<String> status) {
+        this.status = status;
     }
 
 

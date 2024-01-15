@@ -4,13 +4,14 @@
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     style="@style/Widget.Material3.CardView.Elevated"
-    android:backgroundTint="@color/white"
     app:cardCornerRadius="10sp"
-    app:cardElevation="10sp"
     android:layout_marginEnd="10sp"
     android:layout_marginStart="10sp"
     android:layout_marginTop="5sp"
     android:layout_marginBottom="5sp"
+    android:backgroundTint="#90FFFFFF"
+    android:outlineSpotShadowColor="@android:color/transparent"
+    android:outlineAmbientShadowColor="@android:color/transparent"
    >
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -53,6 +54,18 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@id/progressHeight"
+            app:layout_constraintBottom_toTopOf="@id/progressStatus">
+        </TextView>
+
+        <TextView
+            android:id="@+id/progressStatus"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Status"
+            android:textSize="18sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/progressWeight"
             app:layout_constraintBottom_toBottomOf="parent">
         </TextView>
 

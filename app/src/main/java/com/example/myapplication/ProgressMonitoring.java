@@ -53,9 +53,7 @@ public class ProgressMonitoring extends AppCompatActivity {
                                 childh.setId(doc.getId());
                                 arrayList.add(childh);
                             }
-
                             Collections.reverse(arrayList);
-
                             childHAdapter = new ChildHAdapter(ProgressMonitoring.this, arrayList);
                             recyclerView.setAdapter(childHAdapter);
 

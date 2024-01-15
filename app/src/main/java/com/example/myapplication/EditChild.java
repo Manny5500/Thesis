@@ -3,6 +3,7 @@ package com.example.myapplication;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
@@ -14,8 +15,12 @@ import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.MaterialAutoCompleteTextView;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.Timestamp;
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -123,23 +128,35 @@ public class EditChild extends AppCompatActivity {
         remove.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                setAllTextInputData();
              removeFirestoreData();
             }
         });
     }
     private void removeFirestoreData(){
-        db.collection("children").document(App.child.getId()).delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+
+        CollectionReference collectionRef = db.collection("children");
+
+        Query query = collectionRef.whereEqualTo("childFirstName", childFirstNameValue)
+                .whereEqualTo("childMiddleName", childMiddleNameValue)
+                .whereEqualTo("childLastName", childLastNameValue)
+                .whereEqualTo("gmail", gmailValue );
+
+        query.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
-            public void onSuccess(Void unused) {
-                Toast.makeText(EditChild.this, "Child deleted sucessfully", Toast.LENGTH_SHORT).show();
-                finish();
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                Toast.makeText(EditChild.this, "Failed to delete user", Toast.LENGTH_SHORT).show();
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if (task.isSuccessful()) {
+                    for (QueryDocumentSnapshot document : task.getResult()) {
+                        document.getReference().delete();
+                    }
+                    finish();
+
+                } else {
+
+                }
             }
         });
+
     }
     private void setMonthdiff(){
         dateString = bdate.getText().toString();
@@ -171,14 +188,7 @@ public class EditChild extends AppCompatActivity {
 
     }
     private Map<String, Object> createMap(){
-        height_true_val = Double.parseDouble(heightValue);
-        weight_true_val = Double.parseDouble(weightValue);
-        statusdb = FindStatusWFA.CalculateMalnourished(EditChild.this, monthdiff, weight_true_val, height_true_val, sexACValue);
-        String[] individualTest = FindStatusWFA.individualTest(EditChild.this, monthdiff, weight_true_val, height_true_val, sexACValue);
-
-        for(String status_element: individualTest){
-            status.add(status_element);
-        }
+        setStatuses();
         Map<String, Object> user = new HashMap<>();
         user.put("childFirstName", childFirstNameValue);
         user.put("childMiddleName", childMiddleNameValue);
@@ -198,9 +208,21 @@ public class EditChild extends AppCompatActivity {
         user.put("expectedDate", expectedDateValue);
         user.put("statusdb", statusdb);
         user.put("status", status);
+        user.put("monthlyIncome", App.child.getMonthlyIncome());
         user.put("dateAdded", DateParser.getCurrentTimeStamp());
         user.put("monthAdded", DateParser.getMonthYear());
         return user;
+    }
+
+    private void setStatuses(){
+        height_true_val = Double.parseDouble(heightValue);
+        weight_true_val = Double.parseDouble(weightValue);
+        statusdb = FindStatusWFA.CalculateMalnourished(EditChild.this, monthdiff, weight_true_val, height_true_val, sexACValue);
+        String[] individualTest = FindStatusWFA.individualTest(EditChild.this, monthdiff, weight_true_val, height_true_val, sexACValue);
+
+        for(String status_element: individualTest){
+            status.add(status_element);
+        }
     }
     private void addNewFirestore(Map<String, Object> user){
         db.collection("children").add(user).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
@@ -243,6 +265,8 @@ public class EditChild extends AppCompatActivity {
         childData.put("height", height_true_val);
         childData.put("weight", weight_true_val);
         childData.put("dateid", Integer.parseInt(date_now));
+        childData.put("status", status);
+        childData.put("statusdb", statusdb);
 
         dateExaminedDocRef.set(childData)
                 .addOnCompleteListener(new OnCompleteListener<Void>() {

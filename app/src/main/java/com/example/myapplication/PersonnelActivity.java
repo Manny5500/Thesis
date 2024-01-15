@@ -13,6 +13,7 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -67,7 +68,8 @@ public class PersonnelActivity extends AppCompatActivity {
             public void onEvent(@Nullable DocumentSnapshot snapshot,
                                 @Nullable FirebaseFirestoreException e) {
                 if (e != null) {
-                    Toast.makeText(PersonnelActivity.this, "" + e, Toast.LENGTH_SHORT).show();
+                    Log.d("Firebase myException", ""+e);
+                    //Toast.makeText(PersonnelActivity.this, "" + e, Toast.LENGTH_SHORT).show();
                     return;
                 }
 

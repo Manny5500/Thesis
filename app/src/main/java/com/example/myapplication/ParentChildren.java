@@ -2,12 +2,15 @@ package com.example.myapplication;
 
 import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,9 +22,12 @@ import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.FirebaseApp;
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -41,6 +47,7 @@ public class ParentChildren extends Fragment {
     private String gmail;
     private FirebaseFirestore db;
     private ArrayList<Child> childrenList;
+    private ArrayList<Child> validateChildList;
     private int currentIndex = 0;
     TextView childName, age, status, textCounts, textRecommendations,
     textHeight, textWeight, viewProgress;
@@ -72,6 +79,8 @@ public class ParentChildren extends Fragment {
         gmail = ((ParentActivity)getActivity()).email;
         if(!gmail.isEmpty())
             firstFetch();
+
+        validateChildList = new ArrayList<>();
 
         ImageView nextButton = view.findViewById(R.id.btnnext);
         nextButton.setOnClickListener(new View.OnClickListener() {
@@ -124,6 +133,8 @@ public class ParentChildren extends Fragment {
                             feedingStatus = "Yes";
                     }
 
+
+
                     childrenList = RemoveDuplicates.removeDuplicates(arrayList);
 
                     if(task.getResult().size()>0)
@@ -149,6 +160,8 @@ public class ParentChildren extends Fragment {
 
     private void displayChildData(int index) {
         Child child = childrenList.get(index);
+        getTempEmail(child);
+
         childName.setText(child.getChildFirstName()+" " + child.getChildLastName());
         dateString = child.getBirthDate();
         textHeight.setText(""+child.getHeight() + " cm");
@@ -268,5 +281,92 @@ public class ParentChildren extends Fragment {
 
     }
 
+
+    private void showYesNoDialog(Child child) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
+        builder.setTitle("Confirmation");
+        builder.setMessage("Is this child related to parent/guardian");
+
+        builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+
+        builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                removeAsMyChildren(child);
+                dialog.dismiss();
+            }
+        });
+
+        builder.setCancelable(false);
+        AlertDialog dialog = builder.create();
+        dialog.show();
+    }
+
+    private void reloadFragment() {
+        FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+
+        ParentChildren newInstance = new ParentChildren();
+        fragmentTransaction.replace(R.id.frameLayout, newInstance);
+
+        fragmentTransaction.commit();
+    }
+
+    private void validateChildren(Child child, TempEmail tempEmail){
+        if(!child.getChildMiddleName().equals(tempEmail.getParentMiddleName()) ||
+        !child.getChildLastName().equals(tempEmail.getParentLastName())){
+            showYesNoDialog(child);
+        }
+    }
+
+    private void getTempEmail(Child child) {
+        db.collection("tempEmail").document(gmail).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+            @Override
+            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                if (documentSnapshot.exists()) {
+                    TempEmail tempEmail = documentSnapshot.toObject(TempEmail.class);
+                    tempEmail.setGmail(documentSnapshot.getId());
+                    validateChildren(child, tempEmail);
+                } else {
+
+                }
+            }
+        });
+    }
+
+    private void removeAsMyChildren(Child child){
+        CollectionReference collectionRef = db.collection("children");
+
+        Query query = collectionRef.whereEqualTo("childFirstName", child.getChildFirstName())
+                .whereEqualTo("childMiddleName", child.getChildMiddleName())
+                .whereEqualTo("childLastName", child.getChildLastName())
+                .whereEqualTo("gmail", gmail );
+
+        query.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if (task.isSuccessful()) {
+                    for (QueryDocumentSnapshot document : task.getResult()) {
+                        document.getReference().update(
+                                "parentFirstName", "N/A",
+                                "parentMiddleName", "N/A",
+                                "parentLastName", "N/A",
+                                "gmail", "N/A");
+                    }
+
+                    reloadFragment();
+
+                } else {
+
+                }
+            }
+        });
+
+    }
 
 }
