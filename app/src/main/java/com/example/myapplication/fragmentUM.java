@@ -42,7 +42,7 @@ public class fragmentUM extends Fragment  {
     int whiteColor;
     View view;
 
-    String userType = "personnel";
+    String userType = "BNS";
     String[] userList;
 
     @Override
@@ -62,9 +62,13 @@ public class fragmentUM extends Fragment  {
         umrecyclerView = view.findViewById(R.id.recycler);
         userPicker = view.findViewById(R.id.userPicker);
 
-        userList = new String[]{"personnel", "parent", "Request for Deletion"};
+        if(userType.equals("BNS")){
+            userType = "personnel";
+        }
+
+        userList = new String[]{"BNS", "parent", "Request for Deletion"};
         FormUtils.setAdapter(userList, userPicker, requireContext());
-        userPicker.setText("personnel", false);
+        userPicker.setText("BNS", false);
 
 
         SearchView searchView = view.findViewById(R.id.searchView);
@@ -96,6 +100,9 @@ public class fragmentUM extends Fragment  {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 userType = (String) parent.getItemAtPosition(position);
+                if(userType.equals("BNS")){
+                    userType = "personnel";
+                }
                 Populate();
             }
         });
@@ -133,10 +140,7 @@ public class fragmentUM extends Fragment  {
                         public void onClick(User child) {
                             App.user = child;
                             Intent intent = new Intent(requireContext(), UMEdit.class);
-                            if(userType.equals(userList[2]))
-                                intent.putExtra("requestDeletion", "true");
-                            else
-                                intent.putExtra("requestDeletion", "false");
+                            intent.putExtra("role", userType);
                             startActivity(intent);
                         }
                     });

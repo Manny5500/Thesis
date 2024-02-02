@@ -35,8 +35,8 @@ public class EditChild extends AppCompatActivity {
 
     TextInputEditText childFirstName, childMiddleName, childLastName,
             parentFirstName, parentMiddleName, parentLastName,
-            gmail, houseNumber, height, weight, bdate, expectedDate, sitio;
-    MaterialAutoCompleteTextView barangayAC, sexAC, belongAC;
+            gmail, houseNumber, height, weight, bdate, expectedDate;
+    MaterialAutoCompleteTextView barangayAC, sexAC, belongAC, sitio;
     Button edit, remove;
     private FirebaseFirestore db;
     String  dateString;
@@ -101,6 +101,7 @@ public class EditChild extends AppCompatActivity {
 
         FormUtils.setAdapter(sex, sexAC, this);
         FormUtils.setAdapter(belongs,belongAC,this);
+        FormUtils.setAdapter(SitioUtils.getSitioList(barangayACValue),sitio,this);
         FormUtils.dateClicked(bdate,this);
         FormUtils.dateClicked(expectedDate, this);
 

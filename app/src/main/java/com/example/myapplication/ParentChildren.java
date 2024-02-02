@@ -156,8 +156,6 @@ public class ParentChildren extends Fragment {
         });
     }
 
-
-
     private void displayChildData(int index) {
         Child child = childrenList.get(index);
         getTempEmail(child);
@@ -270,7 +268,6 @@ public class ParentChildren extends Fragment {
                                     textWeight.setText(""+arrayList.get(0).getWeight()+ " kg" + "(Decreased)");
                                 } else if(arrayList.get(0).getWeight()==arrayList.get(1).getWeight()){
                                     textWeight.setText(""+arrayList.get(0).getWeight()+ " kg" + "(Same)");
-
                                 }
                             }
                         }else {
@@ -280,7 +277,6 @@ public class ParentChildren extends Fragment {
                 });
 
     }
-
 
     private void showYesNoDialog(Child child) {
         AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());

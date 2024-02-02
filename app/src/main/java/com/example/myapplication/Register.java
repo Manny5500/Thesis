@@ -3,8 +3,11 @@ package com.example.myapplication;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -18,19 +21,24 @@ import com.google.android.material.textfield.MaterialAutoCompleteTextView;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthException;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class Register extends AppCompatActivity {
     TextInputEditText fname, mname, lname, gmail, password, cpassword, contact;
     MaterialAutoCompleteTextView month, day, year, sex, barangay, userrole;
     String fnameVal, mnameVal, lnameVal,gmailVal, passwordVal, cpasswordVal, contactVal,
-    monthVal, dayVal, yearVal, sexVal, barangayVal, bdayfull, motono, userVal;
+    monthVal, dayVal, yearVal, sexVal, barangayVal, bdayfull, motono, userVal, tempEmailVal;
 
+    FirebaseFirestore db;
 
     Button btnRegister;
     FirebaseAuth mAuth;
@@ -39,10 +47,6 @@ public class Register extends AppCompatActivity {
     @Override
     public void onStart() {
         super.onStart();
-        FirebaseUser currentUser = mAuth.getCurrentUser();
-        if (currentUser != null) {
-            FormUtils.redirectToRoleSpecificActivity(currentUser, FirebaseFirestore.getInstance(), this);
-        }
     }
 
     @Override
@@ -50,7 +54,7 @@ public class Register extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
         mAuth = FirebaseAuth.getInstance();
-
+        db = FirebaseFirestore.getInstance();
         String[] monthCol = {"Jan", "Feb", "Mar", "Apr", "May", "Jun",
                           "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"};
         String[] barangayCol = getResources().getStringArray(R.array.barangay);
@@ -113,30 +117,33 @@ public class Register extends AppCompatActivity {
                         bdayfull, sexVal, barangayVal, passwordVal, cpasswordVal, userVal, contactVal, Register.this);
 
                 if(isFormValid){
-                    mAuth.createUserWithEmailAndPassword(gmailVal, passwordVal)
-                            .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                                @Override
-                                public void onComplete(@NonNull Task<AuthResult> task) {
-                                    if (task.isSuccessful()) {
-                                        addUserDataToFirestore();
-
-                                    } else {
-                                        // If sign in fails, display a message to the user.
-                                        Toast.makeText(Register.this, "Authentication failed.",
-                                                Toast.LENGTH_SHORT).show();
-                                    }
-                                }
-                            });
+                    getTempEmail();
                 }
-
-
             }
         });
     }
 
+    private void addtoFirebaseAuth(){
+        mAuth.createUserWithEmailAndPassword(gmailVal, passwordVal)
+                .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if (task.isSuccessful()) {
+                            addUserDataToFirestore();
+                        } else {
+                            // If sign in fails, display a message to the user.
+                            Toast.makeText(Register.this, "Authentication failed." ,
+                                    Toast.LENGTH_SHORT).show();
+                            Log.d("auth_err", ""+task.getException());
+
+
+                        }
+                    }
+                });
+
+    }
+
     private void addUserDataToFirestore() {
-        // Access the Firestore instance
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
 
         // Create a new user object with desired data
         User user = new User(fnameVal, mnameVal, lnameVal, gmailVal, bdayfull, sexVal, barangayVal, userVal, contactVal);
@@ -152,6 +159,10 @@ public class Register extends AppCompatActivity {
                         //progressBar.setVisibility(View.GONE);
                         Toast.makeText(Register.this, "Account Created and Data Added to Firestore",
                                 Toast.LENGTH_SHORT).show();
+                        if(tempEmailVal==null){
+                            savetoTempEmail();
+                        }
+
                         if(userVal.equals("admin")){
                             Intent intent = new Intent(getApplicationContext(), AdminActivity.class);
                             startActivity(intent);
@@ -177,6 +188,7 @@ public class Register extends AppCompatActivity {
                         //progressBar.setVisibility(View.GONE);
                         Toast.makeText(Register.this, "Failed to add data to Firestore.",
                                 Toast.LENGTH_SHORT).show();
+
                     }
                 });
     }
@@ -188,5 +200,79 @@ public class Register extends AppCompatActivity {
         return numbers;
     }
 
+    private void savetoTempEmail() {
+        Map<String, Object> tempEmail = new HashMap<>();
+        tempEmail.put("parentFirstName", fnameVal);
+        tempEmail.put("parentMiddleName", mnameVal);
+        tempEmail.put("parentLastName", lnameVal);
+
+        db.collection("tempEmail").document(gmailVal)
+                .set(tempEmail)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                    }
+                });
+    }
+
+    private void getTempEmail() {
+
+        db.collection("tempEmail").document(gmailVal).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+            @Override
+            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                if (documentSnapshot.exists()) {
+                    TempEmail tempEmail = documentSnapshot.toObject(TempEmail.class);
+                    tempEmail.setGmail(documentSnapshot.getId());
+                    tempEmailVal = tempEmail.getGmail();
+
+                    if(tempEmail!=null){
+                        showYesNoDialog(tempEmail);
+                    }
+                } else {
+                    addtoFirebaseAuth();
+                }
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                // Handle the failure here, e.g., log the error or show an error message.
+                Toast.makeText(Register.this, ""+e, Toast.LENGTH_SHORT).show();
+                Log.d("firestore_err", ""+e);
+            }
+        });
+    }
+    private void showYesNoDialog(TempEmail tempEmail) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Confirmation");
+        builder.setMessage("This email is already associated with " + tempEmail.getFullName());
+
+        builder.setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                fnameVal = tempEmail.getParentFirstName();
+                mnameVal = tempEmail.getParentMiddleName();
+                lnameVal = tempEmail.getParentLastName();
+                addtoFirebaseAuth();
+                dialog.dismiss();
+            }
+        });
+
+        builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                Toast.makeText(Register.this, "Change your email", Toast.LENGTH_SHORT).show();
+                dialog.dismiss();
+            }
+        });
+
+        builder.setCancelable(false);
+        AlertDialog dialog = builder.create();
+        dialog.show();
+    }
 
 }

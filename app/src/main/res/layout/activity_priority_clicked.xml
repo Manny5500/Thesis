@@ -151,14 +151,4 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/btnCallDynamics" />
 
-    <Button
-        android:id="@+id/btnViewReferral"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:text="view referall form"
-        android:backgroundTint="#51ADE5"
-        app:layout_constraintEnd_toEndOf="@+id/btnReferralDynamics"
-        app:layout_constraintStart_toStartOf="@+id/btnCallDynamics"
-        app:layout_constraintTop_toBottomOf="@+id/btnReferralDynamics" />
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -39,5 +39,8 @@ public class TempEmail {
         this.parentLastName = parentLastName;
     }
 
+    public String getFullName(){
+        return parentFirstName + " " + parentMiddleName + " " + parentLastName;
+    }
 
 }

@@ -2,20 +2,12 @@ package com.example.myapplication;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.ContextCompat;
 
-import android.Manifest;
 import android.app.Dialog;
-import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.util.Log;
-import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
@@ -23,29 +15,18 @@ import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
-import com.google.android.material.textfield.TextInputEditText;
-import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
-import com.google.firebase.firestore.WriteBatch;
 
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
 
 public class RecommendationAdmin extends AppCompatActivity {
     FirebaseFirestore db;
-    private List<Child> childList;
+    int [] feeding_barangay = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
+    int[] index = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23};
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -112,6 +93,7 @@ public class RecommendationAdmin extends AppCompatActivity {
                 TableSetter.setTextSizeAndPaddingForTextViews(18, 16, cellTextView);
                 tableRow.addView(cellTextView);
                 String maybe = rowData[0];
+                //rowData.length-1 means the last column
                 if(i==rowData.length-1 && which.equals("barangay")){
                     if(Integer.parseInt(rowData[1])>0) {
                         cellTextView.setTextColor(Color.parseColor("#0000FF"));
@@ -154,9 +136,8 @@ public class RecommendationAdmin extends AppCompatActivity {
             tableLayout.addView(tableRow);
         }
     }
+
     public void FeedingProgramBarangay(Task<QuerySnapshot> task, ArrayList<Child> childrenList, String [] barangay){
-        int [] feeding_barangay = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
-        int[] index = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23};
         int count_FEEDING;
         int count_GSB, count_MBL, count_M, count_L;
         count_GSB = count_MBL = count_M = count_L = 0;
@@ -203,24 +184,19 @@ public class RecommendationAdmin extends AppCompatActivity {
             }
             childrenList.clear();
         }
-        RankBarangay(feeding_barangay, index, barangay, task.getResult().size());
-        String[] gulayanHeaders = {"Beneficiaries","Total", "Action"};
-        String[][] gulayanData = {{"Malnourished but Low Income", Integer.toString(count_MBL),"Set"},
-                {"Malnourished", Integer.toString(count_M),"Set"},
-                {"Low Income", Integer.toString(count_L),"Set"},
-                {"All Beneficiaries", Integer.toString(count_GSB), "Set All"}};
-        TableLayout tableLayout = findViewById(R.id.GulayanTable);
-        generateTable(tableLayout, gulayanHeaders, gulayanData, "gulayan" );
+        RankBarangay();
+        feedingTable(barangay, task.getResult().size());
+        gsbTable(count_MBL,count_M,count_L,count_GSB);
     }
 
-    private void RankBarangay(int[] malnutrition_perbarangay, int[] index, String[] barangay, int totalcase){
-        for (int i = 0; i < malnutrition_perbarangay.length - 1; i++) {
-            for (int j = i + 1; j < malnutrition_perbarangay.length; j++) {
-                if (malnutrition_perbarangay[i] > malnutrition_perbarangay[j]) {
+    private void RankBarangay(){
+        for (int i = 0; i < feeding_barangay.length - 1; i++) {
+            for (int j = i + 1; j < feeding_barangay.length; j++) {
+                if (feeding_barangay[i] > feeding_barangay[j]) {
                     // Swap malnutrition_rate[i] and malnutrition_rate[j]
-                    int tempRate = malnutrition_perbarangay[i];
-                    malnutrition_perbarangay[i] = malnutrition_perbarangay[j];
-                    malnutrition_perbarangay[j] = tempRate;
+                    int tempRate = feeding_barangay[i];
+                    feeding_barangay[i] = feeding_barangay[j];
+                    feeding_barangay[j] = tempRate;
 
                     // Swap index[i] and index[j]
                     int tempIndex = index[i];
@@ -229,14 +205,27 @@ public class RecommendationAdmin extends AppCompatActivity {
                 }
             }
         }
+    }
+
+    private void feedingTable(String[] barangay, int totalcase){
         TableLayout tableLayout = findViewById(R.id.feedingProgramTable);
         String[] barangayHeaders = {"Barangay", "Total", "Rate", "Action"};
-        int[] topNumbers = {malnutrition_perbarangay[23], malnutrition_perbarangay[22], malnutrition_perbarangay[21]};
+        int[] topNumbers = {feeding_barangay[23], feeding_barangay[22], feeding_barangay[21]};
         String[][] barangayData = {
-                {barangay[index[23]], Integer.toString(topNumbers[0]), String.format("%.3f",(double) topNumbers[0]/totalcase) + " %", "Set"},
-                {barangay[index[22]], Integer.toString(topNumbers[1]), String.format("%.3f", (double) topNumbers[1]/totalcase) + " %", "Set"},
-                {barangay[index[21]], Integer.toString(topNumbers[2]), String.format("%.3f",(double) topNumbers[2]/totalcase) + " %", "Set"}
+                {barangay[index[23]], Integer.toString(topNumbers[0]), String.format("%.2f",(double) topNumbers[0]/totalcase*100) + " %", "Set"},
+                {barangay[index[22]], Integer.toString(topNumbers[1]), String.format("%.2f", (double) topNumbers[1]/totalcase*100) + " %", "Set"},
+                {barangay[index[21]], Integer.toString(topNumbers[2]), String.format("%.2f",(double) topNumbers[2]/totalcase*100) + " %", "Set"}
         };
         generateTable(tableLayout, barangayHeaders, barangayData, "barangay");
+    }
+
+    private void gsbTable(int count_MBL, int count_M, int count_L, int count_GSB){
+        String[] gulayanHeaders = {"Beneficiaries","Total", "Action"};
+        String[][] gulayanData = {{"Malnourished but Low Income", Integer.toString(count_MBL),"Set"},
+                {"Malnourished", Integer.toString(count_M),"Set"},
+                {"Low Income", Integer.toString(count_L),"Set"},
+                {"All Beneficiaries", Integer.toString(count_GSB), "Set All"}};
+        TableLayout tableLayout = findViewById(R.id.GulayanTable);
+        generateTable(tableLayout, gulayanHeaders, gulayanData, "gulayan" );
     }
 }

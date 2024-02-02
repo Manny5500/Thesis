@@ -1,5 +1,7 @@
 package com.example.myapplication;
 
+import java.util.Map;
+
 public class BarangayModel {
 
     private double malnutritionRate;
@@ -32,6 +34,9 @@ public class BarangayModel {
 
     private int estimatedChildren;
 
+
+    private Map<String,Integer> sitioMap;
+
     // Constructor
     /*
     public BarangayModel(String barangay, double malnutritionRate, int totalAssess, double povertyIndex,
@@ -51,6 +56,15 @@ public class BarangayModel {
         this.barangay = barangay;
         this.Normal = Normal;
     }**/
+
+
+    public Map<String, Integer> getSitioMap() {
+        return sitioMap;
+    }
+
+    public void setSitioMap(Map<String, Integer> sitioMap) {
+        this.sitioMap = sitioMap;
+    }
 
     public int getEstimatedChildren() {
         return estimatedChildren;

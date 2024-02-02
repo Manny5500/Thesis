@@ -237,22 +237,23 @@
 
                         <com.google.android.material.textfield.TextInputLayout
                             android:id="@+id/textSitioLayout"
+                            style="@style/Widget.Material3.TextInputLayout.FilledBox.Dense.ExposedDropdownMenu"
                             android:layout_width="160dp"
                             android:layout_height="59dp"
                             android:layout_marginStart="10dp"
                             android:layout_marginEnd="20dp"
                             android:hint="Sitio"
                             android:inputType="text"
-                            style="@style/Widget.Material3.TextInputLayout.FilledBox.Dense"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintTop_toTopOf="@+id/textHouseNumberLayout">
 
-                                <com.google.android.material.textfield.TextInputEditText
+                                <com.google.android.material.textfield.MaterialAutoCompleteTextView
                                     android:background="#E6FFFFFF"
+                                    android:focusable="false"
+                                    android:inputType="textCapSentences"
                                     android:id="@+id/spinnerSitio"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
-                                    android:inputType="text"
                                     android:textSize="18sp"
                                     app:layout_constraintEnd_toEndOf="parent"
                                     app:layout_constraintStart_toStartOf="parent" />

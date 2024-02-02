@@ -25,6 +25,7 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.text.Normalizer;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -40,9 +41,9 @@ public class fradAddData extends Fragment {
 
     TextInputEditText childFirstName, childMiddleName, childLastName,
             parentFirstName, parentMiddleName, parentLastName,
-            gmail, houseNumber, height, weight, bdate, expectedDate, sitio;
+            gmail, houseNumber, height, weight, bdate, expectedDate;
 
-    MaterialAutoCompleteTextView sexAC, belongAC, incomeAC;
+    MaterialAutoCompleteTextView sexAC, belongAC, incomeAC, sitio;
     ArrayList<String> statusdb;
     Button submit;
     private FirebaseFirestore db;
@@ -103,6 +104,7 @@ public class fradAddData extends Fragment {
         FormUtils.setAdapter(sex, sexAC, requireContext());
         FormUtils.setAdapter(belongs, belongAC, requireContext());
         FormUtils.setAdapter(monthlyIncome, incomeAC, requireContext());
+        FormUtils.setAdapter(SitioUtils.getSitioList(App.user.getBarangay()), sitio, requireContext());
 
         FormUtils.dateClicked(bdate, requireContext());
         FormUtils.dateClicked(expectedDate, requireContext());
@@ -184,6 +186,7 @@ public class fradAddData extends Fragment {
     }
 
     private Map<String, Object> createMap(String barangayString) {
+        status.clear();
         setStatuses();
         Map<String, Object> user = new HashMap<>();
         user.put("childFirstName", childFirstNameValue);
@@ -315,7 +318,7 @@ public class fradAddData extends Fragment {
                         getBarangay();
                     }
                 } else {
-
+                    getBarangay();
                 }
             }
         });

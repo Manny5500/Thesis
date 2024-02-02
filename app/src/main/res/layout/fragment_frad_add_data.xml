@@ -251,7 +251,7 @@
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/textSitioLayout"
-                style="@style/Widget.Material3.TextInputLayout.FilledBox.Dense"
+                style="@style/Widget.Material3.TextInputLayout.FilledBox.Dense.ExposedDropdownMenu"
                 android:layout_width="165dp"
                 android:layout_height="59dp"
                 android:layout_marginStart="10dp"
@@ -261,15 +261,17 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/textHouseNumberLayout">
 
-                <com.google.android.material.textfield.TextInputEditText
+                <com.google.android.material.textfield.MaterialAutoCompleteTextView
                     android:id="@+id/spinnerSitio"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="#E6FFFFFF"
-                    android:inputType="none"
+                    android:focusable="false"
+                    android:inputType="textCapSentences"
                     android:textSize="18sp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent" />
+
             </com.google.android.material.textfield.TextInputLayout>
 
 

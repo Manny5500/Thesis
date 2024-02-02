@@ -94,8 +94,6 @@ public class fragmentReports extends Fragment {
 
         timestampArrayList = new ArrayList<>();
 
-        barangaySeeMore.setTextColor(Color.parseColor("#FF0000"));
-
         seeMoreEvents();
 
         switchToggle.setVisibility(View.GONE);
@@ -140,7 +138,9 @@ public class fragmentReports extends Fragment {
         barangaySeeMore.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(applicationContext, "Not yet Available", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(getActivity(), barangayAnalytics.class);
+                intent.putParcelableArrayListExtra("timestampArrayList", timestampArrayList);
+                startActivity(intent);
             }
         });
         agesSeeMore.setOnClickListener(new View.OnClickListener() {

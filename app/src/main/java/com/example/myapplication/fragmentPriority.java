@@ -78,7 +78,8 @@ public class fragmentPriority extends Fragment {
     }
 
     public void Populate(){
-        db.collection("children").whereArrayContainsAny("statusdb", Arrays.asList("Severe Wasted", "Severe Stunted", "Severe Underweight")).
+        db.collection("children").whereArrayContainsAny("statusdb",
+                        Arrays.asList("Severe Wasted", "Severe Stunted", "Severe Underweight", "Obese")).
                 get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {

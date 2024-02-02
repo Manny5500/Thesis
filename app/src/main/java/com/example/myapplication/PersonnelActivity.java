@@ -10,9 +10,11 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -20,8 +22,10 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
@@ -46,6 +50,7 @@ public class PersonnelActivity extends AppCompatActivity {
     String email;
     String userid;
     int color_flag = 0;
+    Dialog dialog2;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -61,6 +66,8 @@ public class PersonnelActivity extends AppCompatActivity {
             email = user.getEmail();
             userid = user.getUid();
         }
+
+
 
         final DocumentReference docRef = db.collection("users").document(userid);
         listenerRegistration = docRef.addSnapshotListener(new EventListener<DocumentSnapshot>() {
@@ -83,6 +90,7 @@ public class PersonnelActivity extends AppCompatActivity {
             }
         });
 
+
         personnelProfile=findViewById(R.id.btnProfile);
         addData = findViewById(R.id.btnAddData);
         manageData = findViewById(R.id.btnManageData);
@@ -104,9 +112,43 @@ public class PersonnelActivity extends AppCompatActivity {
         addData.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                replaceFragment(new fradAddData());
-                ButtonColorizer(addDataImage);
-                color_flag = 2;
+
+                dialog2 = new Dialog(PersonnelActivity.this);
+                dialog2.setContentView(R.layout.dialog_loader);
+                dialog2.setCanceledOnTouchOutside(false);
+                dialog2.setCancelable(false);
+                dialog2.show();
+
+                DocumentReference docRefs = db.collection("users").document(userid);
+                docRefs.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                        if (task.isSuccessful()) {
+                            DocumentSnapshot document = task.getResult();
+                            if (document.exists()) {
+                                User user = document.toObject(User.class);
+                                user.setId(document.getId());
+                                App.user = user;
+                                new Handler().postDelayed(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        replaceFragment(new fradAddData());
+                                        ButtonColorizer(addDataImage);
+                                        color_flag = 2;
+                                        dialog2.dismiss();
+                                    }
+                                }, 500);
+
+
+                            } else {
+                                Log.d("Firetore No Docu", "No such document");
+                            }
+                        } else {
+                            Log.e("Firestore Exception", "get failed with ", task.getException());
+                        }
+                    }
+                });
+
             }
 
         });

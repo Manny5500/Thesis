@@ -286,10 +286,11 @@ public class FindStatusWFA {
             Boolean isStunted = status.equals("Stunted");
             Boolean isSevereStunted = status.equals("Severe Stunted");
             Boolean isOverweight = status.equals("Overweight");
+            Boolean isObese = status.equals("Obese");
             if(age<=6){
                 recommendationSet.add(recommendations[0]);
 
-                if(isUnderweight || isOverweight){
+                if(isUnderweight || isOverweight || isObese){
                     recommendationSet.add(recommendations[1]);
                     recommendationSet.add(recommendations[2]);
                 }
@@ -308,7 +309,7 @@ public class FindStatusWFA {
                 if(isUnderweight){
                     recommendationSet.add(recommendations[1]);
                 }
-                if(isOverweight){
+                if(isOverweight||isObese){
                     recommendationSet.add(recommendations[6]);
                 }
                 if(isStunted){
@@ -327,7 +328,7 @@ public class FindStatusWFA {
                     recommendationSet.add(recommendations[8]);
                     recommendationSet.add(recommendations[9]);
                 }
-                if(isOverweight){
+                if(isOverweight||isObese){
                     recommendationSet.add(recommendations[10]);
                     recommendationSet.add(recommendations[11]);
                 }

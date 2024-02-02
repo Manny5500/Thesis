@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
@@ -29,12 +30,15 @@ public class UMEdit extends AppCompatActivity {
     TextInputEditText firstName, middleName, lastName, contact;
     MaterialAutoCompleteTextView month, day, year, sex, barangay;
 
-    String fnameVal, mnameVal, lnameVal, contactVal, monthVal, dayVal, yearVal, sexVal, barangayVal, bdayfull, motono;
+    String fnameVal, mnameVal, lnameVal, contactVal, monthVal, dayVal,
+            yearVal, sexVal, barangayVal, bdayfull, motono, role;
 
     Button edit, archive, delete;
 
     String requestDeletion;
     private FirebaseFirestore db;
+
+    TextView txtRole3;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,10 +62,16 @@ public class UMEdit extends AppCompatActivity {
         edit = findViewById(R.id.buttonEdit);
         archive = findViewById(R.id.buttonArchive);
         delete = findViewById(R.id.buttonDelete);
+        txtRole3 = findViewById(R.id.txtRole3);
 
-        requestDeletion = getIntent().getStringExtra("requestDeletion");
+        role = getIntent().getStringExtra("role");
 
-        if(!requestDeletion.equals("true"))
+        if(role.equals("personnel"))
+            role = "BNS";
+
+        txtRole3.setText(role.toUpperCase());
+
+        if(!role.equals("Request for Deletion"))
             delete.setVisibility(View.GONE);
 
         firstName.setText(App.user.getFirstName());

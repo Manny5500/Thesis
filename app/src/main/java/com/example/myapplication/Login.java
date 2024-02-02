@@ -160,18 +160,15 @@ public class Login extends AppCompatActivity {
                     // Check the user's role and redirect accordingly
                     if(userRole.equals("admin")) {
                         redirectToActivity(AdminActivity.class);
-                        Toast.makeText(Login.this, "Login Successfully", Toast.LENGTH_SHORT).show();
-                        Toast.makeText(Login.this, "Admin", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(Login.this, "Welcome, Admin", Toast.LENGTH_SHORT).show();
                     } else if (userRole.equals("personnel")) {
                         redirectToActivity(PersonnelActivity.class);
-                        Toast.makeText(Login.this, "Login Successfully", Toast.LENGTH_SHORT).show();
-                        Toast.makeText(Login.this, "Personnel", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(Login.this, "Welcome, BNS", Toast.LENGTH_SHORT).show();
                     } else if (userRole.equals("parent")) {
                         Intent intent = new Intent(Login.this, ParentActivity.class);
                         intent.putExtra("email", txtGmail.getText().toString());
                         redirectToActivity(intent);
-                        Toast.makeText(Login.this, "Login Successfully", Toast.LENGTH_SHORT).show();
-                        Toast.makeText(Login.this, "Parent", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(Login.this, "Welcome, Parent", Toast.LENGTH_SHORT).show();
                     } else {
                         handleInvalidUserRole();
                     }
