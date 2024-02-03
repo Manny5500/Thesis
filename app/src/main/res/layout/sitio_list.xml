@@ -9,11 +9,12 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <TextView
+        android:layout_marginStart="5dp"
         android:id="@+id/rankSA"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:textSize="18sp"
-        app:layout_constraintHorizontal_weight="2"
+        app:layout_constraintHorizontal_weight="1"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -34,9 +35,24 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:textSize="18sp"
+        android:gravity="right"
         app:layout_constraintHorizontal_weight="3"
         app:layout_constraintTop_toTopOf="@id/nameSA"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/pbarSA"
         app:layout_constraintStart_toEndOf="@id/nameSA"/>
+
+    <ProgressBar
+        android:layout_marginStart="10dp"
+        android:id="@+id/pbarSA"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:progress="0"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_weight="3"
+        app:layout_constraintStart_toEndOf="@id/totalSA"
+        android:progressTint="@color/themeup"
+        app:layout_constraintTop_toTopOf="@id/totalSA"
+        app:layout_constraintBottom_toBottomOf="@id/rankSA"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
