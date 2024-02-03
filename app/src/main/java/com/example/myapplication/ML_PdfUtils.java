@@ -18,6 +18,7 @@ import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
 
 import java.io.ByteArrayOutputStream;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
 public class ML_PdfUtils{
@@ -78,7 +79,8 @@ public class ML_PdfUtils{
                 table.addCell(new Phrase(""+child.getBelongtoIP()));
                 table.addCell(new Phrase("" + child.getSex()));
                 table.addCell(new Phrase(""+child.getBirthDate()));
-                table.addCell(new Phrase("placeholder"));
+                SimpleDateFormat sdf = new SimpleDateFormat("d/M/yyyy");
+                table.addCell(new Phrase(""+sdf.format(child.getDateAdded())));
                 table.addCell(new Phrase("" + child.getHeight() + " cm"));
                 table.addCell(new Phrase("" + child.getWeight() + " kg"));
             }

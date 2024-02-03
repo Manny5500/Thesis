@@ -4,6 +4,7 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 import android.widget.TableLayout;
 import android.widget.TextView;
 
@@ -39,6 +40,12 @@ public class SitioAdapter extends RecyclerView.Adapter<SitioAdapter.ViewHolder> 
         SitioModel sMod = exampleList.get(position);
         holder.nameSA.setText(String.valueOf(sMod.getSitioName()));
         holder.totalSA.setText(String.valueOf(sMod.getTotalCase()));
+
+        int progress = 0;
+        if(sMod.getTotalCase()>0){
+            progress = sMod.getTotalCase()*100/9;
+        }
+        holder.pbarSA.setProgress(progress);
     }
     public float percentage(int number1, int number2){
         float result = (float) number1 / number2;
@@ -52,10 +59,12 @@ public class SitioAdapter extends RecyclerView.Adapter<SitioAdapter.ViewHolder> 
 
     public static class ViewHolder extends RecyclerView.ViewHolder{
         TextView nameSA,  totalSA;
+        ProgressBar pbarSA;
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             nameSA = itemView.findViewById(R.id.nameSA);
             totalSA = itemView.findViewById(R.id.totalSA);
+            pbarSA = itemView.findViewById(R.id.pbarSA);
         }
     }
 

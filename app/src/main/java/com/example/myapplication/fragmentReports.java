@@ -217,7 +217,13 @@ public class fragmentReports extends Fragment {
                                 aggregatedData = aggregateDataByDay(childrenList, startCurrentDate.get(1), startCurrentDate.get(0));
 
                             }
-                            getPreviousPeriod(timestampArrayList, task.getResult().size(), aggregatedData);
+
+                            int currentrecord = 0;
+                            for (Map.Entry<String, Integer> entry : aggregatedData.entrySet()) {
+                                currentrecord = currentrecord + entry.getValue();
+                            }
+
+                            getPreviousPeriod(timestampArrayList, currentrecord, aggregatedData);
 
                         } else {
                             Toast.makeText(requireContext(), "Failed to get children data", Toast.LENGTH_SHORT).show();
@@ -288,7 +294,7 @@ public class fragmentReports extends Fragment {
             }
         }
         int[] colors1 = {lightBlueColor, darkBlueColor, whiteColor};
-        PieChart sexChart =  ChartMaker.createPieChart(view, R.id.pieChart, colors1, count_Male, count_Female, childrenList, "Gender Distribution");
+        PieChart sexChart =  ChartMaker.createPieChart(view, R.id.pieChart, colors1, count_Male, count_Female, count_Male+count_Female, "Gender Distribution");
         TableLayout sextableLayout = view.findViewById(R.id.sextableLayout);
         String[] sexHeaders = {"Sex", "Total", "Percentage"};
         double male_Percentage;
@@ -298,8 +304,8 @@ public class fragmentReports extends Fragment {
             female_Percentage = 0;
         }
         else{
-            male_Percentage = (double) count_Male/childrenList.size() * 100;
-            female_Percentage = (double) count_Female/childrenList.size() * 100;
+            male_Percentage = (double) count_Male/(count_Male+count_Female) * 100;
+            female_Percentage = (double) count_Female/(count_Male+count_Female) * 100;
         }
         String[] testPercentage = {
                 String.format("%.2f", male_Percentage) + " %",
@@ -466,10 +472,12 @@ public class fragmentReports extends Fragment {
         String[] dateArray = DateParser.createDateArray(startDate, currentDate);
         Map<String, Integer> aggregatedData = new LinkedHashMap<>();
 
+
         for (String day: dateArray){
             int count = 0;
             for(Child child: dataList){
-                if(child.dateString().equals(day)){
+                boolean isNormal = child.getStatusdb().contains("Normal");
+                if(child.dateString().equals(day) && !isNormal){
                     count++;
                 }
             }
@@ -486,7 +494,8 @@ public class fragmentReports extends Fragment {
         for (String month: dateArray){
             int count = 0;
             for(Child child: dataList){
-                if(child.dateString().substring(0,7).equals(month)){
+                boolean isNormal = child.getStatusdb().contains("Normal");
+                if(child.dateString().substring(0,7).equals(month) && !isNormal){
                     count++;
                 }
             }
@@ -524,6 +533,7 @@ public class fragmentReports extends Fragment {
                                 observeStatus = "" + withPercent + " less than previous " + periodType;
                                 colorNow = Color.parseColor("#097969");
                             }
+
                             labelTotalCase.setText(""+currentrecord);
                             labelObservation.setText(observeStatus);
                             labelObservation.setTextColor(colorNow);

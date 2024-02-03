@@ -4,6 +4,7 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 import android.widget.TableLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -62,6 +63,12 @@ public class barangayAnalyticsAdapter extends RecyclerView.Adapter<barangayAnaly
         sitioAdapter = new SitioAdapter(context,sitioList);
         holder.sitioRecycler.setAdapter(sitioAdapter);
 
+        int progress = 0;
+        if(bMod.getTotalCase()>0){
+            progress = bMod.getTotalCase()*100/9;
+        }
+        holder.pbarBA.setProgress(progress);
+
         holder.itemView.setOnClickListener(v -> {
 
             if (holder.sitioRecycler.getVisibility() == View.VISIBLE) {
@@ -86,12 +93,14 @@ public class barangayAnalyticsAdapter extends RecyclerView.Adapter<barangayAnaly
         TextView  rankBA, nameBA, totalBA;
 
         RecyclerView sitioRecycler;
+        ProgressBar pbarBA;
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             rankBA = itemView.findViewById(R.id.rankBA);
             nameBA = itemView.findViewById(R.id.nameBA);
             totalBA = itemView.findViewById(R.id.totalBA);
             sitioRecycler = itemView.findViewById(R.id.sitioRecycler);
+            pbarBA = itemView.findViewById(R.id.pbarBA);
         }
     }
 

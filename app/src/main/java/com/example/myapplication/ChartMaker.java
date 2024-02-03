@@ -67,12 +67,12 @@ public class ChartMaker {
     }
 
     public static PieChart createPieChart(View view, int chartId, int[] colors, int count_Male,
-                                          int count_Female, ArrayList<Child> childrenList, String pieType ){
+                                          int count_Female, int totalsize, String pieType ){
         PieChart pieChart = view.findViewById(chartId);
         ArrayList<PieEntry> pieEntries = new ArrayList<>();
 
-        pieEntries.add(new PieEntry(count_Male, String.format( "%.2f", ((double)count_Male/childrenList.size()) * 100) + "% - Male"));
-        pieEntries.add(new PieEntry(count_Female, String.format("%.2f", ((double)count_Female/childrenList.size()) * 100) + "% - Female"));
+        pieEntries.add(new PieEntry(count_Male, String.format( "%.2f", ((double)count_Male/totalsize) * 100) + "% - Male"));
+        pieEntries.add(new PieEntry(count_Female, String.format("%.2f", ((double)count_Female/totalsize) * 100) + "% - Female"));
 
         PieDataSet pieDataSet = new PieDataSet(pieEntries, "");
         pieDataSet.setColors(colors[0], colors[1]);
@@ -131,7 +131,7 @@ public class ChartMaker {
                 } else{
                     label = label + status2;
                 }
-                if(n>=0){
+                if(n>0){
                     pieEntries.add(new PieEntry(count_Status[i], String.format( "%.2f", ((double)n/(overall_count)) * 100) + label));
                 }
             }
@@ -180,8 +180,10 @@ public class ChartMaker {
                                     int count_Female, int count_Result, String pieType ){
         ArrayList<PieEntry> pieEntries = new ArrayList<>();
 
-        pieEntries.add(new PieEntry(count_Male, String.format( "%.2f", ((double)count_Male/(4)) * 100) + "% - Male"));
-        pieEntries.add(new PieEntry(count_Female, String.format("%.2f", ((double)count_Female/(4)) * 100) + "% - Female"));
+        pieEntries.add(new PieEntry(count_Male, String.format( "%.2f", ((double)count_Male/count_Result) * 100) + "% - Male"));
+        if(count_Female>0){
+            pieEntries.add(new PieEntry(count_Female, String.format("%.2f", ((double)count_Female/count_Result) * 100) + "% - Female"));
+        }
 
         PieDataSet pieDataSet = new PieDataSet(pieEntries, "");
         pieDataSet.setColors(colors[0], colors[1]);

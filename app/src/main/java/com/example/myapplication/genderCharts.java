@@ -72,8 +72,8 @@ public class genderCharts extends AppCompatActivity {
     }
 
     private void GetSexAgeStats(Task<QuerySnapshot> task){
-        int result_Count = task.getResult().size();
         statusCount = getCount(task);
+        int result_Count = statusCount[0]+statusCount[1];
         int[] colors1 = {Color.parseColor("#e5aeb3"), Color.parseColor("#e5ceb3"), Color.WHITE};
         PieChart sexChart = findViewById(R.id.genderChartAll);
         ChartMaker.editPieChart(sexChart, colors1, statusCount[0], statusCount[1], result_Count, "Gender Distribution");
