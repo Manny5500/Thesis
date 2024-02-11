@@ -87,10 +87,16 @@ public class PriorityClicked extends AppCompatActivity {
                     ActivityCompat.requestPermissions(PriorityClicked.this, new String[]{Manifest.permission.CALL_PHONE}, REQUEST_PHONE_CALL);
                 } else {
                     // Permission has already been granted
-                    makePhoneCall(phoneNumber);
+                    if(phoneNumber!=null){
+                        makePhoneCall(phoneNumber);
+                    }else{
+                        Toast.makeText(PriorityClicked.this, "No number available", Toast.LENGTH_SHORT).show();
+                    }
                 }
             }
         });
+
+
 
         referral.setOnClickListener(new View.OnClickListener() {
             @Override

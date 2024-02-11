@@ -53,6 +53,7 @@ public class ChildHAdapter  extends RecyclerView.Adapter<ChildHAdapter.ViewHolde
                     exampleList.get(position+1).getHeight());
             weightDiff = getDifference(exampleList.get(position).getWeight(),
                     exampleList.get(position+1).getWeight());
+
             holder.progressHeight.setText(setTextValue(heightVal, "Height: ", heightDiff));
             holder.progressWeight.setText(setTextValue(weightVal, "Weight: ", weightDiff));
             holder.progressHeight.setTextColor(setChangeColor(heightDiff));
@@ -87,8 +88,11 @@ public class ChildHAdapter  extends RecyclerView.Adapter<ChildHAdapter.ViewHolde
     }
 
     public double getDifference(double current, double previous){
+
         return current-previous;
+
     }
+
     public String getChanges(double value){
         String change = "Same";
         if(value>0){
@@ -113,6 +117,7 @@ public class ChildHAdapter  extends RecyclerView.Adapter<ChildHAdapter.ViewHolde
         String changeColor = "#000000";
         boolean isOB = statusdb.contains("Obese");
         boolean isOW = statusdb.contains("Overweight");
+        boolean isNormal = statusdb.contains("Normal");
         if(value>0){
             changeColor = "#008000";
         }
@@ -126,6 +131,9 @@ public class ChildHAdapter  extends RecyclerView.Adapter<ChildHAdapter.ViewHolde
                 changeColor = "#008000";
             }
         }
+        if(isNormal){
+            changeColor = "#008000";
+        }
         return Color.parseColor(changeColor);
     }
     public String setTextValue(String value, String label, double valDiff){
@@ -136,7 +144,7 @@ public class ChildHAdapter  extends RecyclerView.Adapter<ChildHAdapter.ViewHolde
         stringBuilder.append(getChanges(valDiff));
         if(!getChanges(valDiff).equals("Same")){
             stringBuilder.append(" ");
-            stringBuilder.append(Math.abs(valDiff));
+            stringBuilder.append(String.format("%.2f", Math.abs(valDiff)));
         }
         stringBuilder.append(")");
         return stringBuilder.toString();
@@ -154,4 +162,6 @@ public class ChildHAdapter  extends RecyclerView.Adapter<ChildHAdapter.ViewHolde
         }
         return statusStringBuilder.toString();
     }
+
+
 }

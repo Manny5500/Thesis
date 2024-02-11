@@ -35,6 +35,7 @@ import com.google.android.material.card.MaterialCardView;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
@@ -555,6 +556,7 @@ public class fragmentReports extends Fragment {
                 }).addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
+                        Log.d("Firestore Error", "Error"+e);
                         Toast.makeText(requireContext(), "Failed to get children data", Toast.LENGTH_SHORT).show();
                     }
                 });

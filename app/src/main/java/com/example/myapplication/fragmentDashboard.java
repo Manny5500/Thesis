@@ -8,6 +8,7 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,6 +24,7 @@ import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
@@ -113,16 +115,23 @@ public class fragmentDashboard extends Fragment {
     }
 
     public void dashboardData(){
-        db.collection("children").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+        db.collection("children")
+                .orderBy("dateAdded", Query.Direction.DESCENDING)
+                .get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 if (task.isSuccessful()) {
                     ArrayList<Child> childrenList = new ArrayList<>();
-                    int count_P = 0, count_M = 0;
                     for (QueryDocumentSnapshot doc : task.getResult()) {
                         Child child = doc.toObject(Child.class);
                         child.setId(doc.getId());
                         childrenList.add(child);
+                    }
+
+
+                    int count_P = 0, count_M = 0;
+                    childrenList = RemoveDuplicates.removeDuplicates(childrenList);
+                    for(Child child: childrenList){
                         Boolean isUnderWeight = child.getStatusdb().contains("Underweight");
                         Boolean isNormal = child.getStatusdb().contains("Normal");
                         Boolean isSevereUnderweight = child.getStatusdb().contains("Severe Underweight");
@@ -131,7 +140,8 @@ public class fragmentDashboard extends Fragment {
                         Boolean isStunted = child.getStatusdb().contains("Stunted");
                         Boolean isSevereStunted = child.getStatusdb().contains("Severe Stunted");
                         Boolean isOverweight = child.getStatusdb().contains("Overweight");
-                        if (isSevereStunted||isSevereWasted||isSevereUnderweight){
+                        Boolean isObese = child.getStatusdb().contains("Obese");
+                        if(isSevereStunted||isSevereWasted||isSevereUnderweight||isObese){
                             count_P++;
                         }
                         if (!isNormal){

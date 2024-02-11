@@ -13,6 +13,8 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
@@ -56,8 +58,14 @@ public class barangayAnalyticsAdapter extends RecyclerView.Adapter<barangayAnaly
             sitioModel.setSitioName(entry.getKey());
             sitioModel.setTotalCase(entry.getValue());
             sitioList.add(sitioModel);
-
         }
+
+        Collections.sort(sitioList, new Comparator<SitioModel>() {
+            @Override
+            public int compare(SitioModel o1, SitioModel o2) {
+                return o2.getTotalCase() - o1.getTotalCase();
+            }
+        });
 
         holder.sitioRecycler.setVisibility(View.GONE);
         sitioAdapter = new SitioAdapter(context,sitioList);

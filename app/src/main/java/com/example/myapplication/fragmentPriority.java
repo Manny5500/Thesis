@@ -11,6 +11,8 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.os.Handler;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,14 +24,14 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.FirebaseApp;
-import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+
 
 public class fragmentPriority extends Fragment {
     View view;
@@ -38,6 +40,11 @@ public class fragmentPriority extends Fragment {
 
     private ChildAdapter userAdapter;
     int whiteColor;
+
+    String firstName;
+
+
+    private static final String TAG = "MainActivity";
 
     @Override
     public void onAttach(Context context) {
@@ -69,17 +76,21 @@ public class fragmentPriority extends Fragment {
 
             @Override
             public boolean onQueryTextChange(String s) {
+                Toast.makeText(requireContext(), firstName, Toast.LENGTH_SHORT).show();
                 userAdapter.getFilter().filter(s);
                 return true;
             }
         });
 
+
         return view;
     }
 
+
+
     public void Populate(){
-        db.collection("children").whereArrayContainsAny("statusdb",
-                        Arrays.asList("Severe Wasted", "Severe Stunted", "Severe Underweight", "Obese")).
+        db.collection("children")
+                .orderBy("dateAdded", Query.Direction.DESCENDING).
                 get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
@@ -89,7 +100,8 @@ public class fragmentPriority extends Fragment {
                     for (QueryDocumentSnapshot doc: task.getResult()){
                         Child child = doc.toObject(Child.class);
                         child.setId(doc.getId());
-                        arrayList.add(child);
+
+
                         db.collection("users").whereEqualTo("user","parent").
                                 whereEqualTo("email", child.getGmail()).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                             @Override
@@ -100,9 +112,25 @@ public class fragmentPriority extends Fragment {
                                 }
                             }
                         });
+                        arrayList.add(child);
                     }
 
-                    userAdapter = new ChildAdapter(getContext(), arrayList);
+                    arrayList = RemoveDuplicates.removeDuplicates(arrayList);
+                    ArrayList<Child> fAL = new ArrayList<>();
+
+                    for(Child child: arrayList){
+                        boolean isSU = child.getStatusdb().contains("Severe Underweight");
+                        boolean isSW = child.getStatusdb().contains("Severe Wasted");
+                        boolean isSS = child.getStatusdb().contains("Severe Stunted");
+                        boolean isO = child.getStatusdb().contains("Obese");
+                        if(isSU||isSW||isSS||isO) {
+                            fAL.add(child);
+                        }
+                    }
+
+                    firstName = fAL.get(0).getChildFirstName();
+
+                    userAdapter = new ChildAdapter(getContext(), fAL);
                     recyclerView.setAdapter(userAdapter);
                     userAdapter.setOnItemClickListener(new ChildAdapter.OnItemClickListener() {
                         @Override
@@ -111,6 +139,9 @@ public class fragmentPriority extends Fragment {
                             startActivity(new Intent(requireContext(), PriorityClicked.class));
                         }
                     });
+
+
+
                 }
             }
         }).addOnFailureListener(new OnFailureListener() {
@@ -125,4 +156,7 @@ public class fragmentPriority extends Fragment {
         super.onResume();
         Populate();
     }
+
+
+
 }

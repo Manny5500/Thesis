@@ -8,10 +8,12 @@ public class RemoveDuplicates{
         for(Child child: arrayList){
             boolean isDuplicate = false;
             String fullname = child.getChildFirstName()+child.getChildMiddleName()+child.getChildLastName();
+            String gmail = child.getGmail();
             for(Child child2: filteredArrayList){
                 String fullname2 = child2.getChildFirstName()+child2.getChildMiddleName()+child2.getChildLastName();
+                String gmail2 = child2.getGmail();
                 if(filteredArrayList.contains(child2) &&
-                        fullname.equals(fullname2)){
+                        fullname.equals(fullname2) && gmail.equals(gmail2)){
                     isDuplicate = true;
                 }
             }

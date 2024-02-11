@@ -22,13 +22,13 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.itextpdf.text.Rectangle;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.concurrent.Executors;
 
 public class Malnourished_List extends AppCompatActivity {
@@ -40,6 +40,7 @@ public class Malnourished_List extends AppCompatActivity {
     Dialog dialog2;
 
     FloatingActionButton pdfMaker;
+    ArrayList<Child> arrayList = new ArrayList<>();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -68,35 +69,29 @@ public class Malnourished_List extends AppCompatActivity {
     }
 
     public void Populate(){
-        db.collection("children").whereArrayContainsAny("statusdb",
-                        Arrays.asList("Severe Wasted", "Severe Stunted", "Severe Underweight",
-                                "Underweight", "Wasted", "Stunted", "Obese", "Overweight",
-                                "Above Normal")).
-                get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+        db.collection("children")
+                .orderBy("dateAdded", Query.Direction.DESCENDING)
+                .get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         if (task.isSuccessful()){
-                            ArrayList<Child> arrayList = new ArrayList<>();
+
 
                             for (QueryDocumentSnapshot doc: task.getResult()){
                                 Child child = doc.toObject(Child.class);
                                 child.setId(doc.getId());
                                 arrayList.add(child);
-
-                                /*db.collection("users").whereEqualTo("user","parent").
-                                        whereEqualTo("email", child.getGmail()).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                                            @Override
-                                            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                                                for(QueryDocumentSnapshot doc1:task.getResult()){
-                                                    User user = doc1.toObject(User.class);
-                                                    child.setPhoneNumber(user.getContact());
-                                                }
-                                            }
-                                        });*/
-
                             }
 
-                            userAdapter = new ChildAdapter(Malnourished_List.this, arrayList);
+                            arrayList = RemoveDuplicates.removeDuplicates(arrayList);
+                            ArrayList<Child> fAL = new ArrayList<>();
+                            for(Child child: arrayList){
+                                boolean isNormal = child.getStatusdb().contains("Normal");
+                                if(!isNormal) {
+                                    fAL.add(child);
+                                }
+                            }
+                            userAdapter = new ChildAdapter(Malnourished_List.this, fAL);
                             recyclerView.setAdapter(userAdapter);
 
                             userAdapter.setOnItemClickListener(new ChildAdapter.OnItemClickListener() {
@@ -116,6 +111,7 @@ public class Malnourished_List extends AppCompatActivity {
                 }).addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
+                        Log.d("Firestore Error", "Error: "+e);
                         Toast.makeText(Malnourished_List.this, "Failed to get all users", Toast.LENGTH_SHORT).show();
                     }
                 });
