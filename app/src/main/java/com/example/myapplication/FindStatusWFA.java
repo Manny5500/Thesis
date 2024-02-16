@@ -1,8 +1,17 @@
 package com.example.myapplication;
 
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Context;
+import android.graphics.Color;
+import android.view.View;
+import android.view.Window;
+import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.constraintlayout.widget.ConstraintLayout;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -29,6 +38,7 @@ public class FindStatusWFA {
                 break;
             } else if(weight > median[age]){
                 status = "Overweight";
+                break;
             }
         }
         return status;
@@ -136,7 +146,7 @@ public class FindStatusWFA {
                     status.add(lfaGirls.LFA_Girls_M(height, age));
                 }
                 WFL_Girls wflGirls = new WFL_Girls();
-                if(!wflGirls.WFL_Girls_M(weight, age).equals("")){
+                if(!wflGirls.WFL_Girls_M(weight, height).equals("")){
                     status.add(wflGirls.WFL_Girls_M(weight, height));
                 }
 
@@ -152,12 +162,19 @@ public class FindStatusWFA {
             }else{
                 Toast.makeText(context, "Invalid age", Toast.LENGTH_SHORT).show();
             }
-
             if(status.isEmpty()){
                 status.add("Normal");
             }
-            if(status.get(0).equals("Overweight")){
-                status.remove(0);
+            int count=0;
+            for(String cstats: status){
+                if(cstats.equals("Overweight") || cstats.equals("Obese")){
+                    count++;
+                }
+            }
+            if(count>1){
+                if(status.get(0).equals("Overweight")){
+                    status.remove(0);
+                }
             }
             statusdb = showDialogMalnourished(context, status);
 
@@ -240,7 +257,6 @@ public class FindStatusWFA {
 
 
     public static ArrayList<String> showDialogMalnourished(Context context, ArrayList<String> status){
-        AlertDialog.Builder builder = new AlertDialog.Builder(context);
 
         LinkedHashSet<String> setWithoutDuplicates = new LinkedHashSet<>(status);
         ArrayList<String> listWithoutDuplicates = new ArrayList<>(setWithoutDuplicates);
@@ -249,16 +265,37 @@ public class FindStatusWFA {
         for(String element: listWithoutDuplicates){
             message = message + "\t" + element + "\n";
         }
-        builder.setTitle("Child Status")
-                .setMessage(message);
 
-        builder.setCancelable(true);
+        final Dialog dialog = new Dialog(context);
+        dialog.setContentView(R.layout.status_dialog);
 
-        AlertDialog dialog = builder.create();
+        ConstraintLayout upPanel = dialog.findViewById(R.id.panelUp);
+        ImageView imgAct = dialog.findViewById(R.id.imgAct);
+        TextView statusText = dialog.findViewById(R.id.status);
+
+        if(listWithoutDuplicates.size()>1){
+            upPanel.setBackgroundColor(Color.parseColor("#FF6174"));
+            statusText.setTextSize(25);
+            imgAct.setImageResource(R.drawable.warning);
+        }else if(listWithoutDuplicates.contains("Normal")){
+            upPanel.setBackgroundColor(Color.parseColor("#32BA7B"));
+            imgAct.setImageResource(R.drawable.checked);
+        } else if (listWithoutDuplicates.size()==1 && !listWithoutDuplicates.contains("Normal")) {
+            upPanel.setBackgroundColor(Color.parseColor("#FF914D"));
+            imgAct.setImageResource(R.drawable.information__1_);
+        }
+
+
+        statusText.setText(message);
+        Window window = dialog.getWindow();
+        window.setLayout(ConstraintLayout.LayoutParams.WRAP_CONTENT, ConstraintLayout.LayoutParams.WRAP_CONTENT);
         dialog.show();
 
         return listWithoutDuplicates;
     };
+
+
+
 
     public static Set<String> Recommendations(ArrayList<String> statusList, int age){
 

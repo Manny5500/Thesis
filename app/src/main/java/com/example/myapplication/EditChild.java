@@ -2,7 +2,10 @@ package com.example.myapplication;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+
+import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -15,6 +18,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.MaterialAutoCompleteTextView;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.Timestamp;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -246,9 +250,7 @@ public class EditChild extends AppCompatActivity {
         db.collection("children").document(App.child.getId()).update(user).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void unused) {
-                Toast.makeText(EditChild.this, "Saved successfully", Toast.LENGTH_SHORT).show();
                 savetoHistory();
-                finish();
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
@@ -274,7 +276,13 @@ public class EditChild extends AppCompatActivity {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
                         if (task.isSuccessful()) {
-                            Toast.makeText(EditChild.this, "Added Successfully to the History", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(EditChild.this, "Saved successfully", Toast.LENGTH_SHORT).show();
+                            new Handler().postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    finish();
+                                }
+                            }, 100);
                         } else {
                             Toast.makeText(EditChild.this, ""+task.getException(), Toast.LENGTH_SHORT).show();
                         }

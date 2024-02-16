@@ -17,6 +17,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
 import android.view.View;
+import android.view.Window;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -66,6 +67,7 @@ public class PersonnelActivity extends AppCompatActivity {
             email = user.getEmail();
             userid = user.getUid();
         }
+        showWelcomeDialog();
 
 
 
@@ -132,7 +134,7 @@ public class PersonnelActivity extends AppCompatActivity {
                                 new Handler().postDelayed(new Runnable() {
                                     @Override
                                     public void run() {
-                                        replaceFragment(new fradAddData());
+                                        replaceFragment(new fragment_addDataNew());
                                         ButtonColorizer(addDataImage);
                                         color_flag = 2;
                                         dialog2.dismiss();
@@ -155,9 +157,12 @@ public class PersonnelActivity extends AppCompatActivity {
         manageData.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                replaceFragment(new ManageData());
+                /*
+                replaceFragment(new FragmentProfiling());
                 ButtonColorizer(manageDataImage);
-                color_flag = 3;
+                color_flag = 3;*/
+
+                setUserData(manageDataImage, 3, new FragmentProfiling());
             }
         });
 
@@ -166,10 +171,53 @@ public class PersonnelActivity extends AppCompatActivity {
             public void onClick(View view) {
                 ButtonColorizer(logOutImage);
                 color_flag = 4;
-                showYesNoDialog();
+                showLogoutDialog();
             }
         });
     }
+
+    private void setUserData(ImageView imageView, int flag_color, Fragment fragment){
+        dialog2 = new Dialog(PersonnelActivity.this);
+        dialog2.setContentView(R.layout.dialog_loader);
+        dialog2.setCanceledOnTouchOutside(false);
+        dialog2.setCancelable(false);
+        dialog2.show();
+        DocumentReference docRefs = db.collection("users").document(userid);
+        docRefs.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot document = task.getResult();
+                    if (document.exists()) {
+                        User user = document.toObject(User.class);
+                        user.setId(document.getId());
+                        App.user = user;
+                        runFragment(imageView, flag_color, fragment);
+
+
+
+                    } else {
+                        Log.d("Firetore No Docu", "No such document");
+                    }
+                } else {
+                    Log.e("Firestore Exception", "get failed with ", task.getException());
+                }
+            }
+        });
+    }
+
+    private void runFragment(ImageView imageView, int flag_color, Fragment fragment){
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                replaceFragment(fragment);
+                ButtonColorizer(imageView);
+                color_flag = flag_color;
+                dialog2.dismiss();
+            }
+        }, 500);
+    }
+
 
     private void replaceFragment(Fragment fragment) {
         FragmentManager fragmentManager =  getSupportFragmentManager();
@@ -282,6 +330,50 @@ public class PersonnelActivity extends AppCompatActivity {
             @Override
             public void onFailure(@NonNull Exception e) {
                 Toast.makeText(PersonnelActivity.this, "Failed to delete user", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void showWelcomeDialog(){
+        final Dialog dialog = new Dialog(PersonnelActivity.this);
+        dialog.setContentView(R.layout.bns_dialog);
+        Window window = dialog.getWindow();
+        window.setLayout(ConstraintLayout.LayoutParams.WRAP_CONTENT, ConstraintLayout.LayoutParams.WRAP_CONTENT);
+        dialog.show();
+
+    }
+
+    private void showLogoutDialog(){
+        final Dialog dialog = new Dialog(PersonnelActivity.this);
+        dialog.setContentView(R.layout.logout_dialog);
+
+        Button buttonNo = dialog.findViewById(R.id.buttonNo);
+        Button buttonYes = dialog.findViewById(R.id.buttonYes);
+
+
+        Window window = dialog.getWindow();
+        window.setLayout(ConstraintLayout.LayoutParams.MATCH_PARENT, ConstraintLayout.LayoutParams.WRAP_CONTENT);
+        dialog.setCancelable(false);
+        dialog.show();
+
+        buttonNo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+
+        buttonYes.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                FirebaseAuth.getInstance().signOut();
+                Intent intent = new Intent(getApplicationContext(), Login.class);
+                startActivity(intent);
+                finish();
+                dialog.dismiss();
+                if (listenerRegistration != null) {
+                    listenerRegistration.remove();
+                }
             }
         });
     }

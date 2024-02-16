@@ -15,6 +15,8 @@ public class Child {
             sitio, monthAdded;
     double weight, height;
 
+    String related;
+
 
 
     String dateString;
@@ -34,6 +36,14 @@ public class Child {
 
     }
 
+
+    public String getRelated() {
+        return related;
+    }
+
+    public void setRelated(String related) {
+        this.related = related;
+    }
 
     public Date getDateAdded() {
         return dateAdded;

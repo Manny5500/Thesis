@@ -235,6 +235,66 @@ public class FormUtils {
         }
         return true;
     }
+
+    public static boolean validateForm_Parent(String firstName, String middleName, String lastName,
+                                              String gmail, Context context){
+        if (firstName.isEmpty() || middleName.isEmpty() || lastName.isEmpty() ||
+                gmail.isEmpty()) {
+            Toast.makeText(context, "Please fill all fields", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+
+        String emailPattern = "^[a-zA-Z0-9._-]+@gmail\\.com$";
+        if (!gmail.matches(emailPattern)) {
+            // Email format is invalid
+            Toast.makeText(context, "Invalid Email", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        String namePattern = "[a-zA-Z]+([.\\s]?[a-zA-Z]+)?([\\s]?[a-zA-Z]+)?";
+        if (!firstName.matches(namePattern) ) {
+            Toast.makeText(context, "Invalid First Name", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        if (!middleName.matches(namePattern) ) {
+            Toast.makeText(context, "Invalid Middle Name", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        if (!lastName.matches(namePattern) ) {
+            Toast.makeText(context, "Invalid Last Name", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+
+        return true;
+    }
+
+    public static boolean validateForm_Child(String firstName, String middleName, String lastName,
+                                               Context context){
+        if (firstName.isEmpty() || middleName.isEmpty() || lastName.isEmpty()) {
+            Toast.makeText(context, "Please fill all fields", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+
+
+        String namePattern = "[a-zA-Z]+([.\\s]?[a-zA-Z]+)?([\\s]?[a-zA-Z]+)?";
+        if (!firstName.matches(namePattern) ) {
+            Toast.makeText(context, "Invalid First Name", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        if (!middleName.matches(namePattern) ) {
+            Toast.makeText(context, "Invalid Middle Name", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        if (!lastName.matches(namePattern) ) {
+            Toast.makeText(context, "Invalid Last Name", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+
+        return true;
+    }
+
+
+
+
     public Date parseDate(String dateString) {
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
         Date parsedDate = null;

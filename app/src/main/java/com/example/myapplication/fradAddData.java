@@ -60,6 +60,8 @@ public class fradAddData extends Fragment {
     ArrayList<String> status = new ArrayList<>();
     String tempEmailVal;
 
+    String myBarangay;
+
     @Override
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -175,7 +177,6 @@ public class fradAddData extends Fragment {
                 }
                 savetoHistory();
                 Toast.makeText(getContext(), "Form submitted successfully!", Toast.LENGTH_SHORT).show();
-
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
@@ -229,6 +230,7 @@ public class fradAddData extends Fragment {
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) {
                 AddNewFirestore(String.valueOf(documentSnapshot.getString("barangay")));
+                myBarangay = String.valueOf(documentSnapshot.getString("barangay"));
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
@@ -289,6 +291,12 @@ public class fradAddData extends Fragment {
         tempEmail.put("parentFirstName", parentFirstNameValue);
         tempEmail.put("parentMiddleName", parentMiddleNameValue);
         tempEmail.put("parentLastName", parentLastNameValue);
+        tempEmail.put("houseNumber", houseNumberValue);
+        tempEmail.put("sitio", sitioVal);
+        tempEmail.put("monthlyIncome", incomeVal);
+        tempEmail.put("barangay", myBarangay);
+        tempEmail.put("belongtoIP", belongACValue);
+
 
         db.collection("tempEmail").document(gmailValue)
                 .set(tempEmail)

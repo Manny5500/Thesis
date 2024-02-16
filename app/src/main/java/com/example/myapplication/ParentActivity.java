@@ -10,15 +10,18 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.Window;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
@@ -50,7 +53,7 @@ public class ParentActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_parent);
-
+        showWelcomeDialog();
 
         email="";
         auth = FirebaseAuth.getInstance();
@@ -118,7 +121,7 @@ public class ParentActivity extends AppCompatActivity {
             public void onClick(View view) {
                 ButtonColorizer(logOutImage);
                 color_flag = 3;
-                showYesNoDialog();
+                showLogoutDialog();
             }
         });
     }
@@ -197,6 +200,50 @@ public class ParentActivity extends AppCompatActivity {
         dialog.setCanceledOnTouchOutside(false);
         dialog.setCancelable(false);
         dialog.show();
+    }
+
+    private void showWelcomeDialog(){
+        final Dialog dialog = new Dialog(ParentActivity.this);
+        dialog.setContentView(R.layout.parent_dialog);
+        Window window = dialog.getWindow();
+        window.setLayout(ConstraintLayout.LayoutParams.WRAP_CONTENT, ConstraintLayout.LayoutParams.WRAP_CONTENT);
+        dialog.show();
+
+    }
+
+    private void showLogoutDialog(){
+        final Dialog dialog = new Dialog(ParentActivity.this);
+        dialog.setContentView(R.layout.logout_dialog);
+
+        Button buttonNo = dialog.findViewById(R.id.buttonNo);
+        Button buttonYes = dialog.findViewById(R.id.buttonYes);
+
+
+        Window window = dialog.getWindow();
+        window.setLayout(ConstraintLayout.LayoutParams.MATCH_PARENT, ConstraintLayout.LayoutParams.WRAP_CONTENT);
+        dialog.setCancelable(false);
+        dialog.show();
+
+        buttonNo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+
+        buttonYes.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                FirebaseAuth.getInstance().signOut();
+                Intent intent = new Intent(getApplicationContext(), Login.class);
+                startActivity(intent);
+                finish();
+                dialog.dismiss();
+                if (listenerRegistration != null) {
+                    listenerRegistration.remove();
+                }
+            }
+        });
     }
 
 

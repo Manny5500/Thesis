@@ -7,6 +7,24 @@ public class TempEmail {
     String parentMiddleName;
     String parentLastName;
 
+    String sitio;
+    String monthlyIncome;
+    String houseNumber;
+    String belongtoIP;
+
+    String barangay;
+
+    public TempEmail(){
+
+    }
+    public String getBarangay() {
+        return barangay;
+    }
+
+    public void setBarangay(String barangay) {
+        this.barangay = barangay;
+    }
+
     public String getGmail() {
         return gmail;
     }
@@ -41,6 +59,38 @@ public class TempEmail {
 
     public String getFullName(){
         return parentFirstName + " " + parentMiddleName + " " + parentLastName;
+    }
+
+    public String getSitio() {
+        return sitio;
+    }
+
+    public void setSitio(String sitio) {
+        this.sitio = sitio;
+    }
+
+    public String getMonthlyIncome() {
+        return monthlyIncome;
+    }
+
+    public void setMonthlyIncome(String monthlyIncome) {
+        this.monthlyIncome = monthlyIncome;
+    }
+
+    public String getHouseNumber() {
+        return houseNumber;
+    }
+
+    public void setHouseNumber(String houseNumber) {
+        this.houseNumber = houseNumber;
+    }
+
+    public String getBelongtoIP() {
+        return belongtoIP;
+    }
+
+    public void setBelongtoIP(String belongtoIP) {
+        this.belongtoIP = belongtoIP;
     }
 
 }

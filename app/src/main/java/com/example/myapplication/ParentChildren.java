@@ -286,6 +286,7 @@ public class ParentChildren extends Fragment {
         builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
+                keepAsMyChildren(child);
                 dialog.dismiss();
             }
         });
@@ -314,10 +315,17 @@ public class ParentChildren extends Fragment {
     }
 
     private void validateChildren(Child child, TempEmail tempEmail){
-        if(!child.getChildMiddleName().equals(tempEmail.getParentMiddleName()) ||
-        !child.getChildLastName().equals(tempEmail.getParentLastName())){
-            showYesNoDialog(child);
+        boolean cMN = !child.getChildMiddleName().equals(tempEmail.getParentMiddleName());
+        boolean cLN = !child.getChildLastName().equals(tempEmail.getParentLastName());
+        String cRelN = child.getRelated();
+        if(cRelN==null){
+            cRelN = "No";
         }
+        boolean cRel = !cRelN.equals("Yes");
+        if( (cMN || cLN) && cRel){
+                showYesNoDialog(child);
+        }
+
     }
 
     private void getTempEmail(Child child) {
@@ -363,6 +371,32 @@ public class ParentChildren extends Fragment {
             }
         });
 
+    }
+
+    private void keepAsMyChildren(Child child){
+        CollectionReference collectionRef = db.collection("children");
+
+        Query query = collectionRef.whereEqualTo("childFirstName", child.getChildFirstName())
+                .whereEqualTo("childMiddleName", child.getChildMiddleName())
+                .whereEqualTo("childLastName", child.getChildLastName())
+                .whereEqualTo("gmail", gmail );
+
+        query.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if (task.isSuccessful()) {
+                    for (QueryDocumentSnapshot document : task.getResult()) {
+                        document.getReference().update(
+                                "related", "Yes");
+                    }
+
+                    reloadFragment();
+
+                } else {
+
+                }
+            }
+        });
     }
 
 }
