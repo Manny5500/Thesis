@@ -125,7 +125,6 @@ public class PersonnelActivity extends AppCompatActivity {
                 replaceFragment(new FragmentProfiling());
                 ButtonColorizer(manageDataImage);
                 color_flag = 3;*/
-
                 setUserData(manageDataImage, 3, new FragmentProfiling());
             }
         });
@@ -155,7 +154,9 @@ public class PersonnelActivity extends AppCompatActivity {
                     if (document.exists()) {
                         User user = document.toObject(User.class);
                         user.setId(document.getId());
-                        App.user = user;
+                        if(flag_color == 2){
+                            App.user = user;
+                        }
                         runFragment(imageView, flag_color, fragment);
 
 

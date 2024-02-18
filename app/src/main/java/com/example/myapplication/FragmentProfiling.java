@@ -66,6 +66,8 @@ public class FragmentProfiling extends Fragment {
         pBevent();
         setFamily();
         getChildData();
+        vulViewEvent();
+        falViewEvent();
         return view;
     }
 
@@ -238,6 +240,22 @@ public class FragmentProfiling extends Fragment {
             public boolean onLongClick(View v) {
                 Toast.makeText(requireContext(), "clicked", Toast.LENGTH_SHORT).show();
                 return true;
+            }
+        });
+    }
+    private void falViewEvent(){
+        falView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(requireContext(), FamilyList.class));
+            }
+        });
+    }
+    private void vulViewEvent(){
+        vulView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(requireContext(), VulnerableFamily.class));
             }
         });
     }

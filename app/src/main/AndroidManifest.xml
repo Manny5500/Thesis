@@ -25,6 +25,12 @@
         android:theme="@style/Theme.MyApplication"
         tools:targetApi="31">
         <activity
+            android:name=".VulnerableFamily"
+            android:exported="false" />
+        <activity
+            android:name=".FamilyList"
+            android:exported="false" />
+        <activity
             android:name=".AddParentData"
             android:exported="false" />
         <activity
