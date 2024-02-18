@@ -205,6 +205,7 @@ public class AddDataWithParent extends AppCompatActivity {
                     public void onComplete(@NonNull Task<Void> task) {
                         if (task.isSuccessful()) {
                             Toast.makeText(AddDataWithParent.this, "Form submitted successfully!", Toast.LENGTH_SHORT).show();
+                            App.AddFlag = 1;
                             finish();
                         } else {
                             Toast.makeText(AddDataWithParent.this, "" + task.getException(), Toast.LENGTH_SHORT).show();

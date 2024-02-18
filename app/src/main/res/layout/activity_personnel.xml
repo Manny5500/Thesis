@@ -33,7 +33,7 @@
             android:id="@+id/profileText"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:text="Profile"
+            android:text="Me"
             android:textColor="@color/white"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -60,12 +60,12 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/baseline_add_circle_24" />
+            app:srcCompat="@drawable/clipboard__1_" />
         <TextView
             android:id="@+id/addDataText"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:text="Add Data"
+            android:text="Data"
             android:textColor="@color/white"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -92,12 +92,12 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/baseline_edit_24" />
+            app:srcCompat="@drawable/demography" />
         <TextView
             android:id="@+id/manageDataText"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:text="Edit Data"
+            android:text="Profiling"
             android:textColor="@color/white"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

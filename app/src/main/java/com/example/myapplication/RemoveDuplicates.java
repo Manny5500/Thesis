@@ -23,4 +23,29 @@ public class RemoveDuplicates{
         }
         return filteredArrayList;
     }
+
+    public static ArrayList<Child> rDGmail(ArrayList<Child> arrayList){
+        ArrayList<Child> filteredArrayList = new ArrayList<>();
+        for(Child child: arrayList){
+            boolean isDuplicate = false;
+            String gmail = child.getGmail();
+            for(Child child2: filteredArrayList){
+                String gmail2 = child2.getGmail();
+                if(filteredArrayList.contains(child2) && gmail.equals(gmail2)){
+                    isDuplicate = true;
+                }
+            }
+            if(!isDuplicate){
+                filteredArrayList.add(child);
+            }
+        }
+        ArrayList<Child> supFA = new ArrayList<>();
+        for(Child child: filteredArrayList){
+            boolean isGmailVal = !child.getGmail().equals("N/A");
+            if(isGmailVal){
+                supFA.add(child);
+            }
+        }
+        return supFA;
+    }
 }

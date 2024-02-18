@@ -1,11 +1,13 @@
 package com.example.myapplication;
 
+import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.widget.SearchView;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
@@ -14,22 +16,32 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.github.barteksc.pdfviewer.PDFView;
+import com.github.barteksc.pdfviewer.scroll.DefaultScrollHandle;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.itextpdf.text.Rectangle;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Map;
+import java.util.concurrent.Executors;
 
 public class ManageData extends Fragment {
 
@@ -37,16 +49,20 @@ public class ManageData extends Fragment {
     FirebaseFirestore db;
     RecyclerView recyclerView;
 
-    private ChildAdapter userAdapter;
+    private CDAdapter userAdapter;
     int whiteColor;
     private String  userid;
+
+
+
+    FloatingActionButton addData, pdfMaker;
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
         // Initialize FirebaseApp when the fragment is attached to a context
         FirebaseApp.initializeApp(requireContext());
         whiteColor = ContextCompat.getColor(context, R.color.viola);
-        userAdapter = new ChildAdapter(requireContext(), new ArrayList<>());
+        userAdapter = new CDAdapter(requireContext(), new ArrayList<>());
     }
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -55,7 +71,11 @@ public class ManageData extends Fragment {
 
         db = FirebaseFirestore.getInstance();
         recyclerView = view.findViewById(R.id.recycler);
+        addData = view.findViewById(R.id.addData);
+        pdfMaker = view.findViewById(R.id.pdfMaker);
+
         userid = ((PersonnelActivity)getActivity()).userid;
+
 
         Populate();
         SearchView searchView = view.findViewById(R.id.searchView);
@@ -76,6 +96,7 @@ public class ManageData extends Fragment {
             }
         });
 
+        addDataEvent();
 
         return view;
     }
@@ -108,15 +129,10 @@ public class ManageData extends Fragment {
                         arrayList.add(child);
                     }
 
-                    userAdapter = new ChildAdapter(getContext(), RemoveDuplicates.removeDuplicates(arrayList));
+                    userAdapter = new CDAdapter(getContext(), RemoveDuplicates.removeDuplicates(arrayList));
                     recyclerView.setAdapter(userAdapter);
-                    userAdapter.setOnItemClickListener(new ChildAdapter.OnItemClickListener() {
-                        @Override
-                        public void onClick(Child child) {
-                            App.child = child;
-                            startActivity(new Intent(requireContext(), EditChild.class));
-                        }
-                    });
+                    pdfMakerEvent(arrayList);
+
                 }
             }
         }).addOnFailureListener(new OnFailureListener() {
@@ -131,8 +147,91 @@ public class ManageData extends Fragment {
     @Override
     public void onResume(){
         super.onResume();
-        Populate();
+        if(App.AddFlag == 1){
+            Populate();
+            App.AddFlag = 0;
+        }
     }
+
+    private void addDataEvent(){
+        addData.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(requireContext(), AddParentData.class));
+            }
+        });
+    }
+
+    private void pdfMakerEvent(ArrayList<Child> childList){
+        pdfMaker.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                createPdf(childList);
+            }
+        });
+    }
+
+    public void createPdf(ArrayList<Child> arrayList){
+        Rectangle customsize = new Rectangle(
+                13.0f*72,
+                8.5f*72
+        );
+        ML_PdfUtils mlPdfUtils = new ML_PdfUtils(customsize,arrayList);
+        byte[] pdfBytes = mlPdfUtils.PdfSetter();
+        showPdfDialog(pdfBytes);
+    }
+
+    private void showPdfDialog(byte[] pdfBytes){
+        final Dialog dialog = new Dialog(requireContext());
+        dialog.setContentView(R.layout.pdf_viewer);
+        PDFView pdfView = dialog.findViewById(R.id.pdfView);
+        ProgressBar progressBar = dialog.findViewById(R.id.progressBar);
+        Button cancelBtn = dialog.findViewById(R.id.btnCancel);
+        Button exportBtn = dialog.findViewById(R.id.btnSavePdf);
+        Window window = dialog.getWindow();
+        window.setLayout(ConstraintLayout.LayoutParams.MATCH_PARENT, ConstraintLayout.LayoutParams.MATCH_PARENT);
+        dialog.show();
+        displayPdfFromBytes(pdfBytes, pdfView, progressBar);
+
+        exportBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String filename = "Malnourished List"  +
+                        LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddHHmmssSSSS")) + ".pdf";
+                Pdf_Utils pdf_utils = new Pdf_Utils(requireContext().getContentResolver(), pdfBytes, requireContext(), filename);
+                pdf_utils.savePDFToStorage();
+            }
+        });
+
+        cancelBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+    }
+
+    private void displayPdfFromBytes(byte[] pdfBytes, PDFView pdfView, ProgressBar progressBar) {
+        progressBar.setVisibility(View.VISIBLE);
+        Executors.newSingleThreadExecutor().execute(() -> {
+            try {
+                getActivity().runOnUiThread(() -> {
+                    progressBar.setVisibility(View.GONE);
+
+                    pdfView.fromBytes(pdfBytes)
+                            .scrollHandle(new DefaultScrollHandle(requireContext()))
+                            .load();
+                });
+            } catch (Exception e) {
+                getActivity().runOnUiThread(() -> {
+                    e.printStackTrace();
+                    Log.e("PDFViewer", "Error loading PDF: " + e.getMessage());
+                });
+            }
+        });
+    }
+
+
 
 
 

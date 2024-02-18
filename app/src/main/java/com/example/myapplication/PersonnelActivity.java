@@ -102,7 +102,7 @@ public class PersonnelActivity extends AppCompatActivity {
         manageDataImage = findViewById(R.id.manageDataImage);
         logOutImage = findViewById(R.id.logOutImage);
 
-        replaceFragment(new ManageData());
+        setUserData(addDataImage, 2, new ManageData());
         personnelProfile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -111,48 +111,12 @@ public class PersonnelActivity extends AppCompatActivity {
                 color_flag = 1;
             }
         });
+
         addData.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                dialog2 = new Dialog(PersonnelActivity.this);
-                dialog2.setContentView(R.layout.dialog_loader);
-                dialog2.setCanceledOnTouchOutside(false);
-                dialog2.setCancelable(false);
-                dialog2.show();
-
-                DocumentReference docRefs = db.collection("users").document(userid);
-                docRefs.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                        if (task.isSuccessful()) {
-                            DocumentSnapshot document = task.getResult();
-                            if (document.exists()) {
-                                User user = document.toObject(User.class);
-                                user.setId(document.getId());
-                                App.user = user;
-                                new Handler().postDelayed(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        replaceFragment(new fragment_addDataNew());
-                                        ButtonColorizer(addDataImage);
-                                        color_flag = 2;
-                                        dialog2.dismiss();
-                                    }
-                                }, 500);
-
-
-                            } else {
-                                Log.d("Firetore No Docu", "No such document");
-                            }
-                        } else {
-                            Log.e("Firestore Exception", "get failed with ", task.getException());
-                        }
-                    }
-                });
-
+                setUserData(addDataImage, 2, new ManageData());
             }
-
         });
         manageData.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -193,7 +157,6 @@ public class PersonnelActivity extends AppCompatActivity {
                         user.setId(document.getId());
                         App.user = user;
                         runFragment(imageView, flag_color, fragment);
-
 
 
                     } else {

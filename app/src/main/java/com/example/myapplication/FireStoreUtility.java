@@ -137,7 +137,7 @@ public class FireStoreUtility {
         Map<String, Object> barangay = new HashMap<>();
         barangay.put("feedfrom", fromValue);
         barangay.put("feedto", toValue);
-        db.collection("barangay").document(barangayString).set(barangay).addOnSuccessListener(new OnSuccessListener<Void>() {
+        db.collection("barangay").document(barangayString).update(barangay).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void unused) {
                 settoChildren(barangayString,db, "reset");
@@ -290,7 +290,7 @@ public class FireStoreUtility {
                 public void onComplete(@NonNull Task<QuerySnapshot> task) {
                     if (task.isSuccessful()) {
                         for (QueryDocumentSnapshot document : task.getResult()) {
-                            db.collection("gulayan").document(document.getId()).set(gulayan);
+                            db.collection("gulayan").document(document.getId()).update(gulayan);
                         }
                         setGulayantoChildren(db, "set", type);
                         Toast.makeText(context, "All documents updated successfully", Toast.LENGTH_SHORT).show();
@@ -300,7 +300,7 @@ public class FireStoreUtility {
                 }
             });
         }else {
-            db.collection("gulayan").document(gulayanString).set(gulayan).addOnSuccessListener(new OnSuccessListener<Void>() {
+            db.collection("gulayan").document(gulayanString).update(gulayan).addOnSuccessListener(new OnSuccessListener<Void>() {
                 @Override
                 public void onSuccess(Void unused) {
                     setGulayantoChildren(db, "set" , type);
@@ -356,7 +356,7 @@ public class FireStoreUtility {
         Map<String, Object> gulayan = new HashMap<>();
         gulayan.put("from", fromValue);
         gulayan.put("to", toValue);
-        db.collection("gulayan").document(gulayanString).set(gulayan).addOnSuccessListener(new OnSuccessListener<Void>() {
+        db.collection("gulayan").document(gulayanString).update(gulayan).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void unused) {
                 setGulayantoChildren(db, "reset" , gulayanString);

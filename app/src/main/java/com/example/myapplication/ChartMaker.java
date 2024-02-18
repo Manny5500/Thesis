@@ -102,6 +102,42 @@ public class ChartMaker {
         return pieChart;
     }
 
+    public static PieChart cPNM(View view, int chartId, int[] colors, int count_Male,
+                                          int count_Female, int totalsize, String pieType ){
+        PieChart pieChart = view.findViewById(chartId);
+        ArrayList<PieEntry> pieEntries = new ArrayList<>();
+
+        pieEntries.add(new PieEntry(count_Male, String.format( "%.2f", ((double)count_Male/totalsize) * 100) + "% - N"));
+        pieEntries.add(new PieEntry(count_Female, String.format("%.2f", ((double)count_Female/totalsize) * 100) + "% - M"));
+
+        PieDataSet pieDataSet = new PieDataSet(pieEntries, "");
+        pieDataSet.setColors(colors[0], colors[1]);
+        PieData pieData = new PieData(pieDataSet);
+        pieData.setDrawValues(false); // Enable drawing values (percentage)
+        pieChart.setData(pieData);
+
+        pieChart.getDescription().setEnabled(false);
+        pieChart.setDrawHoleEnabled(true);
+        pieChart.setHoleColor(colors[2]);
+        pieChart.setTransparentCircleRadius(0f);
+        pieChart.setHoleRadius(50f);
+
+        pieChart.setUsePercentValues(true);
+        pieChart.setDrawCenterText(true);
+        if(count_Male == 0 && count_Female == 0){
+            pieChart.setCenterText("No Data is Available");
+        }else{
+            pieChart.setCenterText(pieType);
+        }
+        pieChart.setCenterTextSize(14f);
+        pieChart.animateY(1500);
+
+        // Remove legend (color legend in the bottom part of the chart)
+        pieChart.getLegend().setEnabled(false);
+        pieChart.invalidate();
+        return pieChart;
+    }
+
     public static void editPieChart(PieChart pieChart, int[] colors,
                                     String pieType, String status1,
                                     String status2, int[] count_Status,

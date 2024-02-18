@@ -41,7 +41,7 @@ public class EditChild extends AppCompatActivity {
             parentFirstName, parentMiddleName, parentLastName,
             gmail, houseNumber, height, weight, bdate, expectedDate;
     MaterialAutoCompleteTextView barangayAC, sexAC, belongAC, sitio;
-    Button edit, remove;
+    Button edit;
     private FirebaseFirestore db;
     String  dateString;
     private int   monthdiff;
@@ -79,7 +79,6 @@ public class EditChild extends AppCompatActivity {
         sexAC = findViewById(R.id.textPregnant);
         belongAC = findViewById(R.id.textBelong);
         edit = findViewById(R.id.btnEdit);
-        remove = findViewById(R.id.btnDelete);
         sitio  = findViewById(R.id.spinnerSitio);
 
         gmail.setText(App.child.getGmail());
@@ -130,13 +129,7 @@ public class EditChild extends AppCompatActivity {
             }
         });
 
-        remove.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                setAllTextInputData();
-             removeFirestoreData();
-            }
-        });
+
     }
     private void removeFirestoreData(){
 
@@ -277,6 +270,7 @@ public class EditChild extends AppCompatActivity {
                     public void onComplete(@NonNull Task<Void> task) {
                         if (task.isSuccessful()) {
                             Toast.makeText(EditChild.this, "Saved successfully", Toast.LENGTH_SHORT).show();
+                            App.AddFlag = 1;
                             new Handler().postDelayed(new Runnable() {
                                 @Override
                                 public void run() {
