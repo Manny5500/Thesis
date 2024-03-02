@@ -27,8 +27,6 @@ import java.util.List;
 public class VulnerableFamily extends AppCompatActivity {
     private RecyclerView umrecyclerView;
     private ParentAdapter adapter;
-    private SearchView searchView;
-    private List<ComponentModel> originalComponents;
 
     MaterialAutoCompleteTextView userPicker;
 
@@ -45,7 +43,6 @@ public class VulnerableFamily extends AppCompatActivity {
         db = FirebaseFirestore.getInstance();
         umrecyclerView = findViewById(R.id.recycler);
         userPicker = findViewById(R.id.userPicker);
-
 
         userList = new String[]{"More than 1 child", "Low Income", "Have a Malnourished Child", "All"};
         FormUtils.setAdapter(userList, userPicker, VulnerableFamily.this);
@@ -100,15 +97,18 @@ public class VulnerableFamily extends AppCompatActivity {
                     ArrayList<Child> childList = new ArrayList<>();
                     childList = RemoveDuplicates.removeDuplicates(arrayList);
 
+                    VulnerableUtils vulUt = new VulnerableUtils(childList);
+
+
                     if(filterType.equals("All")){
-                        filteredList = getVulnerableList(childList);
+                        filteredList = vulUt.getVList();
                     }else if (filterType.equals("Low Income")){
-                        filteredList = getLowIncomeList(childList);
+                        filteredList = vulUt.getLIList();
 
                     }else if(filterType.equals("More than 1 child")){
-                        filteredList = getMoreOneChildList(childList);
+                        filteredList = vulUt.getMOCList();
                     }else if(filterType.equals("Have a Malnourished Child")){
-                        filteredList = getMalList(childList);
+                        filteredList = vulUt.getMalList();
                     }
                     setTempEmailData(filteredList);
 
@@ -123,85 +123,9 @@ public class VulnerableFamily extends AppCompatActivity {
         });
     }
 
-    private ArrayList<Child>  getVulnerableList(ArrayList<Child> childList){
-        ArrayList<Child> vulnerableList = new ArrayList<>();
-        ArrayList<Child> fGmail = RemoveDuplicates.rDGmail(childList);
-        for(Child child: fGmail){
-            boolean isMal = !child.getStatusdb().contains("Normal");
-            boolean isLowest = child.getMonthlyIncome().equals("Less than 9,100");
-            boolean isLower = child.getMonthlyIncome().equals("9,100 to 18,200");
-            boolean isLow = child.getMonthlyIncome().equals("18,200 to 36,400");
-            boolean isLowIncome = isLowest || isLower || isLow;
 
-            int count_child = 0;
-            for(Child child1: childList){
-                if(child1.getGmail().equals(child.getGmail())){
-                    count_child++;
-                }
-            }
-
-            boolean isGOne = count_child>1;
-
-            if(isMal||isLowIncome||isGOne){
-                vulnerableList.add(child);
-            }
-        }
-        return vulnerableList;
-    }
-    private ArrayList<Child>  getLowIncomeList(ArrayList<Child> childList){
-        ArrayList<Child> vulnerableList = new ArrayList<>();
-        ArrayList<Child> fGmail = RemoveDuplicates.rDGmail(childList);
-        for(Child child: fGmail){
-            boolean isLowest = child.getMonthlyIncome().equals("Less than 9,100");
-            boolean isLower = child.getMonthlyIncome().equals("9,100 to 18,200");
-            boolean isLow = child.getMonthlyIncome().equals("18,200 to 36,400");
-            boolean isLowIncome = isLowest || isLower || isLow;
-
-
-            if(isLowIncome){
-                vulnerableList.add(child);
-            }
-        }
-        return vulnerableList;
-    }
-    private ArrayList<Child>  getMoreOneChildList(ArrayList<Child> childList){
-        ArrayList<Child> vulnerableList = new ArrayList<>();
-        ArrayList<Child> fGmail = RemoveDuplicates.rDGmail(childList);
-        for(Child child: fGmail){
-            int count_child = 0;
-            for(Child child1: childList){
-                if(child1.getGmail().equals(child.getGmail())){
-                    count_child++;
-                }
-            }
-
-            boolean isGOne = count_child>1;
-            if(isGOne){
-                vulnerableList.add(child);
-            }
-        }
-        return vulnerableList;
-    }
-    private ArrayList<Child>  getMalList(ArrayList<Child> childList){
-        ArrayList<Child> vulnerableList = new ArrayList<>();
-        ArrayList<Child> fGmail = RemoveDuplicates.rDGmail(childList);
-        for(Child child: fGmail){
-            boolean haveMal = false;
-
-            for(Child child1: childList){
-                if(child1.getGmail().equals(child.getGmail()) && !child1.getStatusdb().contains("Normal")){
-                    haveMal = true;
-                }
-            }
-
-            if(haveMal){
-                vulnerableList.add(child);
-            }
-        }
-        return vulnerableList;
-    }
     private void setTempEmailData(ArrayList<Child> filteredList){
-        db.collection("tempEmail").whereEqualTo("barangay", filteredList.get(0).getBarangay()).
+        db.collection("tempEmail").whereEqualTo("barangay", App.user.getBarangay()).
                 get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {

@@ -1,6 +1,7 @@
 package com.example.myapplication;
 
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -8,6 +9,7 @@ import android.graphics.Color;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
@@ -15,6 +17,7 @@ import androidx.fragment.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -115,7 +118,8 @@ public class ParentChildren extends Fragment {
     }
 
     private void firstFetch(){
-        db.collection("children").whereEqualTo("gmail", gmail).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+        db.collection("children").whereEqualTo("gmail", gmail)
+                .orderBy("dateAdded", Query.Direction.DESCENDING).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 if (task.isSuccessful()) {
@@ -141,10 +145,10 @@ public class ParentChildren extends Fragment {
                         displayChildData(currentIndex);
 
                     if(gulayanStatus.equals("Yes"))
-                        showDialog("gulayan");
+                        showRecoDialog("gulayan");
 
                     if(feedingStatus.equals("Yes"))
-                        showDialog("feeding");
+                        showRecoDialog("feeding");
 
                 }
             }
@@ -230,6 +234,40 @@ public class ParentChildren extends Fragment {
                 builder.setCancelable(true);
             }
             AlertDialog dialog = builder.create();
+            dialog.show();
+        }
+    }
+
+
+    public void showRecoDialog(String type){
+        if(isAdded() && requireContext() != null){
+            final Dialog dialog = new Dialog(requireContext());
+            dialog.setContentView(R.layout.reco_dialog);
+
+            String message = "";
+
+            ConstraintLayout upPanel = dialog.findViewById(R.id.panelUp);
+            ImageView imgAct = dialog.findViewById(R.id.imgAct);
+            TextView statusText = dialog.findViewById(R.id.status);
+            ImageView imgReal = dialog.findViewById(R.id.imgReal);
+
+            if(type.equals("gulayan")) {
+                upPanel.setBackgroundColor(Color.parseColor("#32BA7B"));
+                message = "You are qualified to Gulayan\n sa Bakuran Program";
+                imgReal.setImageResource(R.drawable.vegetable);
+                imgAct.setColorFilter(Color.parseColor("#FFEBC3"));
+            }
+            if(type.equals("feeding")){
+                message = "Your child is qualified to\n Feeding Program";
+                imgReal.setImageResource(R.drawable.diet);
+                imgAct.setColorFilter(Color.parseColor("#FFEBC3"));
+            }
+
+
+
+            statusText.setText(message);
+            Window window = dialog.getWindow();
+            window.setLayout(ConstraintLayout.LayoutParams.WRAP_CONTENT, ConstraintLayout.LayoutParams.WRAP_CONTENT);
             dialog.show();
         }
     }

@@ -1,10 +1,12 @@
 package com.example.myapplication;
 
+import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
@@ -13,6 +15,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -21,6 +25,9 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.card.MaterialCardView;
+import com.google.android.material.textfield.TextInputEditText;
+import com.google.android.material.textfield.TextInputLayout;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -65,9 +72,15 @@ public class FragmentProfiling extends Fragment {
         cBevent();
         pBevent();
         setFamily();
-        getChildData();
-        vulViewEvent();
-        falViewEvent();
+        if(App.user.getBarangay()!=null){
+            getChildData();
+            vulViewEvent();
+            falViewEvent();
+            gBViewEvent();
+            fPViewEvent();
+
+        }
+
         return view;
     }
 
@@ -229,7 +242,7 @@ public class FragmentProfiling extends Fragment {
         chilBod.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                Toast.makeText(requireContext(), "clicked", Toast.LENGTH_SHORT).show();
+                showBDDialog("EC");
                 return true;
             }
         });
@@ -238,7 +251,7 @@ public class FragmentProfiling extends Fragment {
         polBod.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                Toast.makeText(requireContext(), "clicked", Toast.LENGTH_SHORT).show();
+                showBDDialog("pop");
                 return true;
             }
         });
@@ -259,5 +272,72 @@ public class FragmentProfiling extends Fragment {
             }
         });
     }
+
+    private void gBViewEvent(){
+
+        gBView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(requireContext(), GSBList.class));
+            }
+        });
+    }
+
+    private void fPViewEvent(){
+
+        fPView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(requireContext(), FPList.class));
+            }
+        });
+    }
+
+    private void showBDDialog(String type){
+        final Dialog dialog = new Dialog(requireContext());
+        dialog.setContentView(R.layout.bd_dialog);
+
+        Button buttonCancel = dialog.findViewById(R.id.buttonCancel);
+        Button buttonSave = dialog.findViewById(R.id.buttonSave);
+        TextInputLayout textView12 = dialog.findViewById(R.id.textView12);
+        TextInputEditText textNum = dialog.findViewById(R.id.textNum);
+
+
+
+
+        if(type.equals("pop")){
+            textView12.setHint("Enter the population");
+        } else if (type.equals("EC")) {
+            textView12.setHint("Enter the estimated children");
+        }
+
+
+        Window window = dialog.getWindow();
+        window.setLayout(ConstraintLayout.LayoutParams.MATCH_PARENT, ConstraintLayout.LayoutParams.WRAP_CONTENT);
+        dialog.setCancelable(false);
+        dialog.show();
+
+        buttonCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+
+        buttonSave.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                if(!textNum.getText().toString().trim().equals("")) {
+                    int num = Integer.parseInt(textNum.getText().toString().trim());
+                    BDUtils bdUtils = new BDUtils(requireContext(), App.user.getBarangay(), num, type, dialog);
+                    bdUtils.updateBar();
+                }
+
+            }
+        });
+    }
+
+
 
 }

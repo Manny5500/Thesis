@@ -152,11 +152,10 @@ public class PersonnelActivity extends AppCompatActivity {
                 if (task.isSuccessful()) {
                     DocumentSnapshot document = task.getResult();
                     if (document.exists()) {
+                        App.user = null;
                         User user = document.toObject(User.class);
                         user.setId(document.getId());
-                        if(flag_color == 2){
-                            App.user = user;
-                        }
+                        App.user = user;
                         runFragment(imageView, flag_color, fragment);
 
 

@@ -4,6 +4,7 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -157,14 +158,27 @@ public class FireStoreUtility {
             @Override
             public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
                 WriteBatch batch = db.batch();
+
+
+
+                FormUtils formUtils = new FormUtils();
                 for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
                     DocumentReference documentRef = collectionRef.document(document.getId());
-                    if(action.equals("set")) {
-                        batch.update(documentRef, "forfeeding", "Yes");
-                    } else if (action.equals("reset")) {
-                        batch.update(documentRef, "forfeeding", "No");
+                    String birthDate = document.getString("birthDate");
+                    if(birthDate!=null){
+                        Date parsedDate = formUtils.parseDate(document.getString("birthDate"));
+                        int monthdiff = 0;
+                        if (parsedDate != null) {
+                            monthdiff = formUtils.calculateMonthsDifference(parsedDate);
+                        }
+                        if(action.equals("set") && monthdiff>23) {
+                            batch.update(documentRef, "forfeeding", "Yes");
+                        } else if (action.equals("reset")) {
+                            batch.update(documentRef, "forfeeding", "No");
+                        }
                     }
                 }
+
                 batch.commit().addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {

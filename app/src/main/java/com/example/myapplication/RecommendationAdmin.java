@@ -138,24 +138,18 @@ public class RecommendationAdmin extends AppCompatActivity {
     }
 
     public void FeedingProgramBarangay(Task<QuerySnapshot> task, ArrayList<Child> childrenList, String [] barangay){
-        int count_FEEDING;
-        int count_GSB, count_MBL, count_M, count_L;
-        count_GSB = count_MBL = count_M = count_L = 0;
-        for (int i = 0; i < index.length; i++) {
-            count_FEEDING = 0;
-            for (QueryDocumentSnapshot doc : task.getResult()) {
-                Child child = doc.toObject(Child.class);
-                child.setId(doc.getId());
-                childrenList.add(child);
-                Boolean barangaytrue;
-                barangaytrue = child.getBarangay().equals(barangay[i]);
-                Boolean isUnderWeight = child.getStatusdb().contains("Underweight");
-                Boolean isWasted = child.getStatusdb().contains("Wasted");
-                Boolean isStunted = child.getStatusdb().contains("Stunted");
-                Boolean isNormal = child.getStatusdb().contains("Normal");
-                Boolean isLowestIncome = child.getMonthlyIncome().equals("Less than 9,100");
-                Boolean isLowerIncome = child.getMonthlyIncome().equals("9,100 to 18,200");
-                Boolean isLowIncome = child.getMonthlyIncome().equals("18,200 to 36,400");
+        for (QueryDocumentSnapshot doc: task.getResult()){
+            Child child = doc.toObject(Child.class);
+            child.setId(doc.getId());
+            childrenList.add(child);
+        }
+        for (int i=0; i<24; i++){
+            int count_FEEDING = 0;
+            for(Child child: childrenList){
+                boolean barangayChild = child.getBarangay().equals(barangay[i]);
+                boolean isUW = child.getStatusdb().contains("Underweight");
+                boolean isW = child.getStatusdb().contains("Wasted");
+                boolean isS = child.getStatusdb().contains("Normal");
                 String bdate = child.getBirthDate();
                 FormUtils formUtils = new FormUtils();
                 Date parsedDate = formUtils.parseDate(bdate);
@@ -163,30 +157,20 @@ public class RecommendationAdmin extends AppCompatActivity {
                 if (parsedDate != null) {
                     monthdiff = formUtils.calculateMonthsDifference(parsedDate);
                 }
-                if(barangaytrue) {
-                    if((isUnderWeight||isStunted||isWasted) && (monthdiff>23)){
+                if(barangayChild){
+                    if((isUW||isS||isW) && (monthdiff>23)){
                         count_FEEDING++;
                     }
-                    if((!isNormal) || (isLowerIncome||isLowIncome||isLowestIncome)){
-                        count_GSB++;
-                    }
-                    if((isNormal) && (isLowerIncome||isLowIncome||isLowestIncome)){
-                        count_L++;
-                    }
-                    if(!isNormal){
-                        count_M++;
-                    }
-                    if((!isNormal) && (isLowerIncome||isLowIncome||isLowestIncome)){
-                        count_MBL++;
-                    }
+
                 }
-                feeding_barangay[i] = count_FEEDING;
             }
-            childrenList.clear();
+            feeding_barangay[i] = count_FEEDING;
         }
         RankBarangay();
         feedingTable(barangay, task.getResult().size());
-        gsbTable(count_MBL,count_M,count_L,count_GSB);
+        GSBUtils gUt = new GSBUtils(childrenList);
+        gsbTable(gUt.getMOC(), gUt.getMal(),
+                gUt.getLI(), gUt.getGSBAll());
     }
 
     private void RankBarangay(){
@@ -221,7 +205,7 @@ public class RecommendationAdmin extends AppCompatActivity {
 
     private void gsbTable(int count_MBL, int count_M, int count_L, int count_GSB){
         String[] gulayanHeaders = {"Beneficiaries","Total", "Action"};
-        String[][] gulayanData = {{"Malnourished but Low Income", Integer.toString(count_MBL),"Set"},
+        String[][] gulayanData = {{"Parent with more than 1 child", Integer.toString(count_MBL),"Set"},
                 {"Malnourished", Integer.toString(count_M),"Set"},
                 {"Low Income", Integer.toString(count_L),"Set"},
                 {"All Beneficiaries", Integer.toString(count_GSB), "Set All"}};

@@ -129,9 +129,20 @@ public class FindStatusWFA {
             if(status.isEmpty()){
                 status.add("Normal");
             }
-            if(status.get(0).equals("Overweight")){
-                status.remove(0);
+            int count=0;
+            for(String cstats: status){
+                if(cstats.equals("Overweight") || cstats.equals("Obese")||
+                cstats.equals("Underweight") || cstats.equals("Severe Underweight")){
+                    count++;
+                }
             }
+            if(count>1){
+                if(status.get(0).equals("Overweight") || status.get(0).equals("Underweight")){
+                    status.remove(0);
+                }
+            }
+
+            Toast.makeText(context, ""+status.get(0), Toast.LENGTH_SHORT).show();
             statusdb = showDialogMalnourished(context, status);
 
         } else if (sex.equals("Female") && age<60 && age>=0) {
@@ -167,12 +178,13 @@ public class FindStatusWFA {
             }
             int count=0;
             for(String cstats: status){
-                if(cstats.equals("Overweight") || cstats.equals("Obese")){
+                if(cstats.equals("Overweight") || cstats.equals("Obese")||
+                        cstats.equals("Underweight") || cstats.equals("Severe Underweight")){
                     count++;
                 }
             }
             if(count>1){
-                if(status.get(0).equals("Overweight")){
+                if(status.get(0).equals("Overweight") || status.get(0).equals("Underweight")){
                     status.remove(0);
                 }
             }
@@ -292,7 +304,7 @@ public class FindStatusWFA {
         dialog.show();
 
         return listWithoutDuplicates;
-    };
+    }
 
 
 
