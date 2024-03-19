@@ -339,7 +339,7 @@
                     android:layout_marginEnd="8dp"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    app:cardBackgroundColor="@color/panel1"
+                    app:cardBackgroundColor="@color/panel4"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintEnd_toStartOf="@id/vulView"
@@ -427,7 +427,7 @@
                     android:layout_marginStart="8dp"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    app:cardBackgroundColor="@color/panel2"
+                    app:cardBackgroundColor="@color/panel4"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toEndOf="@id/falView"
@@ -527,7 +527,7 @@
                     android:layout_marginEnd="8dp"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    app:cardBackgroundColor="@color/panel3"
+                    app:cardBackgroundColor="@color/panel4"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintEnd_toStartOf="@id/fPView"
@@ -677,21 +677,22 @@
                                 app:layout_constraintStart_toStartOf="parent"
                                 app:layout_constraintEnd_toEndOf="parent">
                             </TextView>
+
                             <TextView
                                 android:id="@+id/fPCont"
                                 android:layout_width="match_parent"
                                 android:layout_height="0dp"
-                                app:layout_constraintVertical_weight="3"
                                 android:gravity="top|center"
                                 android:text="..."
-                                android:textStyle="bold"
-                                android:textSize="40sp"
                                 android:textColor="@color/white"
-                                app:layout_constraintTop_toBottomOf="@id/fPDesc"
+                                android:textSize="40sp"
+                                android:textStyle="bold"
                                 app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintHorizontal_bias="0.0"
                                 app:layout_constraintStart_toStartOf="parent"
-                                app:layout_constraintEnd_toEndOf="parent">
-                            </TextView>
+                                app:layout_constraintTop_toBottomOf="@id/fPDesc"
+                                app:layout_constraintVertical_weight="3"></TextView>
                         </androidx.constraintlayout.widget.ConstraintLayout>
 
 

@@ -67,6 +67,27 @@ public class GSBUtils {
         return count;
     }
 
+    public  ArrayList<String> mocString(){
+        ArrayList<Child> fGmail = RemoveDuplicates.rDGmail(childList);
+        ArrayList<String> mocEmail = new ArrayList<>();
+        int count = 0;
+        for(Child child: fGmail){
+            int count_child = 0;
+            for(Child child1: childList){
+                if(child1.getGmail().equals(child.getGmail())){
+                    count_child++;
+                }
+            }
+
+            boolean isGOne = count_child>1;
+            if(isGOne){
+                mocEmail.add(child.getGmail());
+            }
+        }
+        return mocEmail;
+
+    }
+
     public int  getMal(){
         int count = 0;
         ArrayList<Child> fGmail = RemoveDuplicates.rDGmail(childList);

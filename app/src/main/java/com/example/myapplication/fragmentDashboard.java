@@ -83,7 +83,8 @@ public class fragmentDashboard extends Fragment {
         viewTotalMalnourished.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(requireContext(), Malnourished_List.class);
+                //Intent intent = new Intent(requireContext(), Malnourished_List.class);
+                Intent intent = new Intent(requireContext(), SummaryReport.class);
                 startActivity(intent);
             }
         });

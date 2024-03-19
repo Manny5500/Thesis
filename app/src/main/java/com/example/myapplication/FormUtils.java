@@ -144,7 +144,8 @@ public class FormUtils {
             return false;
         }
 
-        String passwordPattern = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}$";
+       //String passwordPattern = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}$";
+        String passwordPattern = "^(?=.*[0-9])(?=.*[a-zA-Z])([a-zA-Z0-9]+)$";
         if(!password.matches(passwordPattern) || !cpassword.matches(passwordPattern)){
             Toast.makeText(context, "Use strong password", Toast.LENGTH_SHORT).show();
             return false;

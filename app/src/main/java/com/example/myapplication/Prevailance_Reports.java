@@ -357,10 +357,12 @@ public class Prevailance_Reports extends AppCompatActivity {
                                 for(BarangayModel list: arrayList){
                                     if(myFinal.getBarangay().equals(list.getBarangay())){
                                         myFinal.setEstimatedChildren(list.getEstimatedChildren());
+                                        break;
                                     }
                                 }
                                 count = count + myFinal.getTotalCase();
                             }
+
 
                             int totalChildren = count;
                             float result = (float) totalChildren / childTotal ;

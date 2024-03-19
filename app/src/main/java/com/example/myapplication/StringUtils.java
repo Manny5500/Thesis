@@ -81,6 +81,10 @@ public class StringUtils {
         return  status;
     }
     public static String percentageFormat(int number, int sum){
+        //to prevent the NaN printing
+        if(sum==0){
+            sum = 1;
+        }
         return String.format("%.2f", (double) number / sum * 100) + " %";
     };
 

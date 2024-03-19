@@ -36,7 +36,13 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class FireStoreUtility {
-    public static void getBarangayStatus(String barangayString, TextView textView, FirebaseFirestore db){
+
+    public  ArrayList<String> cMOC;
+    public FireStoreUtility(ArrayList<String> cMOC){
+        this.cMOC = cMOC;
+    }
+
+    public  void getBarangayStatus(String barangayString, TextView textView, FirebaseFirestore db){
         db.collection("barangay").document(barangayString).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) {
@@ -71,7 +77,7 @@ public class FireStoreUtility {
         });
     }
 
-    public static  void getBarangayDetails(String barangayString, Dialog dialog, FirebaseFirestore db, Context context){
+    public   void getBarangayDetails(String barangayString, Dialog dialog, FirebaseFirestore db, Context context){
         db.collection("barangay").document(barangayString).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) {
@@ -117,7 +123,7 @@ public class FireStoreUtility {
         });
     }
 
-    private static void setFeedingDate(String barangayString, String fromValue, String toValue, FirebaseFirestore db, Context context){
+    private  void setFeedingDate(String barangayString, String fromValue, String toValue, FirebaseFirestore db, Context context){
         Map<String, Object> barangay = new HashMap<>();
         barangay.put("feedfrom", fromValue);
         barangay.put("feedto", toValue);
@@ -134,7 +140,7 @@ public class FireStoreUtility {
             }
         });
     }
-    private static void resetFeedingDate(String barangayString, String fromValue, String toValue, FirebaseFirestore db){
+    private  void resetFeedingDate(String barangayString, String fromValue, String toValue, FirebaseFirestore db){
         Map<String, Object> barangay = new HashMap<>();
         barangay.put("feedfrom", fromValue);
         barangay.put("feedto", toValue);
@@ -149,7 +155,7 @@ public class FireStoreUtility {
             }
         });
     }
-    private static void settoChildren(String barangayString, FirebaseFirestore db, String action){
+    private  void settoChildren(String barangayString, FirebaseFirestore db, String action){
         CollectionReference collectionRef = db.collection("children");
         Query query = collectionRef
                 .whereEqualTo("barangay", barangayString)
@@ -193,14 +199,12 @@ public class FireStoreUtility {
     }
 
 
-    private static void setGulayantoChildren(FirebaseFirestore db, String action, String type){
+    private  void setGulayantoChildren(FirebaseFirestore db, String action, String type){
         CollectionReference collectionRef = db.collection("children");
         Query query = null;
-        if(type.equals("Malnourished but Low Income")){
+        if(type.equals("Parent with more than 1 child")){
             query = collectionRef
-                    .whereIn("monthlyIncome", Arrays.asList("Less than 9,100", "9,100 to 18,200", "18,200 to 36,400"))
-                    .whereArrayContainsAny("statusdb",
-                            Arrays.asList("Underweight", "Wasted", "Stunted", "Severe Underweight", "Severe Wasted", "Severe Stunted"));
+                    .whereIn("gmail", cMOC);
         } else if (type.equals("Malnourished")) {
             query = collectionRef
                     .whereArrayContainsAny("statusdb",
@@ -244,9 +248,11 @@ public class FireStoreUtility {
                 }
             });
         }
+
+
     }
 
-    public static  void getGulayanDetails(String gulayanString, Dialog dialog, String type, FirebaseFirestore db, Context context){
+    public   void getGulayanDetails(String gulayanString, Dialog dialog, String type, FirebaseFirestore db, Context context){
         db.collection("gulayan").document(gulayanString).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) {
@@ -293,7 +299,7 @@ public class FireStoreUtility {
         });
     }
 
-    private static void setGulayDate(String gulayanString, String fromValue, String toValue,  String type, FirebaseFirestore db, Context context){
+    private  void setGulayDate(String gulayanString, String fromValue, String toValue,  String type, FirebaseFirestore db, Context context){
         Map<String, Object> gulayan = new HashMap<>();
         gulayan.put("from", fromValue);
         gulayan.put("to", toValue);
@@ -330,7 +336,7 @@ public class FireStoreUtility {
 
     }
 
-    public static void getGulayanStatus(String gulayanString, TextView textView, FirebaseFirestore db){
+    public  void getGulayanStatus(String gulayanString, TextView textView, FirebaseFirestore db){
         db.collection("gulayan").document(gulayanString).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) {
@@ -366,7 +372,7 @@ public class FireStoreUtility {
 
     }
 
-    private static void resetGulayanDate(String gulayanString, String fromValue, String toValue, FirebaseFirestore db){
+    private  void resetGulayanDate(String gulayanString, String fromValue, String toValue, FirebaseFirestore db){
         Map<String, Object> gulayan = new HashMap<>();
         gulayan.put("from", fromValue);
         gulayan.put("to", toValue);

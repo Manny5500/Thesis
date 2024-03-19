@@ -27,6 +27,7 @@ public class RecommendationAdmin extends AppCompatActivity {
     FirebaseFirestore db;
     int [] feeding_barangay = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
     int[] index = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23};
+    public ArrayList<String> cMOC = new ArrayList<>();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -40,7 +41,6 @@ public class RecommendationAdmin extends AppCompatActivity {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 if (task.isSuccessful()) {
-
                     ArrayList<Child> childrenList = new ArrayList<>();
                     FeedingProgramBarangay(task,childrenList,barangay);
                     childrenList.clear();
@@ -60,6 +60,7 @@ public class RecommendationAdmin extends AppCompatActivity {
 
     private void generateTable(TableLayout tableLayout, String[] headers, String[][] data, String which) {
         TableRow headerRow = new TableRow(this);
+        FireStoreUtility fireStoreUtility = new FireStoreUtility(cMOC);
 
         for (int i = 0; i < headers.length; i++) {
             TextView headerTextView = new TextView(this);
@@ -97,13 +98,13 @@ public class RecommendationAdmin extends AppCompatActivity {
                 if(i==rowData.length-1 && which.equals("barangay")){
                     if(Integer.parseInt(rowData[1])>0) {
                         cellTextView.setTextColor(Color.parseColor("#0000FF"));
-                        FireStoreUtility.getBarangayStatus(maybe, cellTextView, db);
+                        fireStoreUtility.getBarangayStatus(maybe, cellTextView, db);
                         cellTextView.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
                                 final Dialog dialog = new Dialog(RecommendationAdmin.this);
                                 dialog.setContentView(R.layout.dialog_assign);
-                                FireStoreUtility.getBarangayDetails(maybe, dialog, db,RecommendationAdmin.this);
+                                fireStoreUtility.getBarangayDetails(maybe, dialog, db,RecommendationAdmin.this);
                                 dialog.show();
                             }
                         });
@@ -116,14 +117,14 @@ public class RecommendationAdmin extends AppCompatActivity {
 
                     if(Integer.parseInt(rowData[1])>0) {
                         cellTextView.setTextColor(Color.parseColor("#0000FF"));
-                        FireStoreUtility.getGulayanStatus(rowData[0], cellTextView, db);
+                        fireStoreUtility.getGulayanStatus(rowData[0], cellTextView, db);
 
                         cellTextView.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
                                 final Dialog dialog = new Dialog(RecommendationAdmin.this);
                                 dialog.setContentView(R.layout.dialog_assign);
-                                FireStoreUtility.getGulayanDetails(rowData[0], dialog, rowData[0],db,RecommendationAdmin.this);
+                                fireStoreUtility.getGulayanDetails(rowData[0], dialog, rowData[0],db,RecommendationAdmin.this);
                                 dialog.show();
                             }
                         });
@@ -169,6 +170,7 @@ public class RecommendationAdmin extends AppCompatActivity {
         RankBarangay();
         feedingTable(barangay, task.getResult().size());
         GSBUtils gUt = new GSBUtils(childrenList);
+        cMOC = gUt.mocString();
         gsbTable(gUt.getMOC(), gUt.getMal(),
                 gUt.getLI(), gUt.getGSBAll());
     }

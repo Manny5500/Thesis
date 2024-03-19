@@ -25,6 +25,12 @@
         android:theme="@style/Theme.MyApplication"
         tools:targetApi="31">
         <activity
+            android:name=".SummaryReport"
+            android:exported="false" />
+        <activity
+            android:name=".TestAlg"
+            android:exported="false" />
+        <activity
             android:name=".FPList"
             android:exported="false" />
         <activity
