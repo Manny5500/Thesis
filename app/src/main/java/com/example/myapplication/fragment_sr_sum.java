@@ -12,9 +12,14 @@ import android.view.ViewGroup;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import java.util.ArrayList;
 
 public class fragment_sr_sum extends Fragment {
     View view;
+
+    ArrayList<Child> childrenList;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -37,17 +42,23 @@ public class fragment_sr_sum extends Fragment {
         "#Children with names repeated: ", "#Children older than 59 months"};
 
 
+        childrenList = ((SummaryReport)getActivity()).childrenList;
+        SRDPSum srdpSum = new SRDPSum(childrenList);
+        int counts[] = srdpSum.countNow(srdpSum.monthFilter());
+        int countsMother[] = srdpSum.countNowMother(srdpSum.monthFilter());
+        int countsData[] = srdpSum.countNowData(childrenList);
+
         int l=1;
         for(int i=0; i<4; i++){
             OPTData[i][0] = OPTCat[i];
-            OPTData[i][1] = "1";
+            OPTData[i][1] = String.valueOf(counts[i]);
         }
         for(int i=0; i<5; i++){
             MotherData[i][0] = MotherCat[i];
-            MotherData[i][1] = "1";
+            MotherData[i][1] = String.valueOf(countsMother[i]);
 
             DataData[i][0] = DataCat[i];
-            DataData[i][1] = "1";
+            DataData[i][1] = String.valueOf(countsData[i]);
         }
 
         generateTable(OPTTL,headers[0], OPTData);
@@ -57,7 +68,6 @@ public class fragment_sr_sum extends Fragment {
     }
     private void generateTable(TableLayout tableLayout, String header, String[][] data) {
         TableRow headerRow = new TableRow(requireContext());
-
 
         TextView headerTextView = new TextView(requireContext());
         headerTextView.setText(header);
