@@ -39,7 +39,7 @@ import java.util.Collections;
 
 public class SummaryReport extends AppCompatActivity {
 
-    ConstraintLayout naviData, naviConso, naviSum;
+    ConstraintLayout naviData, naviConso, naviSum, naviPdf;
     MaterialAutoCompleteTextView textBarangay, textDate;
     String text_Date, text_Barangay;
 
@@ -57,6 +57,7 @@ public class SummaryReport extends AppCompatActivity {
         naviData = findViewById(R.id.naviData);
         naviConso = findViewById(R.id.naviConso);
         naviSum = findViewById(R.id.naviSum);
+        naviPdf = findViewById(R.id.naviPdf);
 
         textDate = findViewById(R.id.textDate);
         textBarangay = findViewById(R.id.textBarangay);
@@ -64,8 +65,6 @@ public class SummaryReport extends AppCompatActivity {
 
 
         db = FirebaseFirestore.getInstance();
-
-
 
         String[] brgyList = getResources().getStringArray(R.array.barangay);
         FormUtils.setAdapter(brgyList, textBarangay, this);
@@ -120,6 +119,7 @@ public class SummaryReport extends AppCompatActivity {
                             naviDataEvent();
                             naviConsoEvent();
                             naviSumEvent();
+                            naviPdfEvent();
                         }
                     }
                 }).addOnFailureListener(new OnFailureListener() {
@@ -136,7 +136,6 @@ public class SummaryReport extends AppCompatActivity {
         text_Barangay = "Alipit";
         textDate.setText(getDateNowFormatted(), false);
         textBarangay.setText("Alipit",false);
-        //Populate(status_array, "U and SU", text_Date);
     }
     public String getDateNowFormatted(){
         LocalDate currentDate = LocalDate.now();
@@ -185,6 +184,18 @@ public class SummaryReport extends AppCompatActivity {
                 replaceFragment(new fragment_sr_sum());
             }
         });
+    }
+
+    private void naviPdfEvent(){
+        naviPdf.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                SRDPPdf srdpP = new SRDPPdf(childrenList);
+                int number[] = srdpP.getTfAges();
+                Toast.makeText(SummaryReport.this, ""+number[2], Toast.LENGTH_SHORT).show();
+            }
+        });
+
     }
     private void replaceFragment(Fragment fragment) {
         FragmentManager fragmentManager =  getSupportFragmentManager();

@@ -275,7 +275,8 @@ public class Prevailance_Reports extends AppCompatActivity {
                 boolean isStatus2 = arrayList1.getStatus().contains(status_array[1]);
                 boolean isNormalWFA = arrayList1.getStatus().get(0).equals("Normal");
                 boolean isNormalHFA = arrayList1.getStatus().get(1).equals("Normal");
-                boolean isNormalWFH = arrayList1.getStatus().get(2).equals("Normal");
+                boolean isNormalWFH = arrayList1.getStatus().get(2).equals("Normal") ||
+                        arrayList1.getStatus().get(2).equals("");
 
                 if(isBarangay && (isStatus1|| isStatus2)){
                     count++;

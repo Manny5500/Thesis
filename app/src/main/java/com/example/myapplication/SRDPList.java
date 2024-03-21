@@ -72,7 +72,7 @@ public class SRDPList {
                 boolean isTall = HFAStatus.equals("Tall");
                 boolean isST = HFAStatus.equals("Stunted");
                 boolean isSST = HFAStatus.equals("Severe Stunted");
-                boolean isNormalWFH = WFHStatus.equals("Normal");
+                boolean isNormalWFH = WFHStatus.equals("Normal") || WFHStatus.equals("");
                 boolean isOWWFH = WFHStatus.equals("Overweight");
                 boolean isOB = WFHStatus.equals("Obese");
                 boolean isW = WFHStatus.equals("Wasted");
@@ -165,6 +165,27 @@ public class SRDPList {
         }
 
         return dataArr;
+    }
+
+
+    public int[] tfAges(ArrayList<Child>[] childList){
+        int dataArr[] = new int[18];
+        for(int i=0; i<6; i++){
+            for(Child child: childList[i]){
+                boolean isMale = child.getSex().equals("Male");
+                boolean isFemale = child.getSex().equals("Female");
+                if(isMale){
+                    dataArr[i*3]++;
+                }
+                if(isFemale){
+                    dataArr[(i*3)+1]++;
+                }
+            }
+
+            dataArr[(i*3)+2] = dataArr[i*3] + dataArr[(i*3)+1];
+        }
+        return dataArr;
+
     }
 
 
