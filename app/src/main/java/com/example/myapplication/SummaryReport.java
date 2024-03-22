@@ -15,27 +15,37 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
+import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.ProgressBar;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.github.barteksc.pdfviewer.PDFView;
+import com.github.barteksc.pdfviewer.scroll.DefaultScrollHandle;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.MaterialAutoCompleteTextView;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.itextpdf.text.Rectangle;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.concurrent.Executors;
 
 public class SummaryReport extends AppCompatActivity {
 
@@ -49,6 +59,9 @@ public class SummaryReport extends AppCompatActivity {
 
     int totalCount;
     int loadCount = 1;
+
+    int estimatedChildren;
+    int population;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -190,9 +203,7 @@ public class SummaryReport extends AppCompatActivity {
         naviPdf.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                SRDPPdf srdpP = new SRDPPdf(childrenList);
-                int number[] = srdpP.getTfAges();
-                Toast.makeText(SummaryReport.this, ""+number[2], Toast.LENGTH_SHORT).show();
+                databaseCallPdf();
             }
         });
 
@@ -202,6 +213,88 @@ public class SummaryReport extends AppCompatActivity {
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.replace(R.id.frameLayoutSR,fragment);
         fragmentTransaction.commit();
+    }
+
+    public void databaseCallPdf(){
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+        DocumentReference docRef = db.collection("barangay").document(text_Barangay);
+        docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot document = task.getResult();
+                    if (document.exists()) {
+                        estimatedChildren = document.getLong("estimatedChildren").intValue();
+                        population = document.getLong("population").intValue();
+                    }
+                    SRDPPdf srdpP = new SRDPPdf(childrenList);
+                    createPdf(childrenList);
+                }
+            }
+        });
+    }
+
+    public void createPdf(ArrayList<Child> arrayList){
+        Rectangle customsize = new Rectangle(
+                13.0f*72,
+                8.5f*72
+        );
+        SR_PdfUtils sPUtils = new SR_PdfUtils(customsize, text_Barangay,
+                estimatedChildren, population, new SRDPPdf(childrenList));
+        byte[] pdfBytes = sPUtils.PdfSetter();
+        showPdfDialog(pdfBytes);
+    }
+
+
+    private void showPdfDialog(byte[] pdfBytes){
+        final Dialog dialog = new Dialog(SummaryReport.this);
+        dialog.setContentView(R.layout.pdf_viewer);
+        PDFView pdfView = dialog.findViewById(R.id.pdfView);
+        ProgressBar progressBar = dialog.findViewById(R.id.progressBar);
+        Button cancelBtn = dialog.findViewById(R.id.btnCancel);
+        Button exportBtn = dialog.findViewById(R.id.btnSavePdf);
+        Window window = dialog.getWindow();
+        window.setLayout(ConstraintLayout.LayoutParams.MATCH_PARENT, ConstraintLayout.LayoutParams.MATCH_PARENT);
+        dialog.show();
+        displayPdfFromBytes(pdfBytes, pdfView, progressBar);
+
+        exportBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String filename = "Summary Report"  +
+                        LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddHHmmssSSSS")) + ".pdf";
+                Pdf_Utils pdf_utils = new Pdf_Utils(getContentResolver(), pdfBytes, SummaryReport.this, filename);
+                pdf_utils.savePDFToStorage();
+            }
+        });
+
+        cancelBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+    }
+
+    private void displayPdfFromBytes(byte[] pdfBytes, PDFView pdfView, ProgressBar progressBar) {
+        progressBar.setVisibility(View.VISIBLE);
+        Executors.newSingleThreadExecutor().execute(() -> {
+            try {
+                runOnUiThread(() -> {
+                    progressBar.setVisibility(View.GONE);
+
+                    pdfView.fromBytes(pdfBytes)
+                            .scrollHandle(new DefaultScrollHandle(this))
+                            .load();
+                });
+            } catch (Exception e) {
+                runOnUiThread(() -> {
+                    e.printStackTrace();
+                    Log.e("PDFViewer", "Error loading PDF: " + e.getMessage());
+                });
+            }
+        });
     }
 
 }

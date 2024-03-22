@@ -31,15 +31,7 @@ public class fragment_sr_sum extends Fragment {
         TableLayout MotherTL = view.findViewById(R.id.MotherTL);
         TableLayout DataTL = view.findViewById(R.id.DataTL);
         String [] headers =  {"Summary of Children covered by e-OPT Plus", "Mothers/Caregivers Summary", "Data Summary:"};
-        String [] OPTCat = {"#Children 0-59 mos. affected by Undernutrition", "#Children 0-59 mos. with Overweight/Obesity:",
-        "Total Number of Children 0-23 mos. old: ", "#Children 0-23 mos. affected by Undernutrition: "};
 
-        String [] MotherCat = {"Total Number of M/Cs of children 0-59 mos. old: ", "#M/Cs of 0-59 mos children affected by Undernutrition",
-                "#M/Cs of 0-59 mos. children with Overweight/Obesity: ", "Total Number of M/Cs of children 0-23 mos. old ",
-            "#M/Cs of 0-23 mos. children affected by Undernutrition: "};
-
-        String [] DataCat = {"#Children with weight but no height: ", "#Children with height but no weight: ", "#Children with missing information:",
-        "#Children with names repeated: ", "#Children older than 59 months"};
 
 
         childrenList = ((SummaryReport)getActivity()).childrenList;
@@ -47,6 +39,12 @@ public class fragment_sr_sum extends Fragment {
         int counts[] = srdpSum.countNow(srdpSum.monthFilter());
         int countsMother[] = srdpSum.countNowMother(srdpSum.monthFilter());
         int countsData[] = srdpSum.countNowData(childrenList);
+
+
+        String [] OPTCat = srdpSum.OPTCat;
+        String [] MotherCat = srdpSum.MotherCat;
+
+        String [] DataCat = srdpSum.DataCat;
 
         int l=1;
         for(int i=0; i<4; i++){

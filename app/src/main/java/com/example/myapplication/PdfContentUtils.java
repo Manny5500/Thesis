@@ -111,4 +111,15 @@ public class PdfContentUtils {
         BaseColor baseColor = new BaseColor(red, green, blue);
         return baseColor;
     }
+
+    public static void addCell(PdfPTable table, String text, BaseColor backgroundColor, BaseColor textColor, int colspan) {
+        PdfPCell cell = new PdfPCell(new Paragraph(text, new Font(Font.FontFamily.HELVETICA, 12, Font.BOLD, textColor)));
+        cell.setBackgroundColor(backgroundColor);
+        cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+        cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+        cell.setPadding(6);
+        cell.setColspan(colspan);
+        cell.setBorderColor(BaseColor.BLACK);
+        table.addCell(cell);
+    }
 }

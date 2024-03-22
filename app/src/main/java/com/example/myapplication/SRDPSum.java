@@ -6,6 +6,15 @@ import java.util.Date;
 public class SRDPSum {
     ArrayList<Child> childList;
 
+    String [] OPTCat = {"#Children 0-59 mos. affected by Undernutrition", "#Children 0-59 mos. with Overweight/Obesity:",
+            "Total Number of Children 0-23 mos. old: ", "#Children 0-23 mos. affected by Undernutrition: "};
+
+    String [] MotherCat = {"Total Number of M/Cs of children 0-59 mos. old: ", "#M/Cs of 0-59 mos children affected by Undernutrition",
+            "#M/Cs of 0-59 mos. children with Overweight/Obesity: ", "Total Number of M/Cs of children 0-23 mos. old ",
+            "#M/Cs of 0-23 mos. children affected by Undernutrition: "};
+
+    String [] DataCat = {"#Children with weight but no height: ", "#Children with height but no weight: ", "#Children with missing information:",
+            "#Children with names repeated: ", "#Children older than 59 months"};
     public  SRDPSum(ArrayList<Child> childList) {
         this.childList = childList;
     }
