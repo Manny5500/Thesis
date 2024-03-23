@@ -3,6 +3,7 @@ package com.example.myapplication;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
@@ -11,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.Dialog;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
@@ -240,8 +242,10 @@ public class SummaryReport extends AppCompatActivity {
                 13.0f*72,
                 8.5f*72
         );
+
+        Drawable drawable = ContextCompat.getDrawable(this, R.drawable.optlogojp);
         SR_PdfUtils sPUtils = new SR_PdfUtils(customsize, text_Barangay,
-                estimatedChildren, population, new SRDPPdf(childrenList));
+                estimatedChildren, population, new SRDPPdf(childrenList), drawable );
         byte[] pdfBytes = sPUtils.PdfSetter();
         showPdfDialog(pdfBytes);
     }

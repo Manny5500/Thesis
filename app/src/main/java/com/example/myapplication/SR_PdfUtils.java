@@ -1,6 +1,8 @@
 package com.example.myapplication;
 
 
+import android.graphics.drawable.Drawable;
+
 import com.itextpdf.text.BaseColor;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.Rectangle;
@@ -18,16 +20,19 @@ public class SR_PdfUtils {
     String barangay;
     private Rectangle customsize;
 
+    Drawable drawable;
+
     SRDPPdf srdpPdf;
 
     public SR_PdfUtils(Rectangle customsize, String barangay,
                        int estimatedChildren, int population,
-                       SRDPPdf srdpPdf){
+                       SRDPPdf srdpPdf, Drawable drawable){
         this.customsize = customsize;
         this.barangay = barangay;
         this.estimatedChildren = estimatedChildren;
         this.population = population;
         this.srdpPdf = srdpPdf;
+        this.drawable = drawable;
     }
 
     public byte[] PdfSetter(){
@@ -45,12 +50,75 @@ public class SR_PdfUtils {
             "24-35 Months", "36-47 Months", "48-59 Months", "0-59 Months", "0-23 Months", "Boys", "Girls", "Total"};
             String[] header2 = {"Boys", "Girls", "Total"};
             String[] header2_1 = {"Total", "Prev"};
+
+            String[] masterHeader1 = {"Province: ",   "Laguna", "Regn:", "IV-A CALABARZON", "OPT Plus Coverage:", "33.1%"};
+            String[] masterHeader2 = {"Barangay: ", barangay, "Total Popn Barangay:", String.valueOf(population)};
+            String[] masterHeader3 = {"Municipality: ", "MAGDALENA", "Estimated Popn of Children 0-59 mos in Barangay:", String.valueOf(estimatedChildren)};
+
             // Create a PDF document
             Document document = new Document(customsize);
             PdfWriter.getInstance(document, byteArrayOutputStream);
             document.open();
             //header
-            PdfContentUtils.addText("Total Popn Barangay" + population, document);
+
+            BaseColor baseColor = SRPDF_CU.getBaseColor("#a6aa91");
+            BaseColor textColor = SRPDF_CU.getBaseColor("#ffffff");
+            BaseColor textColor2 = SRPDF_CU.getBaseColor("#000000");
+
+            PdfPTable tableheader = new PdfPTable(26);
+            tableheader.setWidthPercentage(100);
+            int k=0;
+            for(int i=0; i<3;i++){
+                for(int j=0; j<26; j++){
+                    if(i==0){
+                        if(j<6){
+                            SRPDF_CU.addCellColTH(tableheader, " ", textColor, textColor2, 0);
+                        } else if (j>5 && j<20) {
+                                if(j == 6 || j== 11 || j == 16){
+                                    SRPDF_CU.addCellColTH(tableheader, masterHeader1[k],textColor, textColor2, 2 );
+                                    k++;
+                                } else if (j== 9 || j== 14 ) {
+                                    SRPDF_CU.addCellColTHBL(tableheader, masterHeader1[k],textColor, textColor2, 3 );
+                                    k++;
+                                } else if (j== 18) {
+                                    SRPDF_CU.addCellColTHBL(tableheader, masterHeader1[k],textColor, textColor2, 2 );
+                                    k++;
+                                }
+                        } else if (j==20) {
+                            SRPDF_CU.addCellCRTH(tableheader, "Total # indigenous Preschool Children Measured\n\n 0-59 mos:  12", textColor, textColor2, 3,2);
+                        } else if (j==23) {
+                            SRPDF_CU.addCellCRTHLogo(tableheader, "", textColor, textColor2, 3,3, drawable);
+                        }
+                    }
+
+                    if(i==1){
+                        if(j<4){
+                            if(j % 2 == 0){
+                                SRPDF_CU.addCellColTH(tableheader, masterHeader2[j], textColor, textColor2, 4);
+                            }
+                            else{
+                                SRPDF_CU.addCellColTHBL(tableheader, masterHeader2[j], textColor, textColor2, 3);
+                            }
+                        }else if (j>13 && j<20){
+                            SRPDF_CU.addCellColTH(tableheader, "", textColor, textColor,0);
+                        }
+                    }
+                    if(i==2){
+                        if(j<4){
+                            if(j % 2 == 0){
+                                SRPDF_CU.addCellColTH(tableheader, masterHeader3[j], textColor, textColor2, 4);
+                            }
+                            else{
+                                SRPDF_CU.addCellColTHBL(tableheader, masterHeader3[j], textColor, textColor2, 3);
+                            }
+                        }else if (j>13 && j<23){
+                            SRPDF_CU.addCellColTH(tableheader, "", textColor, textColor,0);
+                        }
+                    }
+
+                }
+            }
+            document.add(tableheader);
 
             PdfPTable table = new PdfPTable(26);
             table.setWidthPercentage(100);
@@ -66,9 +134,7 @@ public class SR_PdfUtils {
                     3.17f, 3.17f, 3.17f};
             table.setWidths(columnWidths);
 
-            BaseColor baseColor = SRPDF_CU.getBaseColor("#a6aa91");
-            BaseColor textColor = SRPDF_CU.getBaseColor("#ffffff");
-            BaseColor textColor2 = SRPDF_CU.getBaseColor("#000000");
+
 
             //table-header
             for(int i=0; i<10;i++){
