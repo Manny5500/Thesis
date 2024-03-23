@@ -60,7 +60,7 @@ public class SRDPConso {
                 boolean isTall = HFAStatus.equals("Tall");
                 boolean isST = HFAStatus.equals("Stunted");
                 boolean isSST = HFAStatus.equals("Severe Stunted");
-                boolean isNormalWFH = WFHStatus.equals("Normal");
+                boolean isNormalWFH = WFHStatus.equals("Normal") || WFHStatus.equals("");
                 boolean isOWWFH = WFHStatus.equals("Overweight");
                 boolean isOB = WFHStatus.equals("Obese");
                 boolean isW = WFHStatus.equals("Wasted");

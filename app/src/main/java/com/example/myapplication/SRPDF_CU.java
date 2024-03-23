@@ -45,28 +45,7 @@ public class SRPDF_CU {
         cell.setBorderColor(BaseColor.BLACK);
         table.addCell(cell);
     }
-    public static void addText(String text, Document document)throws DocumentException {
-        Paragraph paragraph = new Paragraph(text, new Font(Font.FontFamily.HELVETICA, 11));
-        paragraph.setAlignment(paragraph.ALIGN_CENTER);
-        document.add(paragraph);
-    }
-    public static void addText(String text, Document document, boolean isBold )throws DocumentException {
-        Paragraph paragraph = new Paragraph(text, new Font(Font.FontFamily.HELVETICA, 11, Font.BOLD));
-        paragraph.setAlignment(paragraph.ALIGN_CENTER);
-        document.add(paragraph);
-    }
 
-
-    public static void addText(String text, Document document,  boolean isBold, String align)throws DocumentException {
-        Paragraph paragraph;
-        if(isBold){
-            paragraph = new Paragraph(text, new Font(Font.FontFamily.HELVETICA, 11, Font.BOLD));
-        }else {
-            paragraph = new Paragraph(text, new Font(Font.FontFamily.HELVETICA, 11));
-        }
-        setAlign(paragraph,align);
-        document.add(paragraph);
-    }
 
     public static void setAlign(Paragraph paragraph, String align){
         switch (align){
@@ -86,10 +65,10 @@ public class SRPDF_CU {
     }
 
 
-    public static float percentage(int number1, int number2){
+    public static String percentage(int number1, int number2){
         float result = (float) number1 / number2;
-        float percentage = Math.round(result * 100.0f);
-        return percentage;
+        float percentage = result * 100.0f;
+        return String.format("%.2f", percentage) + " %";
     }
 
     public static void addCell(PdfPTable table, String text){
@@ -147,16 +126,7 @@ public class SRPDF_CU {
         table.addCell(cell);
     }
 
-    public static void addCellDataSum(PdfPTable table, String text, BaseColor backgroundColor, BaseColor textColor, int colspan) {
-        PdfPCell cell = new PdfPCell(new Paragraph(text, new Font(Font.FontFamily.HELVETICA, 11, Font.NORMAL, textColor)));
-        cell.setBackgroundColor(backgroundColor);
-        cell.setHorizontalAlignment(Element.ALIGN_CENTER);
-        cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
-        cell.setPadding(4);
-        cell.setColspan(colspan);
-        cell.setBorder(Rectangle.TOP | Rectangle.RIGHT | Rectangle.BOTTOM);
-        table.addCell(cell);
-    }
+
 
     public static void addCellR(PdfPTable table, String text, BaseColor backgroundColor, BaseColor textColor, int rowspan) {
         PdfPCell cell = new PdfPCell(new Paragraph(text, new Font(Font.FontFamily.HELVETICA, 11, Font.NORMAL, textColor)));
@@ -179,10 +149,10 @@ public class SRPDF_CU {
         cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
         cell.setPaddingTop(4);
         cell.setPaddingBottom(4);
-        cell.setPaddingLeft(0);
-        cell.setPaddingRight(0);
+        cell.setPaddingLeft(4);
+        cell.setPaddingRight(4);
         cell.setRowspan(rowspan);
-        cell.setBorder(Rectangle.TOP | Rectangle.LEFT | Rectangle.BOTTOM);
+        cell.setBorder(Rectangle.TOP | Rectangle.LEFT | Rectangle.BOTTOM | Rectangle.RIGHT);
         cell.setRotation(90);
         table.addCell(cell);
     }
@@ -197,13 +167,15 @@ public class SRPDF_CU {
         table.addCell(cell);
     }
 
-    public static void addCellPrev(PdfPTable table, String text, BaseColor textColor){
+    public static void addCellPrev(PdfPTable table, String text, BaseColor backgroundColor, BaseColor textColor){
         PdfPCell cell = new PdfPCell(new Paragraph(text, new Font(Font.FontFamily.HELVETICA, 11, Font.NORMAL, textColor)));
         cell.setHorizontalAlignment(Element.ALIGN_CENTER);
         cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
         cell.setPadding(4);
         cell.setPaddingRight(0);
         cell.setPaddingLeft(0);
+        cell.setBackgroundColor(backgroundColor);
+        cell.setBorderColor(textColor);
         table.addCell(cell);
     }
 
@@ -271,5 +243,109 @@ public class SRPDF_CU {
         cell.addElement(phrase);
         table.addCell(cell);
     }
+
+    public static void addCellColor(PdfPTable table, String text, BaseColor backgroundColor, BaseColor textColor, int colspan) {
+        PdfPCell cell = new PdfPCell(new Paragraph(text, new Font(Font.FontFamily.HELVETICA, 11, Font.NORMAL, textColor)));
+        cell.setBackgroundColor(backgroundColor);
+        cell.setHorizontalAlignment(Element.ALIGN_RIGHT);
+        cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+        cell.setColspan(colspan);
+        cell.setBorder(Rectangle.NO_BORDER);
+        cell.setPadding(2);
+        table.addCell(cell);
+    }
+
+    public static void addCellColor(PdfPTable table, String text, BaseColor backgroundColor){
+        PdfPCell cell = new PdfPCell(new Phrase(text));
+        cell.setBackgroundColor(backgroundColor);
+        cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+        cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+        cell.setBorder(Rectangle.NO_BORDER);
+        cell.setPadding(2);
+        table.addCell(cell);
+    }
+
+    public static void addCellColorCenter(PdfPTable table, String text, BaseColor backgroundColor, BaseColor textColor, int colspan, int rowspan, int fontstyle) {
+        PdfPCell cell = new PdfPCell(new Paragraph(text, new Font(Font.FontFamily.HELVETICA, 11, fontstyle, textColor)));
+        cell.setBackgroundColor(backgroundColor);
+        cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+        cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+        cell.setPaddingTop(4);
+        cell.setPaddingBottom(4);
+        cell.setPaddingLeft(0);
+        cell.setPaddingRight(0);
+        cell.setColspan(colspan);
+        cell.setRowspan(rowspan);
+        cell.setBorder(Rectangle.TOP | Rectangle.LEFT | Rectangle.BOTTOM | Rectangle.RIGHT);
+        table.addCell(cell);
+    }
+    public static void addCCCReg(PdfPTable table, String text, BaseColor backgroundColor, BaseColor textColor, int colspan) {
+        PdfPCell cell = new PdfPCell(new Paragraph(text, new Font(Font.FontFamily.HELVETICA, 11, Font.BOLD, textColor)));
+        cell.setBackgroundColor(backgroundColor);
+        cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+        cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+        cell.setPaddingTop(4);
+        cell.setPaddingBottom(4);
+        cell.setPaddingLeft(0);
+        cell.setPaddingRight(0);
+        cell.setColspan(colspan);
+        cell.setBorder(Rectangle.TOP | Rectangle.LEFT | Rectangle.BOTTOM);
+        table.addCell(cell);
+    }
+    public static void addCellReg(PdfPTable table, String text, BaseColor backgroundColor, BaseColor textColor){
+        PdfPCell cell = new PdfPCell(new Phrase(text, new Font(Font.FontFamily.HELVETICA, 11, Font.NORMAL, textColor)));
+        cell.setBackgroundColor(backgroundColor);
+        cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+        cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+        cell.setBorderColor(textColor);
+        cell.setPadding(2);
+        table.addCell(cell);
+    }
+    public static void addCellRegLeft(PdfPTable table, String text, BaseColor backgroundColor, BaseColor textColor){
+        PdfPCell cell = new PdfPCell(new Phrase(text, new Font(Font.FontFamily.HELVETICA, 11, Font.NORMAL, textColor)));
+        cell.setBackgroundColor(backgroundColor);
+        cell.setHorizontalAlignment(Element.ALIGN_LEFT);
+        cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+        cell.setBorderColor(textColor);
+        cell.setPadding(2);
+        table.addCell(cell);
+    }
+    public static void addCellRegRight(PdfPTable table, String text, BaseColor backgroundColor, BaseColor textColor){
+        PdfPCell cell = new PdfPCell(new Phrase(text, new Font(Font.FontFamily.HELVETICA, 11, Font.NORMAL, textColor)));
+        cell.setBackgroundColor(backgroundColor);
+        cell.setHorizontalAlignment(Element.ALIGN_RIGHT);
+        cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+        cell.setBorderColor(textColor);
+        cell.setPadding(2);
+        table.addCell(cell);
+    }
+    public static void addCellCenter(PdfPTable table, String text, BaseColor backgroundColor, BaseColor textColor, int colspan) {
+        PdfPCell cell = new PdfPCell(new Paragraph(text, new Font(Font.FontFamily.HELVETICA, 11, Font.NORMAL, textColor)));
+        cell.setBackgroundColor(backgroundColor);
+        cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+        cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+        cell.setPaddingTop(4);
+        cell.setPaddingBottom(4);
+        cell.setPaddingLeft(0);
+        cell.setPaddingRight(0);
+        cell.setColspan(colspan);
+        cell.setBorder(Rectangle.TOP | Rectangle.BOTTOM);
+        table.addCell(cell);
+    }
+    public static void addCellCenterLast(PdfPTable table, String text, BaseColor backgroundColor, BaseColor textColor, int colspan) {
+        PdfPCell cell = new PdfPCell(new Paragraph(text, new Font(Font.FontFamily.HELVETICA, 11, Font.NORMAL, textColor)));
+        cell.setBackgroundColor(backgroundColor);
+        cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+        cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+        cell.setPaddingTop(4);
+        cell.setPaddingBottom(4);
+        cell.setPaddingLeft(0);
+        cell.setPaddingRight(0);
+        cell.setColspan(colspan);
+        cell.setBorder(Rectangle.TOP  | Rectangle.BOTTOM | Rectangle.RIGHT);
+        table.addCell(cell);
+    }
+
+
 
 }

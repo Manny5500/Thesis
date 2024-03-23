@@ -13,7 +13,6 @@ import java.io.ByteArrayOutputStream;
 
 
 public class SR_PdfUtils {
-    private BarangayModel bModel;
     private int estimatedChildren;
     private int population;
 
@@ -44,14 +43,17 @@ public class SR_PdfUtils {
 
     public void pdfContentMaker(ByteArrayOutputStream byteArrayOutputStream){
         try {
-            String[] totalHeader = {"PSGC: 0403416019","Total WFA:", "56", "Total HFA:", "56", "Total WFL/H:", "56", "Birth to 5 years",
+            int childrenMeasured = Integer.parseInt(srdpPdf.sumData[0][3]);
+            String[] totalHeader = {"PSGC:", "0403416019","Total WFA:", srdpPdf.sumData[0][3],
+                    "Total HFA:", srdpPdf.sumData[0][3], "Total WFL/H:", srdpPdf.sumData[0][3], "Birth to 5 years",
             "F1K", "#IP Children"};
             String[] header1 = {"ACRONYMS & ABBREVATIONS", " 0-5 Months", "6- 11 Months", "12-23 Months",
             "24-35 Months", "36-47 Months", "48-59 Months", "0-59 Months", "0-23 Months", "Boys", "Girls", "Total"};
             String[] header2 = {"Boys", "Girls", "Total"};
             String[] header2_1 = {"Total", "Prev"};
 
-            String[] masterHeader1 = {"Province: ",   "Laguna", "Regn:", "IV-A CALABARZON", "OPT Plus Coverage:", "33.1%"};
+            String[] masterHeader1 = {"Province: ",   "Laguna", "Regn:", "IV-A CALABARZON", "OPT Plus Coverage:",
+                    SRPDF_CU.percentage(childrenMeasured,estimatedChildren)};
             String[] masterHeader2 = {"Barangay: ", barangay, "Total Popn Barangay:", String.valueOf(population)};
             String[] masterHeader3 = {"Municipality: ", "MAGDALENA", "Estimated Popn of Children 0-59 mos in Barangay:", String.valueOf(estimatedChildren)};
 
@@ -61,63 +63,55 @@ public class SR_PdfUtils {
             document.open();
             //header
 
-            BaseColor baseColor = SRPDF_CU.getBaseColor("#a6aa91");
             BaseColor textColor = SRPDF_CU.getBaseColor("#ffffff");
             BaseColor textColor2 = SRPDF_CU.getBaseColor("#000000");
+            BaseColor yellowColor = SRPDF_CU.getBaseColor("#fffcae");
+            BaseColor grayColor = SRPDF_CU.getBaseColor("#D3D3D3");
+            BaseColor darkerGray = SRPDF_CU.getBaseColor("#C0C0C0");
+            BaseColor darkestGray = SRPDF_CU.getBaseColor("#808080");
+            BaseColor blueColor = SRPDF_CU.getBaseColor("#2600FF");
+            BaseColor peachColor = SRPDF_CU.getBaseColor("#d39885");
 
             PdfPTable tableheader = new PdfPTable(26);
             tableheader.setWidthPercentage(100);
-            int k=0;
-            for(int i=0; i<3;i++){
-                for(int j=0; j<26; j++){
-                    if(i==0){
-                        if(j<6){
-                            SRPDF_CU.addCellColTH(tableheader, " ", textColor, textColor2, 0);
-                        } else if (j>5 && j<20) {
-                                if(j == 6 || j== 11 || j == 16){
-                                    SRPDF_CU.addCellColTH(tableheader, masterHeader1[k],textColor, textColor2, 2 );
-                                    k++;
-                                } else if (j== 9 || j== 14 ) {
-                                    SRPDF_CU.addCellColTHBL(tableheader, masterHeader1[k],textColor, textColor2, 3 );
-                                    k++;
-                                } else if (j== 18) {
-                                    SRPDF_CU.addCellColTHBL(tableheader, masterHeader1[k],textColor, textColor2, 2 );
-                                    k++;
-                                }
-                        } else if (j==20) {
-                            SRPDF_CU.addCellCRTH(tableheader, "Total # indigenous Preschool Children Measured\n\n 0-59 mos:  12", textColor, textColor2, 3,2);
-                        } else if (j==23) {
-                            SRPDF_CU.addCellCRTHLogo(tableheader, "", textColor, textColor2, 3,3, drawable);
-                        }
-                    }
 
-                    if(i==1){
-                        if(j<4){
-                            if(j % 2 == 0){
-                                SRPDF_CU.addCellColTH(tableheader, masterHeader2[j], textColor, textColor2, 4);
-                            }
-                            else{
-                                SRPDF_CU.addCellColTHBL(tableheader, masterHeader2[j], textColor, textColor2, 3);
-                            }
-                        }else if (j>13 && j<20){
-                            SRPDF_CU.addCellColTH(tableheader, "", textColor, textColor,0);
-                        }
-                    }
-                    if(i==2){
-                        if(j<4){
-                            if(j % 2 == 0){
-                                SRPDF_CU.addCellColTH(tableheader, masterHeader3[j], textColor, textColor2, 4);
-                            }
-                            else{
-                                SRPDF_CU.addCellColTHBL(tableheader, masterHeader3[j], textColor, textColor2, 3);
-                            }
-                        }else if (j>13 && j<23){
-                            SRPDF_CU.addCellColTH(tableheader, "", textColor, textColor,0);
-                        }
-                    }
-
-                }
+            //--header 1st row
+            for(int i=0; i<6; i++){
+                SRPDF_CU.addCellColTH(tableheader, " ", textColor, textColor2, 0);
             }
+            int k=0;
+            for(int i=0; i<2; i++){
+                SRPDF_CU.addCellColTH(tableheader, masterHeader1[0+i+k],textColor, textColor2, 2 );
+                SRPDF_CU.addCellColTHBL(tableheader, masterHeader1[1+i+k],textColor, textColor2, 3 );
+                k++;
+            }
+            SRPDF_CU.addCellColTH(tableheader, masterHeader1[4],textColor, textColor2, 2 );
+            SRPDF_CU.addCellColTHBL(tableheader, masterHeader1[5],textColor, textColor2, 2 );
+            SRPDF_CU.addCellCRTH(tableheader, "Total # indigenous Preschool Children Measured\n\n 0-59 mos:  0", textColor, textColor2, 3,2);
+            SRPDF_CU.addCellCRTHLogo(tableheader, "", textColor, textColor2, 3,3, drawable);
+
+            //--header 2nd row
+            k=0;
+            for(int i=0; i<2; i++){
+                SRPDF_CU.addCellColTH(tableheader, masterHeader2[i+0+k], textColor, textColor2, 4);
+                SRPDF_CU.addCellColTHBL(tableheader, masterHeader2[i+1+k], textColor, textColor2, 3);
+                k++;
+            }
+            for(int i=0; i<6; i++){
+                SRPDF_CU.addCellColTH(tableheader, "", textColor, textColor,0);
+            }
+
+            //--header 3rd row
+            k=0;
+            for(int i=0; i<2; i++){
+                SRPDF_CU.addCellColTH(tableheader, masterHeader3[i+0+k], textColor, textColor2, 4);
+                SRPDF_CU.addCellColTHBL(tableheader, masterHeader3[i+1+k], textColor, textColor2, 3);
+                k++;
+            }
+            for(int i=0; i<9; i++){
+                SRPDF_CU.addCellColTH(tableheader, "", textColor, textColor,0);
+            }
+
             document.add(tableheader);
 
             PdfPTable table = new PdfPTable(26);
@@ -136,38 +130,33 @@ public class SR_PdfUtils {
 
 
 
-            //table-header
-            for(int i=0; i<10;i++){
-                if(i==0){
-                    SRPDF_CU.addCell(table, totalHeader[i], baseColor, textColor,10);
-                }
-                if(i==1 || i==3 || i==5 || i==7 || i==8){
-                    SRPDF_CU.addCell(table, totalHeader[i], baseColor, textColor, 2);
-                }
-                if(i==2 || i==4 || i==6){
-                    SRPDF_CU.addCell(table, totalHeader[i]);
-                }
-                if(i==9){
-                    SRPDF_CU.addCell(table, totalHeader[i], baseColor, textColor, 3);
-                }
+            //table-header - PSGC
+            SRPDF_CU.addCellColTH(table, totalHeader[0], textColor, textColor2, 2);
+            SRPDF_CU.addCellColTHBL(table, totalHeader[1], textColor, textColor2,4);
+            SRPDF_CU.addCellColTH(table, "", textColor, textColor, 4);
+            k=0;
+            for(int i=0; i<3; i++){
+                SRPDF_CU.addCellColor(table, totalHeader[i+2+k], grayColor, textColor2, 2);
+                SRPDF_CU.addCellColor(table, totalHeader[i+3+k], yellowColor);
+                k++;
+            }
+            SRPDF_CU.addCellColorCenter(table, totalHeader[8], textColor2, textColor, 2, 0, 1);
+            SRPDF_CU.addCellColorCenter(table, totalHeader[9], grayColor, textColor2, 2, 0, 1);
+            SRPDF_CU.addCellColorCenter(table, totalHeader[10], textColor, textColor2, 11,0, 1);
+
+
+            //table-header - ACRO
+            SRPDF_CU.addCellColorCenter(table,header1[0], textColor, blueColor,  0, 2, 0);
+            for(int i=1; i<7; i++){
+                SRPDF_CU.addCellColorCenter(table,header1[i], textColor, textColor2, 3, 0, 0);
+            }
+            SRPDF_CU.addCCCReg(table,header1[7], textColor2, textColor, 2);
+            SRPDF_CU.addCCCReg(table,header1[8], grayColor, textColor2, 2);
+            for(int i=9; i<12; i++){
+                SRPDF_CU.addCellwRotates(table,header1[i], textColor, textColor2,  2);
             }
 
-
-            for(int i=0; i<12; i++){
-                if(i==0){
-                    SRPDF_CU.addCellR(table,header1[i], baseColor, textColor,  2);
-                }
-                if(i>0 && i<7){
-                    SRPDF_CU.addCell(table,header1[i], baseColor, textColor, 3);
-                }
-                if(i>6 && i<9){
-                    SRPDF_CU.addCell(table,header1[i], baseColor, textColor, 2);
-                }
-                if(i>8){
-                    SRPDF_CU.addCellwRotates(table,header1[i], baseColor, textColor,  2);
-                }
-            }
-
+            //table-header - Boys Girls
             for(int i=0; i<6; i++){
                 for(int j=0; j<3; j++){
                     SRPDF_CU.addCellGender(table, header2[j], textColor2);
@@ -176,52 +165,89 @@ public class SR_PdfUtils {
 
             for(int i=0; i<2; i++){
                 for(int j=0; j<2; j++){
-                    SRPDF_CU.addCellPrev(table,header2_1[j], textColor2);
+                    if(i==0){
+                        SRPDF_CU.addCellPrev(table,header2_1[j], textColor2, textColor);
+                    }else{
+                        SRPDF_CU.addCellPrev(table,header2_1[j], grayColor, textColor2);
+                    }
                 }
             }
+
 
             //table-data
             for(int i=0; i<13; i++){
                 for(int j=0; j<26; j++){
-                    SRPDF_CU.addCell(table, srdpPdf.masterData[i][j]);
+                    if(i<4 || (i>7 && i<13)){
+                        if((j==19 || j==20)){
+                            SRPDF_CU.addCellReg(table,srdpPdf.masterData[i][j], textColor2, textColor);
+                        } else if (j==21 || j==22) {
+                            SRPDF_CU.addCellReg(table,srdpPdf.masterData[i][j], grayColor, textColor2);
+                        }else{
+                            if(j==0){
+                                SRPDF_CU.addCellRegLeft(table, srdpPdf.masterData[i][j], textColor, textColor2);
+                            }else{
+                                SRPDF_CU.addCellReg(table, srdpPdf.masterData[i][j], textColor, textColor2);
+                            }
+
+                        }
+                    }
+                    else if(i>3 && i<8){
+                        if((j==19 || j==20)){
+                            SRPDF_CU.addCellReg(table,srdpPdf.masterData[i][j], darkestGray, textColor2);
+                        } else if (j==21 || j==22) {
+                            SRPDF_CU.addCellReg(table,srdpPdf.masterData[i][j], darkerGray, textColor2);
+                        }else{
+                            if(j==0){
+                                SRPDF_CU.addCellRegLeft(table, srdpPdf.masterData[i][j], grayColor, textColor2);
+                            }else{
+                                SRPDF_CU.addCellReg(table, srdpPdf.masterData[i][j], grayColor, textColor2);
+                            }
+                        }
+                    }
+                    else {
+                        SRPDF_CU.addCellReg(table, srdpPdf.masterData[i][j], textColor, textColor2);
+                    }
                 }
             }
+
+
             for(int i=0; i<20; i++){
-                if(i<19){
-                    SRPDF_CU.addCell(table, srdpPdf.tfAges[i]);
-                }else{
-                    SRPDF_CU.addCell(table, "", baseColor, textColor, 7, 0);
-                }
-            }
-
-            for(int i=0; i<3; i++){
                 if(i==0){
-                    SRPDF_CU.addCellTitle(table, "adfsfadssdf", baseColor, textColor, 8);
-                }
-                if(i==1){
-                    SRPDF_CU.addCellTitle(table, "afdadsds", baseColor, textColor, 11);
-                }
-                if(i==2){
-                    SRPDF_CU.addCellTitle(table, "adfsasdf", baseColor, textColor, 7);
+                    SRPDF_CU.addCellRegRight(table,srdpPdf.tfAges[i], textColor2, textColor);
+                } else if(i>0 && i<19){
+                    SRPDF_CU.addCellReg(table,srdpPdf.tfAges[i], textColor2, textColor);
+                } else{
+                    SRPDF_CU.addCell(table, "", darkestGray, textColor, 7, 0);
                 }
             }
 
+            int[] colspan = {7, 10, 6};
 
-
+            String[] sumHeader = {"Summary of Children covered by e-OPT Plus", "Mothers/Caregivers Summary", "Data Summary" };
+            for(int i=0; i<3; i++){
+                    SRPDF_CU.addCellTitle(table, sumHeader[i], peachColor, textColor2, colspan[i]+1);
+            }
 
             for(int i=0; i<5; i++){
                 for(int j=0; j<6; j++){
-                    if(j==0){
-                        SRPDF_CU.addCell(table, srdpPdf.sumData[i][j],baseColor,textColor,7);
-                    } else if (j==2) {
-                        SRPDF_CU.addCell(table, srdpPdf.sumData[i][j],baseColor,textColor,10);
-                    } else if (j==4) {
-                        SRPDF_CU.addCell(table, srdpPdf.sumData[i][j],baseColor,textColor,6);
-                    }else{
-                        SRPDF_CU.addCellDataSum(table, srdpPdf.sumData[i][j],baseColor,textColor,1);
-                    }
-                }
+                        if(j==0 || j==2){
+                            if(i>2){
+                                SRPDF_CU.addCell(table, srdpPdf.sumData[i][j],grayColor,textColor2,colspan[Math.round(j/2)]);
+                            }else{
+                                SRPDF_CU.addCell(table, srdpPdf.sumData[i][j],textColor,textColor2,colspan[Math.round(j/2)]);
+                            }
+                        } else if (j==4) {
+                            SRPDF_CU.addCell(table, srdpPdf.sumData[i][j],textColor,textColor2,6);
+                        }
 
+                        else{
+                            if(i>2 && j<4){
+                                SRPDF_CU.addCellCenter(table, srdpPdf.sumData[i][j],grayColor,textColor2,0);
+                            }else{
+                                SRPDF_CU.addCellCenterLast(table, srdpPdf.sumData[i][j],textColor,textColor2,0);
+                            }
+                        }
+                }
             }
 
             document.add(table);
