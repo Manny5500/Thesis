@@ -3,6 +3,7 @@ package com.example.myapplication;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -37,6 +38,7 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.itextpdf.text.Rectangle;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -53,6 +55,7 @@ public class ManageData extends Fragment {
     int whiteColor;
     private String  userid;
 
+    String barangayString = "";
 
 
     FloatingActionButton addData, pdfMaker;
@@ -106,6 +109,7 @@ public class ManageData extends Fragment {
         db.collection("users").document(userid).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) {
+                barangayString = documentSnapshot.getString("barangay");
                Populate_now(String.valueOf(documentSnapshot.getString("barangay")));
             }
         }).addOnFailureListener(new OnFailureListener() {
@@ -131,7 +135,7 @@ public class ManageData extends Fragment {
 
                     userAdapter = new CDAdapter(getContext(), RemoveDuplicates.removeDuplicates(arrayList));
                     recyclerView.setAdapter(userAdapter);
-                    pdfMakerEvent(arrayList);
+                    pdfMakerEvent(RemoveDuplicates.removeDuplicates(arrayList));
 
                 }
             }
@@ -172,11 +176,12 @@ public class ManageData extends Fragment {
     }
 
     public void createPdf(ArrayList<Child> arrayList){
+        Drawable drawable = ContextCompat.getDrawable(requireContext(), R.drawable.optlogojp);
         Rectangle customsize = new Rectangle(
                 13.0f*72,
                 8.5f*72
         );
-        ML_PdfUtils mlPdfUtils = new ML_PdfUtils(customsize,arrayList);
+        ML_PdfUtils mlPdfUtils = new ML_PdfUtils(customsize,arrayList, drawable, barangayString, getDateNowFormatted());
         byte[] pdfBytes = mlPdfUtils.PdfSetter();
         showPdfDialog(pdfBytes);
     }
@@ -229,6 +234,13 @@ public class ManageData extends Fragment {
                 });
             }
         });
+    }
+
+    public String getDateNowFormatted(){
+        LocalDate currentDate = LocalDate.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMM yyyy");
+        String formattedDate = currentDate.format(formatter);
+        return formattedDate;
     }
 
 

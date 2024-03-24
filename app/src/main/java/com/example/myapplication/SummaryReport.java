@@ -68,6 +68,9 @@ public class SummaryReport extends AppCompatActivity  {
 
     int estimatedChildren;
     int population;
+
+    int blueColor;
+    int vioColor;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -81,8 +84,8 @@ public class SummaryReport extends AppCompatActivity  {
         textDate = findViewById(R.id.textDate);
         textBarangay = findViewById(R.id.textBarangay);
 
-
-
+        blueColor =  Color.parseColor("#51ADE5");
+        vioColor =  Color.parseColor("#1888c8");
 
 
         db = FirebaseFirestore.getInstance();
@@ -94,6 +97,9 @@ public class SummaryReport extends AppCompatActivity  {
         Populate();
         textDateEvent();
         textBarangayEvent();
+        changeColor();
+
+
 
     }
 
@@ -200,6 +206,7 @@ public class SummaryReport extends AppCompatActivity  {
             public void onClick(View v) {
                 replaceFragment(new fragment_sr_list());
                 currentFragment= "srList";
+                changeColor();
             }
         });
     }
@@ -210,6 +217,7 @@ public class SummaryReport extends AppCompatActivity  {
             public void onClick(View v) {
                 replaceFragment(new fragment_sr_conso());
                 currentFragment = "srConso";
+                changeColor();
             }
         });
     }
@@ -219,6 +227,7 @@ public class SummaryReport extends AppCompatActivity  {
             public void onClick(View v) {
                 replaceFragment(new fragment_sr_sum());
                 currentFragment = "srSum";
+                changeColor();
             }
         });
     }
@@ -326,6 +335,29 @@ public class SummaryReport extends AppCompatActivity  {
 
     public void updateApi(FragmentEventListener listener) {
         frListener = listener;
+    }
+
+
+    private void changeColor(){
+       resetColor();
+        String[] fragment = {"srList", "srConso", "srSum"};
+        ConstraintLayout[] cLayout = {naviData, naviConso, naviSum};
+        for(int i=0; i<3; i++){
+            if(fragment[i].equals(currentFragment)){
+                cLayout[i].setBackgroundColor(vioColor);
+            }
+        }
+    }
+    private void resetColor(){
+        String[] fragment = {"srList", "srConso", "srSum"};
+        ConstraintLayout[] cLayout = {naviData, naviConso, naviSum};
+        for(int i=0; i<3; i++){
+            if(fragment[i].equals(currentFragment)){
+                continue;
+            }
+               cLayout[i].setBackgroundColor(blueColor);
+        }
+
     }
 
 

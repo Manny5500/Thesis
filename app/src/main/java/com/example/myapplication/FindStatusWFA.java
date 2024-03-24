@@ -173,7 +173,7 @@ public class FindStatusWFA {
             }else{
                 Toast.makeText(context, "Invalid age", Toast.LENGTH_SHORT).show();
             }
-            if(status.isEmpty()){
+            if(status.isEmpty()||status.get(0).equals("")){
                 status.add("Normal");
             }
             int count=0;

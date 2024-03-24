@@ -43,6 +43,8 @@ public class fragmentDashboard extends Fragment {
     FirebaseFirestore db;
     FirebaseAuth auth;
     FirebaseUser user;
+
+
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
         FirebaseApp.initializeApp(requireContext());
@@ -72,6 +74,13 @@ public class fragmentDashboard extends Fragment {
         totalAssessment = view.findViewById(R.id.txtTotalAssessment);
         totalMalnourished = view.findViewById(R.id.txtTotalMalnourished);
 
+        viewTotalAssessment.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(requireContext(), Malnourished_List.class);
+                startActivity(intent);
+            }
+        });
         viewDashRecommendation.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

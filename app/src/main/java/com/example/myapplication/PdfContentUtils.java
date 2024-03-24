@@ -1,14 +1,24 @@
 package com.example.myapplication;
 
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
+
+import com.itextpdf.text.BadElementException;
 import com.itextpdf.text.BaseColor;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.Element;
 import com.itextpdf.text.Font;
+import com.itextpdf.text.Image;
 import com.itextpdf.text.Paragraph;
 import com.itextpdf.text.Phrase;
+import com.itextpdf.text.Rectangle;
 import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
+
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 
 public class PdfContentUtils {
 
@@ -120,6 +130,52 @@ public class PdfContentUtils {
         cell.setPadding(6);
         cell.setColspan(colspan);
         cell.setBorderColor(BaseColor.BLACK);
+        table.addCell(cell);
+    }
+
+    public static void addCellML(PdfPTable table, String text, BaseColor backgroundColor, BaseColor textColor) {
+        PdfPCell cell = new PdfPCell(new Paragraph(text, new Font(Font.FontFamily.HELVETICA, 10, Font.BOLD, textColor)));
+        cell.setBackgroundColor(backgroundColor);
+        cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+        cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+        cell.setPadding(6);
+        cell.setBorderColor(BaseColor.BLACK);
+        table.addCell(cell);
+    }
+    public static void addCellML(PdfPTable table, String text, BaseColor backgroundColor, BaseColor textColor,
+                                 int colspan, int rowspan, int padding, int boldness, int border, int fontsize) {
+        PdfPCell cell = new PdfPCell(new Paragraph(text, new Font(Font.FontFamily.HELVETICA, fontsize, boldness, textColor)));
+        cell.setBackgroundColor(backgroundColor);
+        cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+        cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+        cell.setPadding(padding);
+        cell.setColspan(colspan);
+        cell.setRowspan(rowspan);
+        cell.setBorderColor(BaseColor.BLACK);
+        cell.setBorder(border);
+        table.addCell(cell);
+    }
+
+    public static void addCellMLLogo(PdfPTable table, String text, BaseColor backgroundColor, BaseColor textColor, int colspan, int rowspan,  int padding, int boldness, int border, int fontsize,
+                                     Drawable drawable) throws BadElementException, IOException {
+        PdfPCell cell = new PdfPCell(new Paragraph(text, new Font(Font.FontFamily.HELVETICA, fontsize, boldness, textColor)));
+        cell.setBackgroundColor(backgroundColor);
+        cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+        cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+        cell.setPadding(padding);
+        cell.setColspan(colspan);
+        cell.setRowspan(rowspan);
+        cell.setBorderColor(BaseColor.BLACK);
+        cell.setBorder(border);
+
+        BitmapDrawable bitmapDrawable = (BitmapDrawable) drawable;
+        Bitmap bitmap = bitmapDrawable.getBitmap();
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
+        byte[] byteArray = stream.toByteArray();
+
+        Image img = Image.getInstance(byteArray);
+        cell.addElement(img);
         table.addCell(cell);
     }
 }
