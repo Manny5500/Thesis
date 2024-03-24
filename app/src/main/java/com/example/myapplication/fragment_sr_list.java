@@ -21,11 +21,41 @@ public class fragment_sr_list extends Fragment {
     View view;
 
     ArrayList<Child> childrenList;
+
+    TableLayout WFATL, HFATL, WFHTL;
+
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
         view =  inflater.inflate(R.layout.fragment_sr_list, container, false);
+
+
+        WFATL = view.findViewById(R.id.WFATL);
+        HFATL = view.findViewById(R.id.HFATL);
+        WFHTL = view.findViewById(R.id.WFHTL);
+
+        childrenList = ((SummaryReport)getActivity()).childrenList;
+
+        ((SummaryReport)getActivity()).updateApi(new FragmentEventListener() {
+            @Override
+            public void onEventTrigerred() {
+                childrenList = ((SummaryReport)getActivity()).childrenList;
+                tableSetter();
+            }
+
+        });
+
+        tableSetter();
+
+        return view;
+    }
+
+    private void tableSetter(){
+        TableSetter.clearTable(WFATL);
+        TableSetter.clearTable(HFATL);
+        TableSetter.clearTable(WFHTL);
         String[] ageGroup = {"0-5 mo", "6-11 mo", "12-23 mo", "24-35 mo", "36-47 mo", "48-59 mo"};
         String[] WFACat = {"Normal", "OW", "UW", "SUW"};
         String[] HFACat = {"Normal", "Tall", "ST", "SST"};
@@ -33,15 +63,9 @@ public class fragment_sr_list extends Fragment {
         String[][] WFAdata = new String[30][4];
         String[][] HFAdata = new String[30][4];
         String[][] WFHdata = new String[36][4];
-        TableLayout WFATL = view.findViewById(R.id.WFATL);
-        TableLayout HFATL = view.findViewById(R.id.HFATL);
-        TableLayout WFHTL = view.findViewById(R.id.WFHTL);
-
-        childrenList = ((SummaryReport)getActivity()).childrenList;
+        String [] headers =  {"WFA/ Weight for Age", "HFA/ Height for Age", "WFH/ Weight for Height"};
         SRDPList srdpList = new SRDPList(childrenList);
         int counts[][] = srdpList.countNow(srdpList.monthFilter());
-
-        String [] headers =  {"WFA/ Weight for Age", "HFA/ Height for Age", "WFH/ Weight for Height"};
         int k=0;
         int l=0;
         int m=0;
@@ -99,9 +123,7 @@ public class fragment_sr_list extends Fragment {
         generateTable(HFATL, headers[1], HFAdata);
         generateTable(WFHTL, headers[2], WFHdata);
 
-        return view;
     }
-
     private void generateTable(TableLayout tableLayout, String header, String[][] data) {
         TableRow headerRow = new TableRow(requireContext());
 

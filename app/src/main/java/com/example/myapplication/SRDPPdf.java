@@ -74,16 +74,26 @@ public class SRDPPdf {
                 masterData[i][k+2] = String.valueOf(listData[i + l][1]);
                 masterData[i][k+3] = String.valueOf(listData[i+l][0] + listData[i+l][1]);
 
-                //--HFA
-                int m = i+4;
-                masterData[m][k+1] = String.valueOf(listData[m + l][0]);
-                masterData[m][k+2] = String.valueOf(listData[m + l][1]);
-                masterData[m][k+3] = String.valueOf(listData[m+l][0] + listData[m+l][1]);
 
                 k = k + 3;
                 l = l+4;
             }
         }
+
+         for(int i=4; i<8; i++){
+             int k=0;
+             int l=20;
+             for(int j=0; j<6; j++){
+                 //--HFA
+                 masterData[i][k+1] = String.valueOf(listData[i + l][0]);
+                 masterData[i][k+2] = String.valueOf(listData[i + l][1]);
+                 masterData[i][k+3] = String.valueOf(listData[i +l][0] + listData[i+l][1]);
+
+                 k = k + 3;
+                 l = l+4;
+             }
+         }
+
 
          for(int i=8; i<13; i++){
              int k=0;

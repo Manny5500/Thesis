@@ -20,21 +20,44 @@ public class fragment_sr_sum extends Fragment {
     View view;
 
     ArrayList<Child> childrenList;
+    TableLayout OPTTL, MotherTL, DataTL;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         view =  inflater.inflate(R.layout.fragment_sr_sum, container, false);
-        String[][] OPTData = new String[4][2];
-        String[][] MotherData = new String[5][2];
-        String[][] DataData = new String[5][2];
-        TableLayout OPTTL = view.findViewById(R.id.OPTTL);
-        TableLayout MotherTL = view.findViewById(R.id.MotherTL);
-        TableLayout DataTL = view.findViewById(R.id.DataTL);
-        String [] headers =  {"Summary of Children covered by e-OPT Plus", "Mothers/Caregivers Summary", "Data Summary:"};
+
+        OPTTL = view.findViewById(R.id.OPTTL);
+        MotherTL = view.findViewById(R.id.MotherTL);
+        DataTL = view.findViewById(R.id.DataTL);
+
 
 
 
         childrenList = ((SummaryReport)getActivity()).childrenList;
+
+        ((SummaryReport)getActivity()).updateApi(new FragmentEventListener() {
+            @Override
+            public void onEventTrigerred() {
+                childrenList = ((SummaryReport)getActivity()).childrenList;
+                tableSetter();
+            }
+
+        });
+
+        tableSetter();
+
+        return view;
+    }
+
+    private void tableSetter(){
+        TableSetter.clearTable(OPTTL);
+        TableSetter.clearTable(MotherTL);
+        TableSetter.clearTable(DataTL);
+        String[][] OPTData = new String[4][2];
+        String[][] MotherData = new String[5][2];
+        String[][] DataData = new String[5][2];
+        String [] headers =  {"Summary of Children covered by e-OPT Plus", "Mothers/Caregivers Summary", "Data Summary:"};
+
         SRDPSum srdpSum = new SRDPSum(childrenList);
         int counts[] = srdpSum.countNow(srdpSum.monthFilter());
         int countsMother[] = srdpSum.countNowMother(srdpSum.monthFilter());
@@ -62,7 +85,7 @@ public class fragment_sr_sum extends Fragment {
         generateTable(OPTTL,headers[0], OPTData);
         generateTable(MotherTL, headers[1], MotherData);
         generateTable(DataTL, headers[2], DataData);
-        return view;
+
     }
     private void generateTable(TableLayout tableLayout, String header, String[][] data) {
         TableRow headerRow = new TableRow(requireContext());

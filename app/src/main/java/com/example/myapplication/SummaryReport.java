@@ -49,7 +49,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.concurrent.Executors;
 
-public class SummaryReport extends AppCompatActivity {
+
+public class SummaryReport extends AppCompatActivity  {
 
     ConstraintLayout naviData, naviConso, naviSum, naviPdf;
     MaterialAutoCompleteTextView textBarangay, textDate;
@@ -58,6 +59,9 @@ public class SummaryReport extends AppCompatActivity {
     FirebaseFirestore db;
 
     ArrayList<Child> childrenList;
+    FragmentEventListener frListener;
+
+    String currentFragment="srList";
 
     int totalCount;
     int loadCount = 1;
@@ -79,15 +83,18 @@ public class SummaryReport extends AppCompatActivity {
 
 
 
+
+
         db = FirebaseFirestore.getInstance();
 
         String[] brgyList = getResources().getStringArray(R.array.barangay);
         FormUtils.setAdapter(brgyList, textBarangay, this);
-        Populate();
         dateAdapter();
         preSelected();
+        Populate();
         textDateEvent();
         textBarangayEvent();
+
     }
 
     public void textDateEvent(){
@@ -135,6 +142,18 @@ public class SummaryReport extends AppCompatActivity {
                             naviConsoEvent();
                             naviSumEvent();
                             naviPdfEvent();
+
+
+                            if(loadCount>2){
+                                if(currentFragment.equals("srList")){
+                                    frListener.onEventTrigerred();
+                                } else if (currentFragment.equals("srConso")) {
+                                    frListener.onEventTrigerred();
+                                } else if(currentFragment.equals("srSum")){
+                                    frListener.onEventTrigerred();
+                                }
+                            }
+
                         }
                     }
                 }).addOnFailureListener(new OnFailureListener() {
@@ -180,6 +199,7 @@ public class SummaryReport extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 replaceFragment(new fragment_sr_list());
+                currentFragment= "srList";
             }
         });
     }
@@ -189,6 +209,7 @@ public class SummaryReport extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 replaceFragment(new fragment_sr_conso());
+                currentFragment = "srConso";
             }
         });
     }
@@ -197,6 +218,7 @@ public class SummaryReport extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 replaceFragment(new fragment_sr_sum());
+                currentFragment = "srSum";
             }
         });
     }
@@ -213,7 +235,7 @@ public class SummaryReport extends AppCompatActivity {
     private void replaceFragment(Fragment fragment) {
         FragmentManager fragmentManager =  getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.replace(R.id.frameLayoutSR,fragment);
+        fragmentTransaction.replace(R.id.frameLayoutSR,fragment, "fragment_sr_list");
         fragmentTransaction.commit();
     }
 
@@ -246,6 +268,7 @@ public class SummaryReport extends AppCompatActivity {
         Drawable drawable = ContextCompat.getDrawable(this, R.drawable.optlogojp);
         SR_PdfUtils sPUtils = new SR_PdfUtils(customsize, text_Barangay,
                 estimatedChildren, population, new SRDPPdf(childrenList), drawable );
+        SRDPPdf la = new SRDPPdf(childrenList);
         byte[] pdfBytes = sPUtils.PdfSetter();
         showPdfDialog(pdfBytes);
     }
@@ -300,5 +323,10 @@ public class SummaryReport extends AppCompatActivity {
             }
         });
     }
+
+    public void updateApi(FragmentEventListener listener) {
+        frListener = listener;
+    }
+
 
 }

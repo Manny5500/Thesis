@@ -31,23 +31,45 @@ public class fragment_sr_conso extends Fragment {
     String text_Date;
 
     FirebaseFirestore db;
+
+    TableLayout allAgeTL, halfAgeTL;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
         view =  inflater.inflate(R.layout.fragment_sr_conso, container, false);
+        allAgeTL = view.findViewById(R.id.allAgeTL);
+        halfAgeTL = view.findViewById(R.id.halfAgeTL);
+
+        childrenList = ((SummaryReport)getActivity()).childrenList;
+        text_Date = ((SummaryReport)getActivity()).text_Date;
+        ((SummaryReport)getActivity()).updateApi(new FragmentEventListener() {
+            @Override
+            public void onEventTrigerred() {
+                childrenList = ((SummaryReport)getActivity()).childrenList;
+                text_Date = ((SummaryReport)getActivity()).text_Date;
+                tableSetter();
+            }
+
+        });
+
+        tableSetter();
+
+        return view;
+    }
+
+    private void tableSetter(){
+        TableSetter.clearTable(allAgeTL);
+        TableSetter.clearTable(halfAgeTL);
         String[][] AAdata = new String[14][3];
         String[][] HAdata = new String[14][3];
-        TableLayout allAgeTL = view.findViewById(R.id.allAgeTL);
-        TableLayout halfAgeTL = view.findViewById(R.id.halfAgeTL);
         String [] headers =  {"Birth to 5 Years 0-59 months", "F1K  0-23 months"};
         String[] dataCat = {"WFA - Normal", "WFA - OW", "WFA - UW", "WFA - SUW",
                 "HFA - Normal", "HFA - Tall", "HFA - ST", "HFA - SST",
                 "WFH - Normal", "WFH - OW", "WFH - OB", "WFH - MW", "WFH - SW"};
         int l=1;
 
-        childrenList = ((SummaryReport)getActivity()).childrenList;
-        text_Date = ((SummaryReport)getActivity()).text_Date;
+
 
 
         SRDPConso srdpConso = new SRDPConso(childrenList);
@@ -77,7 +99,7 @@ public class fragment_sr_conso extends Fragment {
         }
         generateTable(allAgeTL,headers[0], AAdata);
         generateTable(halfAgeTL, headers[1], HAdata);
-        return view;
+
     }
 
 
