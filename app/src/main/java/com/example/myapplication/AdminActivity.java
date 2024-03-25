@@ -57,11 +57,11 @@ public class AdminActivity extends AppCompatActivity {
         reportsImage = findViewById(R.id.reportsImage);
         logOutImage = findViewById(R.id.logOutImage);
 
-        replaceFragment(new fragmentDashboard());
+        replaceFragment(new fragment_dashboard_new());
         dashboard.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                replaceFragment(new fragmentDashboard());
+                replaceFragment(new fragment_dashboard_new());
                 ButtonColorizer(dashboardsImage);
                 color_flag = 1;
             }

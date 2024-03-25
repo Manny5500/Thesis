@@ -130,8 +130,9 @@ public class FindStatusWFA {
                 status.add("Normal");
             }
             int count=0;
+            //previously may obese dito
             for(String cstats: status){
-                if(cstats.equals("Overweight") || cstats.equals("Obese")||
+                if(cstats.equals("Overweight") ||
                 cstats.equals("Underweight") || cstats.equals("Severe Underweight")){
                     count++;
                 }
