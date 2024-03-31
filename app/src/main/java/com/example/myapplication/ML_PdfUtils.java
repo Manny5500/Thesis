@@ -70,6 +70,7 @@ public class ML_PdfUtils{
             BaseColor yellowColor = PdfContentUtils.getBaseColor("#fffcae");
             BaseColor greenColor = PdfContentUtils.getBaseColor("#77DD77");
             BaseColor redColor = PdfContentUtils.getBaseColor("#F8858B");
+            BaseColor orangeColor = PdfContentUtils.getBaseColor("#FFAC4A");
 
             String[] headerArr1 = {
                     "", "Community Level e-OPT PLUS Tool", "", month, ""
@@ -153,8 +154,8 @@ public class ML_PdfUtils{
             PdfContentUtils.addCellML(table, "Sex", baseColor, BaseColor.WHITE);
             PdfContentUtils.addCellML(table, "Date of Birth", baseColor, BaseColor.WHITE);
             PdfContentUtils.addCellML(table, "Actual Date of Weighing", baseColor, BaseColor.WHITE);
-            PdfContentUtils.addCellML(table, "Weight", baseColor, BaseColor.WHITE);
             PdfContentUtils.addCellML(table, "Height", baseColor, BaseColor.WHITE);
+            PdfContentUtils.addCellML(table, "Weight", baseColor, BaseColor.WHITE);
             PdfContentUtils.addCellML(table, "Age In Mos", BaseColor.BLACK, BaseColor.WHITE);
             PdfContentUtils.addCellML(table, "WFA Status", BaseColor.BLACK, BaseColor.WHITE);
             PdfContentUtils.addCellML(table, "HFA Status", BaseColor.BLACK, BaseColor.WHITE);
@@ -164,13 +165,21 @@ public class ML_PdfUtils{
 
             // Add sample data
             for(Child child: arrayList){
+                String middleName = child.getChildMiddleName();
+                String parentmiddleName = child.getParentMiddleName();
+                if(middleName.equals("NA")){
+                    middleName = "";
+                }
+                if(parentmiddleName.equals("NA")){
+                    parentmiddleName = "";
+                }
                 int position = arrayList.indexOf(child) + 1;
                 table.addCell(new Phrase("" + position));
                 table.addCell(new Phrase("" + child.getBarangay()));
                 table.addCell(new Phrase(""+ child.getParentFirstName()
-                        + " " + child.getParentMiddleName() + " " + child.getParentLastName()));
+                        + " " + parentmiddleName + " " + child.getParentLastName()));
                 table.addCell(new Phrase(""+ child.getChildFirstName()
-                        + " " + child.getChildMiddleName() + " " + child.getChildLastName()));
+                        + " " + middleName + " " + child.getChildLastName()));
                 table.addCell(new Phrase(""+child.getBelongtoIP()));
                 table.addCell(new Phrase(genderShort(child.getSex())));
                 table.addCell(new Phrase(""+child.getBirthDate()));
@@ -187,15 +196,17 @@ public class ML_PdfUtils{
 
                 if(WFA.equals("N") || WFA.equals("")){
                     PdfContentUtils.addCell(table, WFA, greenColor, BaseColor.BLACK);
-                }else if(WFA.equals("OW") || WFA.equals("UW")){
+                }else if( WFA.equals("UW")){
                     PdfContentUtils.addCell(table, WFA, yellowColor, BaseColor.BLACK);
                 }else if(WFA.equals("SUW")){
                     PdfContentUtils.addCell(table, WFA, redColor, BaseColor.BLACK);
+                }else if(WFA.equals("OW")){
+                    PdfContentUtils.addCell(table, WFA, orangeColor, BaseColor.BLACK);
                 }else{
                     PdfContentUtils.addCell(table, WFA, BaseColor.WHITE, BaseColor.BLACK);
                 }
 
-                if(HFA.equals("N") || HFA.equals("") || HFA.equals("Tall")){
+                if(HFA.equals("N") || HFA.equals("") || HFA.equals("T")){
                     PdfContentUtils.addCell(table, HFA, greenColor, BaseColor.BLACK);
                 }else if(HFA.equals("ST")){
                     PdfContentUtils.addCell(table, HFA, yellowColor, BaseColor.BLACK);
@@ -207,10 +218,12 @@ public class ML_PdfUtils{
 
                 if(WFH.equals("N") || WFH.equals("")){
                     PdfContentUtils.addCell(table, WFH, greenColor, BaseColor.BLACK);
-                }else if(WFH.equals("MW") || WFH.equals("OW")){
+                }else if(WFH.equals("MW")){
                     PdfContentUtils.addCell(table, WFH, yellowColor, BaseColor.BLACK);
-                }else if(WFH.equals("OB") || WFH.equals("SW")){
+                }else if(WFH.equals("SW")){
                     PdfContentUtils.addCell(table, WFH, redColor, BaseColor.BLACK);
+                }else if(WFH.equals("OW") || WFH.equals("OB")){
+                    PdfContentUtils.addCell(table, WFH, orangeColor, BaseColor.BLACK);
                 }else{
                     PdfContentUtils.addCell(table, WFH, BaseColor.WHITE, BaseColor.BLACK);
                 }
@@ -260,7 +273,7 @@ public class ML_PdfUtils{
         } else if (child.getStatus().get(1).equals("Severe Stunted")){
             WFAStatus = "SST";
         } else if(child.getStatus().get(1).equals("Tall")){
-            WFAStatus = "Tall";
+            WFAStatus = "T";
         }
         return WFAStatus;
     }

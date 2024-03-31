@@ -76,7 +76,6 @@ public class fragmentPriority extends Fragment {
 
             @Override
             public boolean onQueryTextChange(String s) {
-                Toast.makeText(requireContext(), firstName, Toast.LENGTH_SHORT).show();
                 userAdapter.getFilter().filter(s);
                 return true;
             }

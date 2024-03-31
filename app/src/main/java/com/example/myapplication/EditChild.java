@@ -40,7 +40,7 @@ public class EditChild extends AppCompatActivity {
     TextInputEditText childFirstName, childMiddleName, childLastName,
             parentFirstName, parentMiddleName, parentLastName,
             gmail, houseNumber, height, weight, bdate, expectedDate;
-    MaterialAutoCompleteTextView barangayAC, sexAC, belongAC, sitio;
+    MaterialAutoCompleteTextView barangayAC, sexAC,  sitio;
     Button edit;
     private FirebaseFirestore db;
     String  dateString;
@@ -49,7 +49,7 @@ public class EditChild extends AppCompatActivity {
     String childFirstNameValue, childMiddleNameValue, childLastNameValue,
             parentFirstNameValue, parentMiddleNameValue, parentLastNameValue,
             gmailValue, houseNumberValue, bdateValue, expectedDateValue,
-            sexACValue, belongACValue, barangayACValue, heightValue, weightValue, sitioVal;
+            sexACValue,  barangayACValue, heightValue, weightValue, sitioVal;
 
     ArrayList<String> statusdb;
     ArrayList<String> status = new ArrayList<>();
@@ -77,7 +77,6 @@ public class EditChild extends AppCompatActivity {
         bdate = findViewById(R.id.textBdate);
         expectedDate = findViewById(R.id.textExpectedDate);
         sexAC = findViewById(R.id.textPregnant);
-        belongAC = findViewById(R.id.textBelong);
         edit = findViewById(R.id.btnEdit);
         sitio  = findViewById(R.id.spinnerSitio);
 
@@ -96,14 +95,12 @@ public class EditChild extends AppCompatActivity {
 
         barangayACValue = App.child.getBarangay();
         sexAC.setText(App.child.getSex());
-        belongAC.setText(App.child.getBelongtoIP());
         bdate.setText(App.child.getBirthDate());
         expectedDate.setText(App.child.getExpectedDate());
         sitio.setText(App.child.getSitio());
 
 
         FormUtils.setAdapter(sex, sexAC, this);
-        FormUtils.setAdapter(belongs,belongAC,this);
         FormUtils.setAdapter(SitioUtils.getSitioList(barangayACValue),sitio,this);
         FormUtils.dateClicked(bdate,this);
         FormUtils.dateClicked(expectedDate, this);
@@ -113,6 +110,7 @@ public class EditChild extends AppCompatActivity {
             public void onClick(View view) {
                 setMonthdiff();
                 setAllTextInputData();
+                String belongACValue = "No";
                 boolean isFormValid = FormUtils.validateForm(childFirstNameValue, childMiddleNameValue, childLastNameValue,
                         parentFirstNameValue, parentMiddleNameValue, parentLastNameValue,
                         gmailValue, houseNumberValue, bdateValue, expectedDateValue,
@@ -179,7 +177,6 @@ public class EditChild extends AppCompatActivity {
         bdateValue = bdate.getText().toString().trim();
         expectedDateValue = expectedDate.getText().toString().trim();
         sexACValue = sexAC.getText().toString().trim();
-        belongACValue = belongAC.getText().toString().trim();
         heightValue = height.getText().toString().trim();
         weightValue = weight.getText().toString().trim();
         sitioVal = sitio.getText().toString().trim();
@@ -199,7 +196,6 @@ public class EditChild extends AppCompatActivity {
         user.put("height", height_true_val);
         user.put("weight", weight_true_val);
         user.put("birthDate", bdateValue);
-        user.put("belongtoIP", belongACValue);
         user.put("barangay", barangayACValue);
         user.put("sitio", sitioVal);
         user.put("sex", sexACValue);

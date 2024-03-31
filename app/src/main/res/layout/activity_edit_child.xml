@@ -61,12 +61,13 @@
 
                         <com.google.android.material.textfield.TextInputLayout
                             android:id="@+id/textChildMiddleNameLayout"
-                            android:layout_width="160dp"
+                            android:layout_width="0dp"
                             android:layout_height="59dp"
                             android:layout_marginStart="20dp"
                             android:layout_marginEnd="10dp"
                             android:layout_marginTop="15dp"
                             android:hint="Child's Middle Name"
+                            app:layout_constraintEnd_toStartOf="@id/textChildLastNameLayout"
                             android:inputType="text"
                             style="@style/Widget.Material3.TextInputLayout.FilledBox.Dense"
                             app:layout_constraintStart_toStartOf="parent"
@@ -86,13 +87,14 @@
 
                         <com.google.android.material.textfield.TextInputLayout
                             android:id="@+id/textChildLastNameLayout"
-                            android:layout_width="160dp"
+                            android:layout_width="0dp"
                             android:layout_height="59dp"
                             android:layout_marginEnd="20dp"
                             android:layout_marginStart="10dp"
                             android:hint="Child's Last Name"
                             android:inputType="text"
                             style="@style/Widget.Material3.TextInputLayout.FilledBox.Dense"
+                            app:layout_constraintStart_toEndOf="@id/textChildMiddleNameLayout"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintTop_toTopOf="@+id/textChildMiddleNameLayout">
 
@@ -136,7 +138,7 @@
 
                         <com.google.android.material.textfield.TextInputLayout
                             android:id="@+id/textParentMiddleNameLayout"
-                            android:layout_width="160dp"
+                            android:layout_width="0dp"
                             android:layout_height="59dp"
                             android:layout_marginEnd="10dp"
                             android:layout_marginStart="20dp"
@@ -144,6 +146,7 @@
                             android:hint="Parent's Middle Name"
                             android:inputType="text"
                             style="@style/Widget.Material3.TextInputLayout.FilledBox.Dense"
+                            app:layout_constraintEnd_toStartOf="@id/textParentLastNameLayout"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toBottomOf="@+id/textParentFirstNameLayout">
 
@@ -161,13 +164,14 @@
 
                         <com.google.android.material.textfield.TextInputLayout
                             android:id="@+id/textParentLastNameLayout"
-                            android:layout_width="160dp"
+                            android:layout_width="0dp"
                             android:layout_height="59dp"
                             android:layout_marginStart="10dp"
                             android:layout_marginEnd="20dp"
                             android:hint="Parent's Last Name"
                             android:inputType="text"
                             style="@style/Widget.Material3.TextInputLayout.FilledBox.Dense"
+                            app:layout_constraintStart_toEndOf="@id/textParentMiddleNameLayout"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintTop_toTopOf="@+id/textParentMiddleNameLayout">
 
@@ -212,7 +216,7 @@
 
                         <com.google.android.material.textfield.TextInputLayout
                             android:id="@+id/textHouseNumberLayout"
-                            android:layout_width="160dp"
+                            android:layout_width="0dp"
                             android:layout_height="59dp"
                             android:layout_marginEnd="10dp"
                             android:layout_marginStart="20dp"
@@ -220,6 +224,7 @@
                             android:hint="House Number"
                             android:inputType="text"
                             style="@style/Widget.Material3.TextInputLayout.FilledBox.Dense"
+                            app:layout_constraintEnd_toStartOf="@id/textSitioLayout"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toBottomOf="@+id/textGmailLayout">
 
@@ -238,13 +243,14 @@
                         <com.google.android.material.textfield.TextInputLayout
                             android:id="@+id/textSitioLayout"
                             style="@style/Widget.Material3.TextInputLayout.FilledBox.Dense.ExposedDropdownMenu"
-                            android:layout_width="160dp"
+                            android:layout_width="0dp"
                             android:layout_height="59dp"
                             android:layout_marginStart="10dp"
                             android:layout_marginEnd="20dp"
                             android:hint="Sitio"
                             android:inputType="text"
                             app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toEndOf="@id/textHouseNumberLayout"
                             app:layout_constraintTop_toTopOf="@+id/textHouseNumberLayout">
 
                                 <com.google.android.material.textfield.MaterialAutoCompleteTextView
@@ -263,7 +269,7 @@
 
                         <com.google.android.material.textfield.TextInputLayout
                             android:id="@+id/textHeightLayout"
-                            android:layout_width="160dp"
+                            android:layout_width="0dp"
                             android:layout_height="59dp"
                             android:layout_marginEnd="10dp"
                             android:layout_marginStart="20dp"
@@ -271,6 +277,7 @@
                             android:hint="Height (cm)"
                             android:inputType="text"
                             style="@style/Widget.Material3.TextInputLayout.FilledBox.Dense"
+                            app:layout_constraintEnd_toStartOf="@id/textWeightLayout"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toBottomOf="@+id/textSitioLayout">
 
@@ -288,13 +295,14 @@
 
                         <com.google.android.material.textfield.TextInputLayout
                             android:id="@+id/textWeightLayout"
-                            android:layout_width="160dp"
+                            android:layout_width="0dp"
                             android:layout_height="59dp"
                             android:layout_marginStart="10dp"
                             android:layout_marginEnd="20dp"
                             android:hint="Weight (kg)"
                             android:inputType="text"
                             style="@style/Widget.Material3.TextInputLayout.FilledBox.Dense"
+                            app:layout_constraintStart_toEndOf="@id/textHeightLayout"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintTop_toTopOf="@+id/textHeightLayout">
 
@@ -310,30 +318,6 @@
                         </com.google.android.material.textfield.TextInputLayout>
 
 
-                        <com.google.android.material.textfield.TextInputLayout
-                            android:id="@+id/textBelongLayout"
-                            android:layout_width="match_parent"
-                            android:layout_height="59dp"
-                            android:layout_marginTop="15dp"
-                            android:layout_marginStart="20dp"
-                            android:layout_marginEnd="20dp"
-                            android:hint="Belongs to Indigenous People"
-                            android:inputType="text"
-                            style="@style/Widget.Material3.TextInputLayout.FilledBox.Dense.ExposedDropdownMenu"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toBottomOf="@+id/textHeightLayout">
-
-                                <com.google.android.material.textfield.MaterialAutoCompleteTextView
-                                    android:background="#E6FFFFFF"
-                                    android:id="@+id/textBelong"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:inputType="none"
-                                    android:textSize="18sp"
-                                    app:layout_constraintEnd_toEndOf="parent"
-                                    app:layout_constraintStart_toStartOf="parent" />
-                        </com.google.android.material.textfield.TextInputLayout>
 
 
                         <com.google.android.material.textfield.TextInputLayout
@@ -348,7 +332,7 @@
                             style="@style/Widget.Material3.TextInputLayout.FilledBox.Dense"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toBottomOf="@+id/textBelongLayout"
+                            app:layout_constraintTop_toBottomOf="@+id/textHeightLayout"
                             >
 
                                 <com.google.android.material.textfield.TextInputEditText
@@ -366,7 +350,7 @@
 
                         <com.google.android.material.textfield.TextInputLayout
                             android:id="@+id/textSexLayout"
-                            android:layout_width="160dp"
+                            android:layout_width="0dp"
                             android:layout_height="59dp"
                             android:layout_marginEnd="10dp"
                             android:layout_marginStart="20dp"
@@ -375,6 +359,7 @@
                             android:inputType="text"
                             style="@style/Widget.Material3.TextInputLayout.FilledBox.Dense.ExposedDropdownMenu"
                             app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintEnd_toStartOf="@id/textBDateLayout"
                             app:layout_constraintTop_toBottomOf="@+id/textExpectedDateLayout"
                             app:layout_constraintBottom_toTopOf="@id/btnEdit">
 
@@ -393,13 +378,14 @@
 
                         <com.google.android.material.textfield.TextInputLayout
                             android:id="@+id/textBDateLayout"
-                            android:layout_width="160dp"
+                            android:layout_width="0dp"
                             android:layout_height="59dp"
                             android:layout_marginStart="10dp"
                             android:layout_marginEnd="20dp"
                             android:hint="Birthdate"
                             android:inputType="text"
                             style="@style/Widget.Material3.TextInputLayout.FilledBox.Dense"
+                            app:layout_constraintStart_toEndOf="@id/textSexLayout"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintTop_toTopOf="@+id/textSexLayout">
 

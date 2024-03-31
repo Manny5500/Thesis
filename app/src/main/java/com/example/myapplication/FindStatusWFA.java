@@ -36,7 +36,7 @@ public class FindStatusWFA {
             } else if (weight < nsd3[age]) {
                 status = "Severe Underweight";
                 break;
-            } else if(weight > median[age]){
+            } else if(weight > sd2[age]){
                 status = "Overweight";
                 break;
             }
@@ -58,7 +58,7 @@ public class FindStatusWFA {
             } else if (height < nsd3[age]) {
                 status = "Severe Stunted";
                 break;
-            } else if (height >= sd3[age]) {
+            } else if (height > sd2[age]) {
                 status = "Tall";
                 break;
             }
@@ -80,10 +80,10 @@ public class FindStatusWFA {
             } else if (weight < nsd3[position]) {
                 status = "Severe Wasted";
                 break;
-            } else if (weight >= sd1[position] && weight <= sd2[position]) {
+            } else if (weight > sd2[position] && weight <= sd3[position]) {
                 status = "Overweight";
                 break;
-            } else if (weight >= sd3[position]) {
+            } else if (weight > sd3[position]) {
                 status = "Obese";
                 break;
             }
@@ -143,7 +143,6 @@ public class FindStatusWFA {
                 }
             }
 
-            Toast.makeText(context, ""+status.get(0), Toast.LENGTH_SHORT).show();
             statusdb = showDialogMalnourished(context, status);
 
         } else if (sex.equals("Female") && age<60 && age>=0) {

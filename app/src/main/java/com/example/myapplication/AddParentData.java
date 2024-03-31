@@ -27,7 +27,7 @@ public class AddParentData extends AppCompatActivity {
     TextView pDExist;
 
 
-    MaterialAutoCompleteTextView belongAC, incomeAC, sitioAC;
+    MaterialAutoCompleteTextView  incomeAC, sitioAC;
 
     Button next;
 
@@ -44,18 +44,17 @@ public class AddParentData extends AppCompatActivity {
         parentLastName = findViewById(R.id.textParentLastName);
         gmail = findViewById(R.id.textGmail);
         houseNumber = findViewById(R.id.textHouseNumber);
-        belongAC = findViewById(R.id.textBelong);
         incomeAC = findViewById(R.id.textIncome);
         sitioAC = findViewById(R.id.spinnerSitio);
         next = findViewById(R.id.btnNext);
         pDExist = findViewById(R.id.pDExist);
 
-        String[] belongs = getResources().getStringArray(R.array.yes_or_no);
+        bEVal = "No";
+
         String[] monthlyIncome = {"Less than 9,100", "9,100 to 18,200", "18,200 to 36,400",
                 "36,400 to 63,700", "63,700 to 109,200", "109,200 to 182,000", "Above 182,000"};
 
         FormUtils.setAdapter(SitioUtils.getSitioList(App.user.getBarangay()), sitioAC, this);
-        FormUtils.setAdapter(belongs,belongAC, this);
         FormUtils.setAdapter(monthlyIncome, incomeAC, this);
 
         nextEvent();
@@ -91,7 +90,6 @@ public class AddParentData extends AppCompatActivity {
         pLVal = parentLastName.getText().toString().trim();
         gMVal = gmail.getText().toString().trim();
         hNVal = houseNumber.getText().toString().trim();
-        bEVal = belongAC.getText().toString().trim();
         iNVaL = incomeAC.getText().toString().trim();
         sIVal = sitioAC.getText().toString().trim();
     }
@@ -101,7 +99,6 @@ public class AddParentData extends AppCompatActivity {
         parentLastName.setText("");
         gmail.setText("");
         houseNumber.setText("");
-        belongAC.setText("");
         incomeAC.setText("");
         sitioAC.setText("");
     }
