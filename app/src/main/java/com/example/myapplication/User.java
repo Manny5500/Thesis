@@ -20,6 +20,10 @@ public class User {
     private String deletionRequest;
 
 
+
+    private String isArchive;
+
+
     public User(){}
 
 
@@ -133,6 +137,14 @@ public class User {
 
     public void setDeletionRequest(String deletionRequest) {
         this.deletionRequest = deletionRequest;
+    }
+
+    public String getIsArchive() {
+        return isArchive;
+    }
+
+    public void setIsArchive(String isArchive) {
+        this.isArchive = isArchive;
     }
 
 

@@ -66,7 +66,7 @@ public class fragmentUM extends Fragment  {
             userType = "personnel";
         }
 
-        userList = new String[]{"BNS", "parent", "Request for Deletion"};
+        userList = new String[]{"BNS", "parent", "Request for Deletion", "Archive"};
         FormUtils.setAdapter(userList, userPicker, requireContext());
         userPicker.setText("BNS", false);
 
@@ -123,13 +123,37 @@ public class fragmentUM extends Fragment  {
                     ArrayList<User> filteredUser = new ArrayList<>();
 
                     for(User user:arrayList){
-                        if(user.getUser() != null && user.getUser().equals(userType))
-                            filteredUser.add(user);
 
-                        if(user.getDeletionRequest() != null
-                                && userType.equals(userList[2])
-                                && user.getDeletionRequest().equals("true"))
-                            filteredUser.add(user);
+                        String isArchive = user.getIsArchive();
+                        String userCat = user.getUser();
+                        String delRequest = user.getDeletionRequest();
+                        //null check
+                        if(isArchive==null){
+                            isArchive = "";
+                        }
+                        if(userCat==null){
+                            userCat="";
+                        }
+                        if(delRequest==null){
+                            delRequest = "";
+                        }
+
+
+                        if(userType.equals(userList[3])){
+                            if(isArchive.equals("Yes")){
+                                filteredUser.add(user);
+                            }
+                        }
+                        if(userCat.equals(userType)){
+                            if(!isArchive.equals("Yes")){
+                                filteredUser.add(user);
+                            }
+                        }
+                        if(userType.equals(userList[2])){
+                            if(delRequest.equals("true")){
+                                filteredUser.add(user);
+                            }
+                        }
                     }
 
 

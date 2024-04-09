@@ -144,9 +144,10 @@ public class FormUtils {
             return false;
         }
 
-       //String passwordPattern = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}$";
+        String passwordPattern2 = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}$";
         String passwordPattern = "^(?=.*[0-9])(?=.*[a-zA-Z])([a-zA-Z0-9]+)$";
-        if(!password.matches(passwordPattern) || !cpassword.matches(passwordPattern)){
+        if(!password.matches(passwordPattern) || !cpassword.matches(passwordPattern) ||
+                !password.matches(passwordPattern2) || !cpassword.matches(passwordPattern2)){
             Toast.makeText(context, "Use strong password", Toast.LENGTH_SHORT).show();
             return false;
         }
@@ -238,7 +239,7 @@ public class FormUtils {
     }
 
     public static boolean validateForm_Parent(String firstName, String middleName, String lastName,
-                                              String gmail, Context context){
+                                              String gmail, String contact,  Context context){
         if (firstName.isEmpty() || middleName.isEmpty() || lastName.isEmpty() ||
                 gmail.isEmpty()) {
             Toast.makeText(context, "Please fill all fields", Toast.LENGTH_SHORT).show();
@@ -262,6 +263,12 @@ public class FormUtils {
         }
         if (!lastName.matches(namePattern) ) {
             Toast.makeText(context, "Invalid Last Name", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        String contactNumberPattern = "^09\\d{9}$";
+
+        if(!contact.matches(contactNumberPattern)){
+            Toast.makeText(context, "Invalid Contact ", Toast.LENGTH_SHORT).show();
             return false;
         }
 

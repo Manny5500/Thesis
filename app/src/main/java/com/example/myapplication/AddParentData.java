@@ -23,7 +23,7 @@ import java.util.Map;
 
 public class AddParentData extends AppCompatActivity {
     TextInputEditText parentFirstName, parentMiddleName, parentLastName,
-            gmail, houseNumber;
+            gmail, houseNumber, contact;
     TextView pDExist;
 
 
@@ -31,7 +31,7 @@ public class AddParentData extends AppCompatActivity {
 
     Button next;
 
-    String pFVal, pMVal, pLVal, gMVal, hNVal, bEVal, iNVaL, sIVal;
+    String pFVal, pMVal, pLVal, gMVal, hNVal, bEVal, iNVaL, sIVal, contactVal;
     FirebaseFirestore db;
 
     @Override
@@ -48,6 +48,7 @@ public class AddParentData extends AppCompatActivity {
         sitioAC = findViewById(R.id.spinnerSitio);
         next = findViewById(R.id.btnNext);
         pDExist = findViewById(R.id.pDExist);
+        contact = findViewById(R.id.textContact);
 
         bEVal = "No";
 
@@ -65,7 +66,7 @@ public class AddParentData extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 setAllTextInputData();
-                boolean isFormValid = FormUtils.validateForm_Parent( pFVal, pMVal, pLVal, gMVal, AddParentData.this);
+                boolean isFormValid = FormUtils.validateForm_Parent( pFVal, pMVal, pLVal, gMVal, contactVal, AddParentData.this);
 
                 if (isFormValid) {
                     savetoTempEmail();
@@ -92,6 +93,7 @@ public class AddParentData extends AppCompatActivity {
         hNVal = houseNumber.getText().toString().trim();
         iNVaL = incomeAC.getText().toString().trim();
         sIVal = sitioAC.getText().toString().trim();
+        contactVal = contact.getText().toString().trim();
     }
     private void clearText(){
         parentFirstName.setText("");
@@ -101,6 +103,7 @@ public class AddParentData extends AppCompatActivity {
         houseNumber.setText("");
         incomeAC.setText("");
         sitioAC.setText("");
+        contact.setText("");
     }
 
     private Map<String, Object> createMap() {
@@ -114,6 +117,7 @@ public class AddParentData extends AppCompatActivity {
         parent.put("sitio", sIVal);
         parent.put("belongtoIP", bEVal);
         parent.put("barangay", App.user.getBarangay());
+        parent.put("contactNo", contactVal);
         return parent;
     }
 
@@ -128,6 +132,7 @@ public class AddParentData extends AppCompatActivity {
         tempEmail.setSitio(sIVal);
         tempEmail.setBarangay(App.user.getBarangay());
         tempEmail.setBelongtoIP(bEVal);
+        tempEmail.setContactNo(contactVal);
 
         App.tempEmail = tempEmail;
     }

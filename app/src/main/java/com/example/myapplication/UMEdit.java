@@ -33,7 +33,7 @@ public class UMEdit extends AppCompatActivity {
     String fnameVal, mnameVal, lnameVal, contactVal, monthVal, dayVal,
             yearVal, sexVal, barangayVal, bdayfull, motono, role;
 
-    Button edit, archive, delete;
+    Button edit, archive, delete, unarchive;
 
     String requestDeletion;
     private FirebaseFirestore db;
@@ -63,6 +63,7 @@ public class UMEdit extends AppCompatActivity {
         archive = findViewById(R.id.buttonArchive);
         delete = findViewById(R.id.buttonDelete);
         txtRole3 = findViewById(R.id.txtRole3);
+        unarchive = findViewById(R.id.buttonUnarchive);
 
         role = getIntent().getStringExtra("role");
 
@@ -71,8 +72,18 @@ public class UMEdit extends AppCompatActivity {
 
         txtRole3.setText(role.toUpperCase());
 
-        if(!role.equals("Request for Deletion"))
+        if(!role.equals("Request for Deletion")){
             delete.setVisibility(View.GONE);
+        }
+
+        if(!role.equals("Archive")){
+            unarchive.setVisibility(View.GONE);
+        }
+
+        if(!role.equals("parent") && !role.equals("BNS")){
+            edit.setVisibility(View.GONE);
+            archive.setVisibility(View.GONE);
+        }
 
         firstName.setText(App.user.getFirstName());
         middleName.setText(App.user.getLastName());
@@ -145,35 +156,17 @@ public class UMEdit extends AppCompatActivity {
         archive.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                    Map<String, Object> user = new HashMap<>();
-                    user.put("firstName", App.user.getFirstName());
-                    user.put("middleName", App.user.getMiddleName());
-                    user.put("lastName", App.user.getLastName());
-                    user.put("contact", App.user.getContact());
-                    user.put("birthdate", App.user.getBirthdate());
-                    user.put("sex", App.user.getSex());
-                    user.put("barangay", App.user.getBarangay());
-                    db.collection("usersarchive").document(App.user.getId()).set(user).addOnSuccessListener(new OnSuccessListener<Void>() {
-                        @Override
-                        public void onSuccess(Void unused) {
-                        }
-                    }).addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                            Toast.makeText(UMEdit.this, "Failed to archive", Toast.LENGTH_SHORT).show();
-                        }
-                    });
-
-                db.collection("users").document(App.user.getId()).delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+                Map<String,Object> userMap= new HashMap<>();
+                userMap.put("isArchive", "Yes");
+                db.collection("users").document(App.user.getId()).update(userMap).addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void unused) {
-                        Toast.makeText(UMEdit.this, "User archive sucessfully", Toast.LENGTH_SHORT).show();
                         finish();
                     }
                 }).addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                        Toast.makeText(UMEdit.this, "Failed to archive user", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(UMEdit.this, "Failed to save changes", Toast.LENGTH_SHORT).show();
                     }
                 });
                 }
@@ -183,6 +176,26 @@ public class UMEdit extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 deleteAccountDialog();
+            }
+        });
+
+        unarchive.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Map<String,Object> userMap= new HashMap<>();
+                userMap.put("isArchive", "No");
+                db.collection("users").document(App.user.getId()).update(userMap).addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void unused) {
+                        finish();
+
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Toast.makeText(UMEdit.this, "Failed to save changes", Toast.LENGTH_SHORT).show();
+                    }
+                });
             }
         });
     }

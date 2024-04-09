@@ -101,13 +101,13 @@ public class fragmentPriority extends Fragment {
                         child.setId(doc.getId());
 
 
-                        db.collection("users").whereEqualTo("user","parent").
-                                whereEqualTo("email", child.getGmail()).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                        db.collection("tempEmail").
+                                whereEqualTo("gmail", child.getGmail()).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                             @Override
                             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                                 for(QueryDocumentSnapshot doc1:task.getResult()){
-                                    User user = doc1.toObject(User.class);
-                                    child.setPhoneNumber(user.getContact());
+                                    TempEmail tempEmail = doc1.toObject(TempEmail.class);
+                                    child.setPhoneNumber(tempEmail.getContactNo());
                                 }
                             }
                         });

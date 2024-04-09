@@ -60,6 +60,8 @@ public class fragment_dashboard_new extends Fragment {
         prioView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Intent intent = new Intent(requireContext(), ActivityPriority.class);
+                startActivity(intent);
 
             }
         });

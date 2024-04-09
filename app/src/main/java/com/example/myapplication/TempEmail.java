@@ -14,8 +14,19 @@ public class TempEmail {
 
     String barangay;
 
+
+
+    String contactNo;
+
     public TempEmail(){
 
+    }
+    public String getContactNo() {
+        return contactNo;
+    }
+
+    public void setContactNo(String contactNo) {
+        this.contactNo = contactNo;
     }
     public String getBarangay() {
         return barangay;

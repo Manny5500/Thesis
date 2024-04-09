@@ -157,12 +157,16 @@ public class Login extends AppCompatActivity {
             public void onSuccess(DocumentSnapshot documentSnapshot) {
                 if (documentSnapshot.exists()) {
                     String userRole = documentSnapshot.getString("user");
+                    String isArchive = documentSnapshot.getString("isArchive");
+                    if(isArchive == null){
+                        isArchive = "";
+                    }
                     // Check the user's role and redirect accordingly
-                    if(userRole.equals("admin")) {
+                    if(userRole.equals("admin") && !isArchive.equals("Yes")) {
                         redirectToActivity(AdminActivity.class);
-                    } else if (userRole.equals("personnel")) {
+                    } else if (userRole.equals("personnel") && !isArchive.equals("Yes")) {
                         redirectToActivity(PersonnelActivity.class);
-                    } else if (userRole.equals("parent")) {
+                    } else if (userRole.equals("parent") && !isArchive.equals("Yes")) {
                         Intent intent = new Intent(Login.this, ParentActivity.class);
                         intent.putExtra("email", txtGmail.getText().toString());
                         redirectToActivity(intent);
@@ -171,7 +175,9 @@ public class Login extends AppCompatActivity {
                     }
                     progressBar.setVisibility(View.GONE);
                 } else {
-                    Toast.makeText(Login.this, "You have no privilege to use this app", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(Login.this, "Authentication Failed", Toast.LENGTH_SHORT).show();
+                    FirebaseAuth.getInstance().signOut();
+                    progressBar.setVisibility(View.GONE);
                 }
             }
         });
@@ -196,13 +202,14 @@ public class Login extends AppCompatActivity {
         AlertDialog.Builder builder = new AlertDialog.Builder(Login.this);
 
 
-        builder.setTitle("Invalid User Role")
-                .setMessage("Please make sure you select your user role correctly before logging in.");
+        builder.setTitle("Cannot Log-in")
+                .setMessage("Account is archived");
 
         builder.setCancelable(true);
+        /*
         builder.setOnDismissListener(dialog -> {
            redirectToActivity(MainActivity.class);
-        });
+        });*/
 
         AlertDialog dialog = builder.create();
         dialog.show();
