@@ -33,7 +33,7 @@
             android:id="@+id/profileText"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:text="Me"
+            android:text="Profile"
             android:textColor="@color/white"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

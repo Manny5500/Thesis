@@ -178,7 +178,6 @@ public class ParentProfile extends Fragment {
 
             buttonRequestDeleteEvent(isRequested);
         }else {
-            Toast.makeText(requireContext(), "No data"+snapshot.getData(), Toast.LENGTH_SHORT).show();
         }
     }
 

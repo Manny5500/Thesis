@@ -246,7 +246,10 @@ public class PersonnelActivity extends AppCompatActivity {
         builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                deleteFirestoreData();
+                DeleteUser.deleteUserAccount(user, PersonnelActivity.this, PersonnelActivity.this);
+                DeleteUser.deleteFirestoreData(db, userid, PersonnelActivity.this);
+
+                FirebaseAuth.getInstance().signOut();
                 dialog.dismiss();
             }
         });
