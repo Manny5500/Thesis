@@ -33,7 +33,7 @@ public class UMEdit extends AppCompatActivity {
     String fnameVal, mnameVal, lnameVal, contactVal, monthVal, dayVal,
             yearVal, sexVal, barangayVal, bdayfull, motono, role;
 
-    Button edit, archive, delete, unarchive;
+    Button edit, archive, delete, unarchive, verified;
 
     String requestDeletion;
     private FirebaseFirestore db;
@@ -64,6 +64,7 @@ public class UMEdit extends AppCompatActivity {
         delete = findViewById(R.id.buttonDelete);
         txtRole3 = findViewById(R.id.txtRole3);
         unarchive = findViewById(R.id.buttonUnarchive);
+        verified = findViewById(R.id.buttonVerify);
 
         role = getIntent().getStringExtra("role");
 
@@ -83,6 +84,10 @@ public class UMEdit extends AppCompatActivity {
         if(!role.equals("parent") && !role.equals("BNS")){
             edit.setVisibility(View.GONE);
             archive.setVisibility(View.GONE);
+        }
+
+        if(!role.equals("Verify")){
+            verified.setVisibility(View.GONE);
         }
 
         firstName.setText(App.user.getFirstName());
@@ -170,6 +175,25 @@ public class UMEdit extends AppCompatActivity {
                     }
                 });
                 }
+        });
+
+        verified.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Map<String,Object> userMap= new HashMap<>();
+                userMap.put("verified", "Yes");
+                db.collection("users").document(App.user.getId()).update(userMap).addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void unused) {
+                        finish();
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Toast.makeText(UMEdit.this, "Failed to save changes", Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
         });
 
         delete.setOnClickListener(new View.OnClickListener() {

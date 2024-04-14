@@ -146,7 +146,7 @@ public class Register extends AppCompatActivity {
     private void addUserDataToFirestore() {
 
         // Create a new user object with desired data
-        User user = new User(fnameVal, mnameVal, lnameVal, gmailVal, bdayfull, sexVal, barangayVal, userVal, contactVal);
+        User user = new User(fnameVal, mnameVal, lnameVal, gmailVal, bdayfull, sexVal, barangayVal, userVal, contactVal, "No");
 
         // Add the user object to the "users" collection in Firestore
         db.collection("users")
@@ -169,8 +169,9 @@ public class Register extends AppCompatActivity {
                             finish();
                         }
                         if(userVal.equals("personnel")){
-                            Intent intent = new Intent(getApplicationContext(), PersonnelActivity.class);
-                            startActivity(intent);
+                            Toast.makeText(Register.this, "Wait for verification first", Toast.LENGTH_SHORT).show();
+                            //Intent intent = new Intent(getApplicationContext(), PersonnelActivity.class);
+                            //startActivity(intent);
                             finish();
                         }
 

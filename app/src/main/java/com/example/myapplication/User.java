@@ -23,12 +23,14 @@ public class User {
 
     private String isArchive;
 
+    private String verified;
+
 
     public User(){}
 
 
     public User(String firstName, String middleName, String lastName, String email, String birthdate,
-                String sex, String barangay, String user, String contact) {
+                String sex, String barangay, String user, String contact, String verified) {
         this.firstName = firstName;
         this.middleName = middleName;
         this.lastName = lastName;
@@ -38,8 +40,12 @@ public class User {
         this.barangay = barangay;
         this.user = user;
         this.contact = contact;
+        this.verified = verified;
     }
 
+
+    public String getVerified(){return verified;}
+    public void setVerified(String verified){this.verified = verified;}
     // Getters and Setters
     public String getFirstName() {
         return firstName;

@@ -48,7 +48,7 @@ public class Login extends AppCompatActivity {
         super.onStart();
         FirebaseUser currentUser = mAuth.getCurrentUser();
         if (currentUser != null) {
-            FormUtils.redirectToRoleSpecificActivity(currentUser, FirebaseFirestore.getInstance(), this);
+            FormUtils.redirectToRoleSpecificActivity(currentUser, FirebaseFirestore.getInstance(), this, mAuth);
         }
     }
     @Override
@@ -158,14 +158,23 @@ public class Login extends AppCompatActivity {
                 if (documentSnapshot.exists()) {
                     String userRole = documentSnapshot.getString("user");
                     String isArchive = documentSnapshot.getString("isArchive");
+                    String verified = documentSnapshot.getString("verified");
                     if(isArchive == null){
                         isArchive = "";
+                    }
+                    if(verified ==  null){
+                        verified = "";
                     }
                     // Check the user's role and redirect accordingly
                     if(userRole.equals("admin") && !isArchive.equals("Yes")) {
                         redirectToActivity(AdminActivity.class);
                     } else if (userRole.equals("personnel") && !isArchive.equals("Yes")) {
-                        redirectToActivity(PersonnelActivity.class);
+                        if(verified.equals("Yes")){
+                            redirectToActivity(PersonnelActivity.class);
+                        }else{
+                            mAuth.signOut();
+                            Toast.makeText(Login.this, "You need to get verified", Toast.LENGTH_SHORT).show();
+                        }
                     } else if (userRole.equals("parent") && !isArchive.equals("Yes")) {
                         Intent intent = new Intent(Login.this, ParentActivity.class);
                         intent.putExtra("email", txtGmail.getText().toString());

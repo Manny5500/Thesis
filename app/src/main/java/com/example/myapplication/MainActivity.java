@@ -27,7 +27,7 @@ public class MainActivity extends AppCompatActivity {
         super.onStart();
         FirebaseUser currentUser = mAuth.getCurrentUser();
         if (currentUser != null) {
-            FormUtils.redirectToRoleSpecificActivity(currentUser, FirebaseFirestore.getInstance(), this);
+            FormUtils.redirectToRoleSpecificActivity(currentUser, FirebaseFirestore.getInstance(), this, mAuth);
         }
     }
     @Override

@@ -11,6 +11,7 @@ import android.widget.Toast;
 
 import com.google.android.material.textfield.MaterialAutoCompleteTextView;
 import com.google.android.material.textfield.TextInputEditText;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -434,18 +435,27 @@ public class FormUtils {
         }
         return motono;
     }
-    public static void redirectToRoleSpecificActivity(FirebaseUser user, FirebaseFirestore db, Context context) {
+    public static void redirectToRoleSpecificActivity(FirebaseUser user, FirebaseFirestore db, Context context, FirebaseAuth mAuth) {
         if (user != null) {
             String userId = user.getUid();
             DocumentReference userDocRef = db.collection("users").document(userId);
             userDocRef.get().addOnSuccessListener(documentSnapshot -> {
                 if (documentSnapshot.exists()) {
                     String userRole = documentSnapshot.getString("user");
+                    String verified  = documentSnapshot.getString("verified");
+                    if(verified == null){
+                        verified = "";
+                    }
                     Intent intent = null;
                     if ("admin".equals(userRole)) {
                         intent = new Intent(context, AdminActivity.class);
                     } else if ("personnel".equals(userRole)) {
-                        intent = new Intent(context, PersonnelActivity.class);
+                        if(verified.equals("Yes")){
+                            intent = new Intent(context, PersonnelActivity.class);
+                        }else{
+                            Toast.makeText(context, "You need to get verified", Toast.LENGTH_SHORT).show();
+                            mAuth.getInstance().signOut();
+                        }
                     } else if ("parent".equals(userRole)) {
                         intent = new Intent(context, ParentActivity.class);
                     }

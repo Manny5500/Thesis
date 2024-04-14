@@ -66,7 +66,7 @@ public class fragmentUM extends Fragment  {
             userType = "personnel";
         }
 
-        userList = new String[]{"BNS", "parent", "Request for Deletion", "Archive"};
+        userList = new String[]{"BNS", "parent", "Request for Deletion", "Archive", "Verify"};
         FormUtils.setAdapter(userList, userPicker, requireContext());
         userPicker.setText("BNS", false);
 
@@ -127,6 +127,7 @@ public class fragmentUM extends Fragment  {
                         String isArchive = user.getIsArchive();
                         String userCat = user.getUser();
                         String delRequest = user.getDeletionRequest();
+                        String userVerified = user.getVerified();
                         //null check
                         if(isArchive==null){
                             isArchive = "";
@@ -136,6 +137,9 @@ public class fragmentUM extends Fragment  {
                         }
                         if(delRequest==null){
                             delRequest = "";
+                        }
+                        if(userVerified==null){
+                            userVerified = "";
                         }
 
 
@@ -154,6 +158,13 @@ public class fragmentUM extends Fragment  {
                                 filteredUser.add(user);
                             }
                         }
+
+                        if(userType.equals(userList[4]) ){
+                            if(userVerified.equals("No") && user.getUser().equals("personnel")){
+                                filteredUser.add(user);
+                            }
+                        }
+
                     }
 
 
