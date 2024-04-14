@@ -2,6 +2,7 @@ package com.example.myapplication;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -21,11 +22,14 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class DeleteUser {
-    public static void deleteFirestoreData(FirebaseFirestore db, String userid, Context context){
+    public static void deleteFirestoreData(FirebaseFirestore db, String userid, Context context, AppCompatActivity activity){
         db.collection("users").document(userid).delete().addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void unused) {
                 Toast.makeText(context, "User deleted sucessfully", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(activity.getApplicationContext(), Login.class);
+                activity.startActivity(intent);
+                activity.finish();
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
@@ -43,7 +47,6 @@ public class DeleteUser {
                         if (task.isSuccessful()) {
                             Toast.makeText(context, "User account is deleted", Toast.LENGTH_SHORT).show();
                             FirebaseAuth.getInstance().signOut();
-                            activity.finish();
                         }
                     }
                 });

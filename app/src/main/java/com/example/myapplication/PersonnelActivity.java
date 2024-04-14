@@ -89,6 +89,7 @@ public class PersonnelActivity extends AppCompatActivity {
                 } else {
                     Toast.makeText(PersonnelActivity.this, "No data"+snapshot.getData(), Toast.LENGTH_SHORT).show();
                 }
+
             }
         });
 
@@ -247,9 +248,7 @@ public class PersonnelActivity extends AppCompatActivity {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 DeleteUser.deleteUserAccount(user, PersonnelActivity.this, PersonnelActivity.this);
-                DeleteUser.deleteFirestoreData(db, userid, PersonnelActivity.this);
-
-                FirebaseAuth.getInstance().signOut();
+                DeleteUser.deleteFirestoreData(db, userid, PersonnelActivity.this, PersonnelActivity.this);
                 dialog.dismiss();
             }
         });

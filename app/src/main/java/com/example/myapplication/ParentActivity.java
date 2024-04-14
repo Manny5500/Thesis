@@ -182,7 +182,7 @@ public class ParentActivity extends AppCompatActivity {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 DeleteUser.deleteUserAccount(user, ParentActivity.this, ParentActivity.this);
-                DeleteUser.deleteFirestoreData(db, userid, ParentActivity.this);
+                DeleteUser.deleteFirestoreData(db, userid, ParentActivity.this, ParentActivity.this);
                 dialog.dismiss();
             }
         });
