@@ -11,8 +11,8 @@ android {
         applicationId = "com.nutriassist.myapplication"
         minSdk = 29
         targetSdk = 33
-        versionCode = 18
-        versionName = "2.7"
+        versionCode = 19
+        versionName = "2.8"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }

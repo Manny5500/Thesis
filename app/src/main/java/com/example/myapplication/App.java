@@ -8,6 +8,7 @@ public class App extends Application{
 
     public static TempEmail tempEmail;
 
+
     public static int DeleteFlag = 0;
     public static int AddFlag = 0;
 
