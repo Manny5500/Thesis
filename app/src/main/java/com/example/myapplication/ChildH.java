@@ -1,9 +1,15 @@
 package com.example.myapplication;
 
+import android.content.Context;
+
+import java.io.Serializable;
+import java.time.LocalDate;
+import java.time.Period;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
-public class ChildH {
-    double weight, height;
+public class ChildH implements Serializable {
+    protected double weight, height;
 
 
     String id;
@@ -14,6 +20,8 @@ public class ChildH {
 
 
     ArrayList<String> status;
+
+    ArrayList<String> statusProgress;
 
 
     public ChildH(){};
@@ -56,6 +64,7 @@ public class ChildH {
     public void setStatus(ArrayList<String> status) {
         this.status = status;
     }
+
 
 
 }

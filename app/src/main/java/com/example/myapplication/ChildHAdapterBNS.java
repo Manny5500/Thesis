@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -18,13 +19,15 @@ import java.util.List;
 
 public class ChildHAdapterBNS  extends RecyclerView.Adapter<ChildHAdapterBNS.ViewHolder> {
     Context context;
+    Child child;
     private List<ChildH> exampleList;
 
     ChildAdapter.OnItemClickListener onItemClickListener;
 
-    public ChildHAdapterBNS(Context context, ArrayList<ChildH> exampleList){
+    public ChildHAdapterBNS(Context context, ArrayList<ChildH> exampleList, Child child){
         this.context = context;
         this.exampleList = exampleList;
+        this.child = child;
     }
 
     @NonNull
@@ -65,16 +68,38 @@ public class ChildHAdapterBNS  extends RecyclerView.Adapter<ChildHAdapterBNS.Vie
             holder.progressWeight.setText("Weight: " + weightVal);
         }
         holder.progressDate.setText("" + dateVal);
+        /*
         if(statusdb!=null && statusdb.size()>0)
         {
             holder.progressStatus.setText(seperateStatus(statusdb));
+        }*/
+
+
+        String   full_name = child.getChildFirstName() + " " +
+                child.getChildMiddleName() + " " +
+                child.getChildLastName();
+
+        ChildHLogic childHLogic = new ChildHLogic(exampleList.get(position), child.getSex(), child.getBirthDate(), full_name);
+
+        ArrayList<String> newStatus = childHLogic.getStatusProgress();
+        int monthdiff = childHLogic.calcuMD();
+
+
+        if(newStatus.size()<1){
+            newStatus.add("Invalid age ( " +  monthdiff + " mos." + " )" );
         }
 
+
+        holder.progressStatus.setText(seperateStatus(newStatus));
+
         holder.progressMenu.setOnClickListener(v -> {
-            App.childH = exampleList.get(position);
             Context context = holder.itemView.getContext();
-            context.startActivity(new Intent(context, PMEdit.class));
+            Intent intent = new Intent(context, PMEdit.class);
+            intent.putExtra("ChildHLogic", childHLogic);
+            context.startActivity(intent);
+
         });
+
     }
 
     @Override

@@ -5,6 +5,7 @@ public class App extends Application{
     public static Child child;
     public static User user;
     public static ChildH childH;
+    public static ChildHLogic childHLogic;
 
     public static TempEmail tempEmail;
 

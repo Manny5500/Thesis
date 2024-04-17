@@ -197,6 +197,109 @@ public class FindStatusWFA {
         return statusdb;
     }
 
+    public static ArrayList<String> CalculateMalnourishedProgress( int age, double weight, double height, String sex){
+        ArrayList<String> status = new ArrayList<>();
+        ArrayList<String> statusdb = new ArrayList<>();
+
+        if(sex.equals("Male") && age<60 && age>= 0){
+            WFA_Boys wfa = new WFA_Boys();
+            if(!wfa.WFA_Boys_M(age,weight).equals("")){
+                status.add(wfa.WFA_Boys_M(age, weight));
+            }
+            if(age>=0 && age<24)
+            {
+                LFA_Boys lfaBoys = new LFA_Boys();
+                if(!lfaBoys.LFA_Boys_M(height,age).equals("")){
+                    status.add(lfaBoys.LFA_Boys_M(height, age));
+                }
+
+                WFL_Boys wflBoys = new WFL_Boys();
+                if(!wflBoys.WFL_Boys_M(weight,height).equals("")){
+                    status.add(wflBoys.WFL_Boys_M(weight, height));
+                }
+
+            } else if (age>= 24 && age <60) {
+                HFA_Boys hfaBoys = new HFA_Boys();
+                if(!hfaBoys.HFA_Boys_M(height, age).equals("")){
+                    status.add(hfaBoys.HFA_Boys_M(height, age));
+                }
+
+                WFH_Boys wfhBoys = new WFH_Boys();
+                if(!wfhBoys.WFH_Boys_M(weight, height).equals("")){
+                    status.add(wfhBoys.WFH_Boys_M(weight, height));
+                }
+            }else{
+
+            }
+            if(status.isEmpty()){
+                status.add("Normal");
+            }
+            int count=0;
+            //previously may obese dito
+            for(String cstats: status){
+                if(cstats.equals("Overweight") ||
+                        cstats.equals("Underweight") || cstats.equals("Severe Underweight")){
+                    count++;
+                }
+            }
+            if(count>1){
+                if(status.get(0).equals("Overweight") || status.get(0).equals("Underweight")){
+                    status.remove(0);
+                }
+            }
+
+            statusdb = showMalnourishedPM( status);
+
+        } else if (sex.equals("Female") && age<60 && age>=0) {
+            WFA_Girls wfag = new WFA_Girls();
+            if(!wfag.WFA_Girls_M(age,weight).equals("")){
+                status.add(wfag.WFA_Girls_M(age, weight));
+            }
+            if(age>=0 && age<24)
+            {
+                LFA_Girls lfaGirls = new LFA_Girls();
+                if(!lfaGirls.LFA_Girls_M(height,age).equals("")){
+                    status.add(lfaGirls.LFA_Girls_M(height, age));
+                }
+                WFL_Girls wflGirls = new WFL_Girls();
+                if(!wflGirls.WFL_Girls_M(weight, height).equals("")){
+                    status.add(wflGirls.WFL_Girls_M(weight, height));
+                }
+
+            } else if (age>= 24 && age <60) {
+                HFA_Girls  hfaGirls = new HFA_Girls();
+                if(!hfaGirls.HFA_Girls_M(height,age).equals("")){
+                    status.add(hfaGirls.HFA_Girls_M(height, age));
+                }
+                WFH_Girls wfhGirls = new WFH_Girls();
+                if(!wfhGirls.WFH_Girls_M(weight, height).equals("")){
+                    status.add(wfhGirls.WFH_Girls_M(weight, height));
+                }
+            }else{
+            }
+            if(status.isEmpty()||status.get(0).equals("")){
+                status.add("Normal");
+            }
+            int count=0;
+            for(String cstats: status){
+                if(cstats.equals("Overweight") || cstats.equals("Obese")||
+                        cstats.equals("Underweight") || cstats.equals("Severe Underweight")){
+                    count++;
+                }
+            }
+            if(count>1){
+                if(status.get(0).equals("Overweight") || status.get(0).equals("Underweight")){
+                    status.remove(0);
+                }
+            }
+            statusdb = showMalnourishedPM(status);
+
+        } else {
+        }
+
+        return statusdb;
+    }
+
 
     public static String[] individualTest(Context context, int age, double weight, double height, String sex){
         String[] status = {"Normal","Normal","Normal"};
@@ -228,7 +331,6 @@ public class FindStatusWFA {
                     status[2] = wfhBoys.WFH_Boys_M(weight, height);
                 }
             }else{
-                //Toast.makeText(context, "Invalid age", Toast.LENGTH_SHORT).show();
             }
 
         } else if (sex.equals("Female") && age<60 && age>=0) {
@@ -257,11 +359,9 @@ public class FindStatusWFA {
                    status[2] =  wfhGirls.WFH_Girls_M(weight, height);
                 }
             }else{
-                //Toast.makeText(context, "Invalid age", Toast.LENGTH_SHORT).show();
             }
 
         } else {
-            //Toast.makeText(context, "Invalid ages", Toast.LENGTH_SHORT).show();
         }
 
         return status;
@@ -303,6 +403,18 @@ public class FindStatusWFA {
         window.setLayout(ConstraintLayout.LayoutParams.WRAP_CONTENT, ConstraintLayout.LayoutParams.WRAP_CONTENT);
         dialog.show();
 
+        return listWithoutDuplicates;
+    }
+
+    public static ArrayList<String> showMalnourishedPM(ArrayList<String> status){
+
+        LinkedHashSet<String> setWithoutDuplicates = new LinkedHashSet<>(status);
+        ArrayList<String> listWithoutDuplicates = new ArrayList<>(setWithoutDuplicates);
+
+        String message = "";
+        for(String element: listWithoutDuplicates){
+            message = message + "\t" + element + "\n";
+        }
         return listWithoutDuplicates;
     }
 

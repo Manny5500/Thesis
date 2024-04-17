@@ -97,7 +97,9 @@ public class CDAdapter extends  RecyclerView.Adapter<CDAdapter.ViewHolder> imple
         holder.btnProgress.setOnClickListener(v -> {
             App.child = exampleList.get(position);
             Context context = holder.itemView.getContext();
-            context.startActivity(new Intent(context, ProgressMonitoringBNS.class));
+            Intent intent = new Intent(context, ProgressMonitoringBNS.class);
+            intent.putExtra("Child", exampleList.get(position));
+            context.startActivity(intent);
         });
 
     }

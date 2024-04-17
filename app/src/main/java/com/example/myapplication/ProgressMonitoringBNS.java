@@ -25,15 +25,20 @@ public class ProgressMonitoringBNS extends AppCompatActivity {
     private ChildHAdapterBNS childHAdapter;
     RecyclerView recyclerView;
     String full_name;
+
+    Child child;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_progress_monitoring_bns);
         db = FirebaseFirestore.getInstance();
         recyclerView = findViewById(R.id.recycler);
-        full_name = App.child.getChildFirstName() + " " +
-                App.child.getChildMiddleName() + " " +
-                App.child.getChildLastName();
+
+
+        child = (Child) getIntent().getSerializableExtra("Child");
+        full_name = child.getChildFirstName() + " " +
+                child.getChildMiddleName() + " " +
+                child.getChildLastName();
         Populate_now();
     }
 
@@ -51,7 +56,7 @@ public class ProgressMonitoringBNS extends AppCompatActivity {
                         arrayList.add(childh);
                     }
                     Collections.reverse(arrayList);
-                    childHAdapter = new ChildHAdapterBNS(ProgressMonitoringBNS.this, arrayList);
+                    childHAdapter = new ChildHAdapterBNS(ProgressMonitoringBNS.this, arrayList, child);
                     recyclerView.setAdapter(childHAdapter);
 
                 }
@@ -62,5 +67,11 @@ public class ProgressMonitoringBNS extends AppCompatActivity {
                 Log.d("Firebase myexception", ""+e);
             }
         });
+    }
+
+    @Override
+    public void onResume(){
+        super.onResume();
+      Populate_now();
     }
 }
