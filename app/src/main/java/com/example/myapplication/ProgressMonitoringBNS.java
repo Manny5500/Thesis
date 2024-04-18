@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 
@@ -56,8 +57,22 @@ public class ProgressMonitoringBNS extends AppCompatActivity {
                         arrayList.add(childh);
                     }
                     Collections.reverse(arrayList);
-                    childHAdapter = new ChildHAdapterBNS(ProgressMonitoringBNS.this, arrayList, child);
+
+                    ArrayList<Double> heightList = new ArrayList<>();
+                    ArrayList<Double> weightList = new ArrayList<>();
+                    ArrayList<String> labelList = new ArrayList<>();
+                    for(ChildH childH: arrayList){
+                        heightList.add(childH.getHeight());
+                        weightList.add(childH.getWeight());
+                        labelList.add(childH.getId().substring(4, 6) + "-" + childH.getId().substring(6, 8));
+                    }
+
+                    ArrayList<PMChart> pmCharts = new ArrayList<>();
+                    pmCharts.add(new PMChart(heightList, labelList, "Child height", Color.BLUE));
+                    pmCharts.add(new PMChart(weightList, labelList,  "Child weight", Color.RED));
+                    childHAdapter = new ChildHAdapterBNS(ProgressMonitoringBNS.this, arrayList, child, pmCharts);
                     recyclerView.setAdapter(childHAdapter);
+
 
                 }
             }

@@ -13,61 +13,93 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.github.mikephil.charting.charts.LineChart;
+import com.github.mikephil.charting.components.AxisBase;
+import com.github.mikephil.charting.components.Description;
+import com.github.mikephil.charting.components.XAxis;
+import com.github.mikephil.charting.components.YAxis;
+import com.github.mikephil.charting.data.Entry;
+import com.github.mikephil.charting.data.LineData;
+import com.github.mikephil.charting.data.LineDataSet;
+import com.github.mikephil.charting.formatter.IndexAxisValueFormatter;
+import com.github.mikephil.charting.formatter.ValueFormatter;
+
 import java.text.DateFormatSymbols;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
-public class ChildHAdapterBNS  extends RecyclerView.Adapter<ChildHAdapterBNS.ViewHolder> {
+public class ChildHAdapterBNS  extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     Context context;
     Child child;
     private List<ChildH> exampleList;
 
+    private List<PMChart> pmChartList;
+
+    private static final int VIEW_TYPE_HEADER = 0;
+
+    private static final int VIEW_TYPE_HEADER2 = 1;
+    private static final int VIEW_TYPE_ITEM = 2;
+
+
     ChildAdapter.OnItemClickListener onItemClickListener;
 
-    public ChildHAdapterBNS(Context context, ArrayList<ChildH> exampleList, Child child){
+    public ChildHAdapterBNS(Context context, ArrayList<ChildH> exampleList, Child child, ArrayList<PMChart> pmCharts){
         this.context = context;
         this.exampleList = exampleList;
         this.child = child;
+        this.pmChartList = pmCharts;
     }
 
     @NonNull
     @Override
-    public ChildHAdapterBNS.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(context).inflate(R.layout.progress_item_bns, parent, false);
-        return new ChildHAdapterBNS.ViewHolder(view);
+    public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        LayoutInflater inflater = LayoutInflater.from(context);
+        if(viewType == VIEW_TYPE_HEADER || viewType == VIEW_TYPE_HEADER2){
+            View header = inflater.inflate(R.layout.progress_chart, parent, false);
+            return new HeaderViewHolder(header);
+        }else{
+            View itemView = inflater.inflate(R.layout.progress_item_bns, parent, false);
+            return new ChildHAdapterBNS.ViewHolder(itemView);
+
+        }
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ChildHAdapterBNS.ViewHolder holder, int position) {
-        String dateRaw = "" + exampleList.get(position).getId();
-        int month = Integer.parseInt(dateRaw.substring(4, 6));
-        String monthName = new DateFormatSymbols().getMonths()[month - 1];
+    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
 
-        String dateVal = monthName + " " + dateRaw.substring(6, 8) + ", " + dateRaw.substring(0, 4);
-        String heightVal = "" + exampleList.get(position).getHeight() + " cm";
-        String weightVal = "" + exampleList.get(position).getWeight() + " kg";
+        if(holder instanceof ViewHolder){
+            ViewHolder itemHolder = (ViewHolder) holder;
+            int adjustedPosition = position - 2;
+            String dateRaw = "" + exampleList.get(adjustedPosition).getId();
+            int month = Integer.parseInt(dateRaw.substring(4, 6));
+            String monthName = new DateFormatSymbols().getMonths()[month - 1];
 
-        ArrayList<String> statusdb = exampleList.get(position).getStatusdb();
+            String dateVal = monthName + " " + dateRaw.substring(6, 8) + ", " + dateRaw.substring(0, 4);
+            String heightVal = "" + exampleList.get(adjustedPosition).getHeight() + " cm";
+            String weightVal = "" + exampleList.get(adjustedPosition).getWeight() + " kg";
 
-        double heightDiff;
-        double weightDiff;
-        if(position+1<exampleList.size()){
-            heightDiff = getDifference(exampleList.get(position).getHeight(),
-                    exampleList.get(position+1).getHeight());
-            weightDiff = getDifference(exampleList.get(position).getWeight(),
-                    exampleList.get(position+1).getWeight());
+            ArrayList<String> statusdb = exampleList.get(adjustedPosition).getStatusdb();
 
-            holder.progressHeight.setText(setTextValue(heightVal, "Height: ", heightDiff));
-            holder.progressWeight.setText(setTextValue(weightVal, "Weight: ", weightDiff));
-            holder.progressHeight.setTextColor(setChangeColor(heightDiff));
-            if(statusdb!=null && statusdb.size()>0){
-                holder.progressWeight.setTextColor(setChangeColorWeight(weightDiff, statusdb));
+            double heightDiff;
+            double weightDiff;
+            if(adjustedPosition+1<exampleList.size()){
+                heightDiff = getDifference(exampleList.get(adjustedPosition).getHeight(),
+                        exampleList.get(adjustedPosition+1).getHeight());
+                weightDiff = getDifference(exampleList.get(adjustedPosition).getWeight(),
+                        exampleList.get(adjustedPosition+1).getWeight());
+
+                itemHolder.progressHeight.setText(setTextValue(heightVal, "Height: ", heightDiff));
+                itemHolder.progressWeight.setText(setTextValue(weightVal, "Weight: ", weightDiff));
+                itemHolder.progressHeight.setTextColor(setChangeColor(heightDiff));
+                if(statusdb!=null && statusdb.size()>0){
+                    itemHolder.progressWeight.setTextColor(setChangeColorWeight(weightDiff, statusdb));
+                }
+            }else{
+                itemHolder.progressHeight.setText("Height: " + heightVal);
+                itemHolder.progressWeight.setText("Weight: " + weightVal);
             }
-        }else{
-            holder.progressHeight.setText("Height: " + heightVal);
-            holder.progressWeight.setText("Weight: " + weightVal);
-        }
-        holder.progressDate.setText("" + dateVal);
+            itemHolder.progressDate.setText("" + dateVal);
         /*
         if(statusdb!=null && statusdb.size()>0)
         {
@@ -75,36 +107,60 @@ public class ChildHAdapterBNS  extends RecyclerView.Adapter<ChildHAdapterBNS.Vie
         }*/
 
 
-        String   full_name = child.getChildFirstName() + " " +
-                child.getChildMiddleName() + " " +
-                child.getChildLastName();
+            String   full_name = child.getChildFirstName() + " " +
+                    child.getChildMiddleName() + " " +
+                    child.getChildLastName();
 
-        ChildHLogic childHLogic = new ChildHLogic(exampleList.get(position), child.getSex(), child.getBirthDate(), full_name);
+            ChildHLogic childHLogic = new ChildHLogic(exampleList.get(adjustedPosition), child.getSex(), child.getBirthDate(), full_name);
 
-        ArrayList<String> newStatus = childHLogic.getStatusProgress();
-        int monthdiff = childHLogic.calcuMD();
+            ArrayList<String> newStatus = childHLogic.getStatusProgress();
+            int monthdiff = childHLogic.calcuMD();
 
 
-        if(newStatus.size()<1){
-            newStatus.add("Invalid age ( " +  monthdiff + " mos." + " )" );
+            if(newStatus.size()<1){
+                newStatus.add("Invalid age ( " +  monthdiff + " mos." + " )" );
+            }
+
+
+            itemHolder.progressStatus.setText(seperateStatus(newStatus));
+
+            itemHolder.progressMenu.setOnClickListener(v -> {
+                Context context = holder.itemView.getContext();
+                Intent intent = new Intent(context, PMEdit.class);
+                intent.putExtra("ChildHLogic", childHLogic);
+                context.startActivity(intent);
+            });
+        }else if(holder instanceof HeaderViewHolder){
+            HeaderViewHolder hVH = (HeaderViewHolder) holder;
+            PMChart pmC = pmChartList.get(position);
+            ArrayList<Double> dataList = pmC.dataList;
+            ArrayList<String> labels = pmC.labelList;
+            Collections.reverse(dataList);
+            if(position==0){
+                Collections.reverse(labels);
+            }
+            ChartMaker.editLineChartPM(hVH.lineChart,dataList, labels, pmC.chartTitle, pmC.color);
         }
 
 
-        holder.progressStatus.setText(seperateStatus(newStatus));
-
-        holder.progressMenu.setOnClickListener(v -> {
-            Context context = holder.itemView.getContext();
-            Intent intent = new Intent(context, PMEdit.class);
-            intent.putExtra("ChildHLogic", childHLogic);
-            context.startActivity(intent);
-
-        });
-
     }
+
 
     @Override
     public int getItemCount() {
-        return exampleList.size();
+        return exampleList.size()+2;
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        // Return view type as header if position is 0, otherwise return item view type
+        if(position == 0){
+            return VIEW_TYPE_HEADER;
+        } else if (position == 1) {
+            return VIEW_TYPE_HEADER2;
+        }else{
+            return VIEW_TYPE_ITEM;
+        }
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder{
@@ -119,6 +175,18 @@ public class ChildHAdapterBNS  extends RecyclerView.Adapter<ChildHAdapterBNS.Vie
             progressMenu = itemView.findViewById(R.id.progressMenu);
         }
     }
+
+
+    public static class HeaderViewHolder extends RecyclerView.ViewHolder {
+
+        LineChart lineChart;
+
+        public HeaderViewHolder(@NonNull View itemView) {
+            super(itemView);
+            lineChart = itemView.findViewById(R.id.lineChart);
+        }
+    }
+
 
     public double getDifference(double current, double previous){
 

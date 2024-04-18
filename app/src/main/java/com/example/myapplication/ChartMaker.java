@@ -370,6 +370,41 @@ public class ChartMaker {
         lineChart.setData(lineData);
     }
 
+    public static void editLineChartPM(LineChart lineChart, ArrayList<Double> dataList, ArrayList<String> labelList, String title, int color){
+        ArrayList<Entry> entries = new ArrayList<>();
+
+
+        lineChart.setPinchZoom(false);
+        lineChart.setDoubleTapToZoomEnabled(false);
+        int i = 0;
+        for (double val: dataList) {
+            entries.add(new Entry(i, (float) val));
+            i++;
+        }
+
+        LineDataSet dataSet = new LineDataSet(entries, title);
+
+        XAxis xAxis = lineChart.getXAxis();
+        xAxis.setValueFormatter(new IndexAxisValueFormatter(labelList));
+        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
+
+
+        integerValues(lineChart, dataSet);
+        descriptionRemover(lineChart);
+
+
+        lineChart.animateX(1000);
+        for(int a=0; a<2; a++){
+            customizeChartLine(dataSet, color);
+        }
+        customizeChartLine(dataSet, color);
+
+        xAxis.setDrawGridLines(false);
+
+        LineData lineData = new LineData(dataSet);
+        lineChart.setData(lineData);
+    }
+
 
 
 
