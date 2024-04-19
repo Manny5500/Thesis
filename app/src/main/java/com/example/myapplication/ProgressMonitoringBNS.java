@@ -51,21 +51,22 @@ public class ProgressMonitoringBNS extends AppCompatActivity {
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 if (task.isSuccessful()){
                     ArrayList<ChildH> arrayList = new ArrayList<>();
+                    ArrayList<Double> heightList = new ArrayList<>();
+                    ArrayList<Double> weightList = new ArrayList<>();
+                    ArrayList<String> labelList = new ArrayList<>();
+
                     for (QueryDocumentSnapshot doc: task.getResult()){
                         ChildH childh = doc.toObject(ChildH.class);
                         childh.setId(doc.getId());
                         arrayList.add(childh);
+
+                        heightList.add(childh.getHeight());
+                        weightList.add(childh.getWeight());
+                        labelList.add(childh.getId().substring(4, 6) + "-" + childh.getId().substring(6, 8));
+
                     }
                     Collections.reverse(arrayList);
 
-                    ArrayList<Double> heightList = new ArrayList<>();
-                    ArrayList<Double> weightList = new ArrayList<>();
-                    ArrayList<String> labelList = new ArrayList<>();
-                    for(ChildH childH: arrayList){
-                        heightList.add(childH.getHeight());
-                        weightList.add(childH.getWeight());
-                        labelList.add(childH.getId().substring(4, 6) + "-" + childH.getId().substring(6, 8));
-                    }
 
                     ArrayList<PMChart> pmCharts = new ArrayList<>();
                     pmCharts.add(new PMChart(heightList, labelList, "Child height", Color.BLUE));

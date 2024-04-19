@@ -41,14 +41,20 @@ public class Login extends AppCompatActivity {
     FirebaseAuth mAuth;
 
     ProgressBar progressBar;
+    FirebaseFirestore db;
 
 
     @Override
     public void onStart() {
         super.onStart();
         FirebaseUser currentUser = mAuth.getCurrentUser();
+        db = FirebaseFirestore.getInstance();
         if (currentUser != null) {
-            FormUtils.redirectToRoleSpecificActivity(currentUser, FirebaseFirestore.getInstance(), this, mAuth);
+            if(currentUser.isEmailVerified()){
+                FormUtils.redirectToRoleSpecificActivity(currentUser, FirebaseFirestore.getInstance(), this, mAuth);
+            }else{
+                Toast.makeText(this, "Verify your email first", Toast.LENGTH_SHORT).show();
+            }
         }
     }
     @Override
@@ -135,7 +141,14 @@ public class Login extends AppCompatActivity {
                             public void onComplete(@NonNull Task<AuthResult> task) {
                                 if (task.isSuccessful()) {
                                     // User authentication successful, check user role
-                                    checkUserRole();
+                                    FirebaseUser currentUser = mAuth.getCurrentUser();
+                                    if (currentUser.isEmailVerified()) {
+                                       checkUserRole();
+                                    } else {
+                                        FirebaseAuth.getInstance().signOut();
+                                        Toast.makeText(Login.this, "Verify your email first", Toast.LENGTH_SHORT).show();
+                                        progressBar.setVisibility(View.GONE);
+                                    }
                                 } else {
                                     // Authentication failed
                                     Toast.makeText(Login.this, "Authentication failed.", Toast.LENGTH_SHORT).show();

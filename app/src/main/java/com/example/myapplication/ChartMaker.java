@@ -393,7 +393,7 @@ public class ChartMaker {
         descriptionRemover(lineChart);
 
 
-        lineChart.animateX(1000);
+        //lineChart.animateX(1000);
         for(int a=0; a<2; a++){
             customizeChartLine(dataSet, color);
         }

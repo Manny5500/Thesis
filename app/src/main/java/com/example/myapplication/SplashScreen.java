@@ -25,7 +25,13 @@ public class SplashScreen extends AppCompatActivity {
             public void run() {
                 FirebaseUser currentUser = mAuth.getCurrentUser();
                 if (currentUser != null) {
-                    FormUtils.redirectToRoleSpecificActivity(currentUser, FirebaseFirestore.getInstance(), SplashScreen.this, mAuth);
+                    if(currentUser.isEmailVerified()){
+                        FormUtils.redirectToRoleSpecificActivity(currentUser, FirebaseFirestore.getInstance(), SplashScreen.this, mAuth);
+                    }else{
+                        Intent intent = new Intent(SplashScreen.this, Login.class);
+                        startActivity(intent);
+                        mAuth.signOut();
+                    }
                 }else{
                     Intent intent = new Intent(SplashScreen.this, Login.class);
                     startActivity(intent);

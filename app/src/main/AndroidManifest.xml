@@ -25,6 +25,9 @@
         android:theme="@style/Theme.MyApplication"
         tools:targetApi="31">
         <activity
+            android:name=".ValidateEmail"
+            android:exported="false" />
+        <activity
             android:name=".PMEdit"
             android:exported="false" />
         <activity

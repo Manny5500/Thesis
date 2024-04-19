@@ -157,28 +157,23 @@ public class Register extends AppCompatActivity {
                     public void onSuccess(Void aVoid) {
                         // Data added successfully
                         //progressBar.setVisibility(View.GONE);
-                        Toast.makeText(Register.this, "Account Created and Data Added to Firestore",
-                                Toast.LENGTH_SHORT).show();
                         if(tempEmailVal==null){
                             savetoTempEmail();
                         }
 
                         if(userVal.equals("admin")){
-                            Intent intent = new Intent(getApplicationContext(), AdminActivity.class);
-                            startActivity(intent);
-                            finish();
+                            sendEmailVerification();
                         }
                         if(userVal.equals("personnel")){
-                            Toast.makeText(Register.this, "Wait for verification first", Toast.LENGTH_SHORT).show();
+                            //Toast.makeText(Register.this, "Wait for verification first", Toast.LENGTH_SHORT).show();
                             //Intent intent = new Intent(getApplicationContext(), PersonnelActivity.class);
                             //startActivity(intent);
-                            finish();
+                            //finish();
+                            sendEmailVerification();
                         }
 
                         if(userVal.equals("parent")){
-                            Intent intent = new Intent(getApplicationContext(), ParentActivity.class);
-                            startActivity(intent);
-                            finish();
+                            sendEmailVerification();
                         }
                     }
                 })
@@ -274,6 +269,22 @@ public class Register extends AppCompatActivity {
         builder.setCancelable(false);
         AlertDialog dialog = builder.create();
         dialog.show();
+    }
+
+    private void sendEmailVerification() {
+        mAuth.getCurrentUser().sendEmailVerification()
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if (task.isSuccessful()) {
+                            Toast.makeText(Register.this, "Verify your email first",
+                                    Toast.LENGTH_SHORT).show();
+                            FirebaseAuth.getInstance().signOut();
+                            finish();
+                        } else {
+                        }
+                    }
+                });
     }
 
 }

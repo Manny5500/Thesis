@@ -135,10 +135,6 @@ public class ChildHAdapterBNS  extends RecyclerView.Adapter<RecyclerView.ViewHol
             PMChart pmC = pmChartList.get(position);
             ArrayList<Double> dataList = pmC.dataList;
             ArrayList<String> labels = pmC.labelList;
-            Collections.reverse(dataList);
-            if(position==0){
-                Collections.reverse(labels);
-            }
             ChartMaker.editLineChartPM(hVH.lineChart,dataList, labels, pmC.chartTitle, pmC.color);
         }
 
