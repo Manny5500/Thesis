@@ -15,7 +15,9 @@ import android.widget.Toast;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
@@ -27,6 +29,8 @@ public class FamilyList extends AppCompatActivity {
     RecyclerView recyclerView;
 
     private ParentAdapter parentAdapter;
+    ArrayList<Timestamp> timestampArrayList;
+    ArrayList<Child> childList;
 
     int whiteColor;
 
@@ -37,6 +41,9 @@ public class FamilyList extends AppCompatActivity {
 
         db = FirebaseFirestore.getInstance();
         recyclerView = findViewById(R.id.recycler);
+        Intent intent = getIntent();
+        Bundle args = intent.getBundleExtra("BUNDLE");
+        childList = (ArrayList<Child>) args.getSerializable("ARRAYLIST");
 
         Populate_now();
         SearchView searchView = findViewById(R.id.searchView);
@@ -60,13 +67,16 @@ public class FamilyList extends AppCompatActivity {
     }
 
     private void Populate_now(){
-        db.collection("tempEmail").whereEqualTo("barangay", App.user.getBarangay()).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+        /*
+        db.collection("children").whereEqualTo("barangay", App.user.getBarangay()).whereGreaterThanOrEqualTo("dateAdded", timestampArrayList.get(0))
+                .whereLessThanOrEqualTo("dateAdded", timestampArrayList.get(1)).orderBy("dateAdded", Query.Direction.DESCENDING).
+                get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 if (task.isSuccessful()){
-                    ArrayList<TempEmail> arrayList = new ArrayList<>();
+                    ArrayList<Child> arrayList = new ArrayList<>();
                     for (QueryDocumentSnapshot doc: task.getResult()){
-                        TempEmail tMail= doc.toObject(TempEmail.class);
+                        Child child= doc.toObject(Child.class);
                         tMail.setGmail(doc.getId());
                         arrayList.add(tMail);
                     }
@@ -86,6 +96,25 @@ public class FamilyList extends AppCompatActivity {
             public void onFailure(@NonNull Exception e) {
                 Log.d("Firebase myexception", ""+e);
                 Toast.makeText(FamilyList.this, ""+e, Toast.LENGTH_SHORT).show();
+            }
+        });*/
+
+        ArrayList<TempEmail> tempEmailList = new ArrayList<>();
+        for(Child child: childList){
+            TempEmail tMail = new TempEmail();
+            tMail.setGmail(child.getGmail());
+            tMail.setParentFirstName(child.getParentFirstName());
+            tMail.setParentMiddleName(child.getParentMiddleName());
+            tMail.setParentLastName(child.getParentLastName());
+            tMail.setSitio(child.getSitio());
+            tempEmailList.add(tMail);
+        }
+        parentAdapter = new ParentAdapter(FamilyList.this, tempEmailList);
+        recyclerView.setAdapter(parentAdapter);
+        parentAdapter.setOnItemClickListener(new ParentAdapter.OnItemClickListener() {
+            @Override
+            public void onClick(TempEmail tMail) {
+                App.tempEmail = tMail;
             }
         });
     }

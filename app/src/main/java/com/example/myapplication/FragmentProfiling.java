@@ -17,6 +17,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -27,6 +28,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
+import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -35,17 +37,27 @@ import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import java.io.Serializable;
+import java.sql.Time;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 
 
 public class FragmentProfiling extends Fragment {
 
     View view;
-    TextView namText, polBod, chilBod, falCont, vulCont, gBCont, fPCont;
+    TextView namText, polBod, chilBod, falCont, vulCont, gBCont, fPCont, textDate;
+    ImageView dateMenu;
     MaterialCardView polView, chilView, falView, vulView, gBView, fPView;
     FirebaseFirestore db;
 
     ArrayList<Child> childList = new ArrayList<>();
+
+    String fromValue, toValue;
+
+    Timestamp fromTrueVal, toTrueVal;
 
 
     @Override
@@ -67,13 +79,18 @@ public class FragmentProfiling extends Fragment {
         vulCont = view.findViewById(R.id.vulCont);
         fPView = view.findViewById(R.id.fPView);
         fPCont = view.findViewById(R.id.fPCont);
+        textDate = view.findViewById(R.id.dateText);
+        dateMenu = view.findViewById(R.id.dateMenu);
+
+
+
         namText.setText(App.user.getBarangay());
         setPopulation();
         cBevent();
         pBevent();
         setFamily();
         if(App.user.getBarangay()!=null){
-            getChildData();
+            //getChildData();
             vulViewEvent();
             falViewEvent();
             gBViewEvent();
@@ -81,7 +98,103 @@ public class FragmentProfiling extends Fragment {
 
         }
 
+        preSelected();
+        dateMenuEvent();
         return view;
+    }
+
+    private  void preSelected(){
+        String dateNow = getStartDateLoading();
+        String monthString = dateNow.substring(3, 5);
+        String yearString = dateNow.substring(6, 10);
+        int yearNow = Integer.parseInt(yearString);
+        fromValue = "01/"+monthString+"/"+yearString;
+        if(monthString.equals("01") || monthString.equals("03") || monthString.equals("05") ||
+                monthString.equals("07") || monthString.equals("08") || monthString.equals("10") || monthString.equals("12")){
+            toValue = "31/"+monthString+"/"+yearString;
+        } else if (monthString.equals("04") || monthString.equals("06") || monthString.equals("09") ||
+                monthString.equals("11")) {
+            toValue = "30/"+monthString+"/"+yearString;
+        } else if (monthString.equals("02")) {
+
+            if(yearNow % 4 ==0){
+                toValue = "29/"+monthString+"/"+yearString;
+            }else{
+                toValue = "28/"+monthString+"/"+yearString;
+            }
+        }
+
+        fromTrueVal = convertToTimestamp(fromValue, "from");
+        toTrueVal = convertToTimestamp(toValue, "to");
+        textDate.setText(fromValue + " - " + toValue);
+        getChildData();
+    }
+
+    private void dateMenuEvent(){
+        dateMenu.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showDialog();
+            }
+        });
+    }
+    private void showDialog(){
+        final Dialog dialog = new Dialog(requireContext());
+        dialog.setContentView(R.layout.dialog_assign);
+        dialog.show();
+        Button set = dialog.findViewById(R.id.btnSet);
+        Button cancel = dialog.findViewById(R.id.btnCancel);
+        TextInputEditText from = dialog.findViewById(R.id.dateFrom);
+        TextInputEditText to = dialog.findViewById(R.id.dateTo);
+        TextView title = dialog.findViewById(R.id.title);
+        title.setText("Set Date");
+        FormUtils.dateClicked(from, requireContext());
+        FormUtils.dateClicked(to, requireContext());
+
+        from.setText(fromValue);
+        to.setText(toValue);
+        set.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                fromValue = from.getText().toString().trim();
+                toValue = to.getText().toString().trim();
+                dialog.dismiss();
+
+                fromTrueVal = convertToTimestamp(fromValue, "from");
+                toTrueVal = convertToTimestamp(toValue, "to");
+                setTextDate();
+                getChildData();
+            }
+        });
+
+        cancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+    }
+
+    private void setTextDate(){
+        textDate.setText(fromValue + " - " + toValue);
+    }
+    public Timestamp convertToTimestamp(String dateString, String toOrfrom) {
+        SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");
+
+        try {
+            Date date = format.parse(dateString);
+            if(toOrfrom.equals("to")){
+                Calendar calendar = Calendar.getInstance();
+                calendar.setTime(date);
+                calendar.add(Calendar.DAY_OF_MONTH, 1);
+                date = calendar.getTime();
+            }
+
+            return new Timestamp(date);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
 
@@ -105,7 +218,8 @@ public class FragmentProfiling extends Fragment {
 
 
     private void getChildData(){
-        db.collection("children").whereEqualTo("barangay", App.user.getBarangay()).orderBy("dateAdded", Query.Direction.DESCENDING)
+        db.collection("children").whereEqualTo("barangay", App.user.getBarangay()).whereGreaterThanOrEqualTo("dateAdded", fromTrueVal)
+                .whereLessThanOrEqualTo("dateAdded", toTrueVal).orderBy("dateAdded", Query.Direction.DESCENDING)
                 .get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
@@ -117,6 +231,7 @@ public class FragmentProfiling extends Fragment {
                                 arrayList.add(child);
                             }
                             childList = RemoveDuplicates.removeDuplicates(arrayList);
+                            falCont.setText(String.valueOf(getExamined()));
                             vulCont.setText(String.valueOf(getVulnerable()));
                             gBCont.setText(String.valueOf(getGB()));
                             fPCont.setText(String.valueOf(getFP()));
@@ -161,6 +276,12 @@ public class FragmentProfiling extends Fragment {
         });
     }
 
+    private String getStartDateLoading(){
+        SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
+        Date date = new Date();
+        return formatter.format(date);
+    }
+
     private int  getVulnerable(){
         int count = 0;
         ArrayList<Child> fGmail = RemoveDuplicates.rDGmail(childList);
@@ -183,6 +304,16 @@ public class FragmentProfiling extends Fragment {
             if(isMal||isLowIncome||isGOne){
                 count++;
             }
+        }
+        return count;
+
+    }
+
+    private int  getExamined(){
+        int count = 0;
+        ArrayList<Child> fGmail = RemoveDuplicates.rDGmail(childList);
+        for(Child child: fGmail){
+            count++;
         }
         return count;
 
@@ -226,7 +357,7 @@ public class FragmentProfiling extends Fragment {
                                 TempEmail tEm = doc.toObject(TempEmail.class);
                                 tEList.add(tEm);
                             }
-                            falCont.setText(String.valueOf(task.getResult().size()));
+
                         }
                     }
                 }).addOnFailureListener(new OnFailureListener() {
@@ -260,7 +391,11 @@ public class FragmentProfiling extends Fragment {
         falView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(requireContext(), FamilyList.class));
+                Intent intent = new Intent(requireContext(), FamilyList.class);
+                Bundle args = new Bundle();
+                args.putSerializable("ARRAYLIST",(Serializable) RemoveDuplicates.rDGmail(childList));
+                intent.putExtra("BUNDLE",args);
+                startActivity(intent);
             }
         });
     }

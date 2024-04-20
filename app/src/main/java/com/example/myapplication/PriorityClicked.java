@@ -1,22 +1,11 @@
 package com.example.myapplication;
 
 import android.Manifest;
-import android.app.AlertDialog;
 import android.app.Dialog;
-import android.content.ContentResolver;
-import android.content.ContentValues;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Paint;
-import android.graphics.Rect;
-import android.graphics.Typeface;
-import android.graphics.pdf.PdfDocument;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
-import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
@@ -24,6 +13,8 @@ import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
+
+
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -35,44 +26,44 @@ import com.github.barteksc.pdfviewer.PDFView;
 import com.github.barteksc.pdfviewer.scroll.DefaultScrollHandle;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
-import com.google.firebase.storage.UploadTask;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.itextpdf.text.Rectangle;
 
-import org.apache.commons.io.FileUtils;
-
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.IOException;
-import java.net.URL;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.concurrent.Executors;
 
 public class PriorityClicked extends AppCompatActivity {
 
     private static final int REQUEST_PHONE_CALL = 1;
-    String phoneNumber = "123456789";
     String name = "", birthdate = "", age = "", referraldate = "",
-            mothername = "", sex = "", municipality="", barangay="", houseno="";
+            mothername = "", sex = "", municipality="", barangay="", houseno="",
+            parent = "", phoneNumber =  "", email= "", address = "", sitio = "" ;
     Dialog dialog2;
     String pdfUrl = "";
+
+    FirebaseFirestore db;
+
+    TextView textName, textAge, textSex, textWeight,
+            textHeight, textStatus, textParent, textEmail,
+            textCellphone, textAddress;
+
+    TextView textNameLabel, textAgeLabel, textGenderLabel,
+            textWeightLabel, textHeightLabel, textStatusLabel,
+            textParentLabel, textEmailLabel, textCellphoneLabel,
+            textAddressLabel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_priority_clicked);
 
-        phoneNumber = App.child.getPhoneNumber();
+        db = FirebaseFirestore.getInstance();
+
         pdfUrl = App.child.getDownloadUrl();
         Button callButton = findViewById(R.id.btnCallDynamics);
         Button referral = findViewById(R.id.btnReferralDynamics);
@@ -87,7 +78,7 @@ public class PriorityClicked extends AppCompatActivity {
                     ActivityCompat.requestPermissions(PriorityClicked.this, new String[]{Manifest.permission.CALL_PHONE}, REQUEST_PHONE_CALL);
                 } else {
                     // Permission has already been granted
-                    if(phoneNumber!=null){
+                    if(!phoneNumber.equals("N/A")){
                         makePhoneCall(phoneNumber);
                     }else{
                         Toast.makeText(PriorityClicked.this, "No number available", Toast.LENGTH_SHORT).show();
@@ -106,12 +97,14 @@ public class PriorityClicked extends AppCompatActivity {
         });
 
 
+        sitio = App.child.getSitio();
+        if(sitio == null){
+            sitio = "";
+        }else if(sitio.equals("placeholder")){
+            sitio = "";
+        }
 
-        TextView textName, textAge, textSex, textWeight,
-                textHeight, textStatus;
 
-        TextView textNameLabel, textAgeLabel, textGenderLabel,
-                textWeightLabel, textHeightLabel, textStatusLabel;
 
         textName = findViewById(R.id.textNameDynamics);
         textAge = findViewById(R.id.textAgeDynamics);
@@ -119,6 +112,10 @@ public class PriorityClicked extends AppCompatActivity {
         textWeight = findViewById(R.id.textWeightDynamics);
         textHeight = findViewById(R.id.textHeightDynamics);
         textStatus = findViewById(R.id.textStatusDynamics);
+        textParent = findViewById(R.id.textParentDynamics);
+        textEmail = findViewById(R.id.textEmailDynamics);
+        textCellphone = findViewById(R.id.textCellphoneDynamics);
+        textAddress = findViewById(R.id.textAddressDynamics);
 
         textNameLabel = findViewById(R.id.labelPCName);
         textAgeLabel = findViewById(R.id.labelAge);
@@ -126,18 +123,26 @@ public class PriorityClicked extends AppCompatActivity {
         textWeightLabel = findViewById(R.id.labelWeightDynamics);
         textHeightLabel = findViewById(R.id.labelHeightDynamics);
         textStatusLabel = findViewById(R.id.labelStatusDynamics);
+        textParentLabel = findViewById(R.id.labelParentName);
+        textEmailLabel = findViewById(R.id.labelEmail);
+        textCellphoneLabel = findViewById(R.id.labelCellphone);
+        textAddressLabel = findViewById(R.id.labelAddress);
 
-        textName.setText(App.child.getChildFirstName()+" "+App.child.getChildLastName());
-        textSex.setText(App.child.getSex());
-        textWeight.setText(App.child.getWeight() + " kg");
-        textHeight.setText(App.child.getHeight() + " cm");
+
+
         String statusmaker = "";
 
         LocalDate currentDate = LocalDate.now();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
+        int i=0;
         for(String status : App.child.getStatusdb()){
-            statusmaker = statusmaker + status + "\n";
+            if(i==App.child.getStatusdb().size()-1){
+                statusmaker = statusmaker + status;
+            }else{
+                statusmaker = statusmaker + status + "\n";
+            }
+            i++;
         }
         textStatus.setText(statusmaker);
 
@@ -154,20 +159,62 @@ public class PriorityClicked extends AppCompatActivity {
         Date parsedDate = formUtils.parseDate(App.child.getBirthDate());
 
         int monthdiff = 0;
-
         if (parsedDate != null) {
             monthdiff = formUtils.calculateMonthsDifference(parsedDate);
             age = String.valueOf(monthdiff);
             textAge.setText(String.valueOf(monthdiff)+ " months");
-
         } else {
             Toast.makeText(this, "Failed to parse the date", Toast.LENGTH_SHORT).show();
         }
 
-        setTextSize(textAge,textStatus, textSex, textName, textWeight, textHeight);
-        setTextSize(textAgeLabel, textStatusLabel, textGenderLabel, textNameLabel, textWeightLabel, textHeightLabel);
+        setTextSize(textAge,textStatus, textSex, textName, textWeight, textHeight, textParent, textEmail, textCellphone, textAddress);
+        setTextSize(textAgeLabel, textStatusLabel, textGenderLabel, textNameLabel, textWeightLabel, textHeightLabel, textParentLabel,
+                textEmailLabel, textCellphoneLabel, textAddressLabel);
+
+        getPhoneNumber();
+    }
+
+    private void getPhoneNumber(){
+        db.collection("users")
+                .whereEqualTo("email", App.child.getGmail())
+                .get()
+                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                    @Override
+                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+
+                        for (DocumentSnapshot document : queryDocumentSnapshots) {
+                            phoneNumber = document.getString("contact");
+                            if(phoneNumber != null){
+                                break;
+                            }
+                        }
+
+                        if(phoneNumber == ""){
+                            phoneNumber = "N/A";
+                        }
+                        setTextText();
 
 
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+
+                    }
+                });
+    }
+
+    private void setTextText(){
+        textCellphone.setText(phoneNumber);
+        textName.setText(App.child.getChildFirstName()+" "+App.child.getChildLastName());
+        textSex.setText(App.child.getSex());
+        textWeight.setText(App.child.getWeight() + " kg");
+        textHeight.setText(App.child.getHeight() + " cm");
+        textParent.setText(App.child.getParentFirstName()+ " " + App.child.getParentLastName());
+        textEmail.setText(App.child.getGmail());
+        textAddress.setText(App.child.getHouseNumber() + " " + sitio + "\n"
+                + App.child.getBarangay());
     }
 
     private void makePhoneCall(String phoneNumber) {
@@ -181,7 +228,11 @@ public class PriorityClicked extends AppCompatActivity {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == REQUEST_PHONE_CALL) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                makePhoneCall(phoneNumber);
+                if(!phoneNumber.equals("N/A")){
+                    makePhoneCall(phoneNumber);
+                }else{
+                    Toast.makeText(this, "No number available", Toast.LENGTH_SHORT).show();
+                }
             } else {
                 // Permission denied, inform the user and handle accordingly
                 Toast.makeText(this, "Please allow the phone permission in the settings", Toast.LENGTH_SHORT).show();

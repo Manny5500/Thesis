@@ -114,7 +114,7 @@ public class Register extends AppCompatActivity {
                 bdayfull = motono + "/" + dayVal + "/" + yearVal;
 
                 boolean isFormValid = formUtils.validateForm_R(fnameVal, mnameVal, lnameVal, gmailVal,
-                        bdayfull, sexVal, barangayVal, passwordVal, cpasswordVal, userVal, contactVal, Register.this);
+                        bdayfull, sexVal, barangayVal, passwordVal, cpasswordVal, userVal, contactVal, userVal, Register.this);
 
                 if(isFormValid){
                     getTempEmail();

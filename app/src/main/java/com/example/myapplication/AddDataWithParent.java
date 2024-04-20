@@ -76,7 +76,7 @@ public class AddDataWithParent extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 setAllTextData();
-                boolean isFormValid = FormUtils.validateForm_Child(cFVal, cMVal, cLVal, AddDataWithParent.this);
+                boolean isFormValid = FormUtils.validateForm_Child(cFVal, cMVal, cLVal, bDVal,AddDataWithParent.this);
                 if (isFormValid) {
                     checkName();
 

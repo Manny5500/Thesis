@@ -1,6 +1,5 @@
 package com.example.myapplication;
 
-import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -16,18 +15,14 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.HashSet;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Set;
+
 
 public class FormUtils {
-
     public static void setAdapter(String[] source, MaterialAutoCompleteTextView editText, Context context) {
         ArrayAdapter<String> adapter = new ArrayAdapter<>(context, android.R.layout.simple_dropdown_item_1line, source);
         editText.setAdapter(adapter);
@@ -64,6 +59,7 @@ public class FormUtils {
                                        String sexAC, String belongAC,  String height, String weight, int monthdiff, String sitio,
                                                Context context) {
 
+
         if (childFirstName.isEmpty() || childMiddleName.isEmpty() || childLastName.isEmpty() ||
                 parentFirstName.isEmpty() || parentMiddleName.isEmpty() || parentLastName.isEmpty() ||
                 gmail.isEmpty() || houseNumber.isEmpty() || bdate.isEmpty() || expectedDate.isEmpty() ||
@@ -73,7 +69,8 @@ public class FormUtils {
 
         //String emailPattern = "[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+";
         String emailPattern = "^[a-zA-Z0-9._-]+@gmail\\.com$";
-        if (!gmail.matches(emailPattern)) {
+        String emailPattern2 = "^[a-zA-Z0-9._-]+@yahoo\\.com$";
+        if (!gmail.matches(emailPattern) && !gmail.matches(emailPattern2)) {
             // Email format is invalid
             Toast.makeText(context, "Invalid Email", Toast.LENGTH_SHORT).show();
             return false;
@@ -101,11 +98,26 @@ public class FormUtils {
             return false;
         }
 
+        DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+        try {
+            Date date = dateFormat.parse(bdate);
+            long daysDiff = calculateDaysDifferenceAccured(date);
+            if(daysDiff<0){
+                Toast.makeText(context, "Invalid age", Toast.LENGTH_SHORT).show();
+                return false;
+            }
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
         return true;
+
     }
-    public static boolean validateForm_R(String childFirstName, String childMiddleName, String childLastName,
+
+
+    public  boolean validateForm_R(String childFirstName, String childMiddleName, String childLastName,
                                        String gmail,  String bdate, String sexAC, String barangayAC,
-                                         String password, String cpassword, String user, String contact, Context context) {
+                                         String password, String cpassword, String user, String contact, 
+                                   String role, Context context) {
 
         if (childFirstName.isEmpty() || childMiddleName.isEmpty() || childLastName.isEmpty() ||
                 gmail.isEmpty() || bdate.isEmpty() || sexAC.isEmpty() || barangayAC.isEmpty() ||
@@ -116,7 +128,8 @@ public class FormUtils {
 
         //String emailPattern = "[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+";
         String emailPattern = "^[a-zA-Z0-9._-]+@gmail\\.com$";
-        if (!gmail.matches(emailPattern)) {
+        String emailPattern2 = "^[a-zA-Z0-9._-]+@yahoo\\.com$";
+        if (!gmail.matches(emailPattern) && !gmail.matches(emailPattern2)) {
             // Email format is invalid
             Toast.makeText(context, "Invalid Email", Toast.LENGTH_SHORT).show();
             return false;
@@ -144,6 +157,24 @@ public class FormUtils {
             Toast.makeText(context, "Invalid Date", Toast.LENGTH_SHORT).show();
             return false;
         }
+
+
+        DateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
+        try {
+            Date date = dateFormat.parse(bdate);
+            int monthDiff = calculateMonthsDifference(date);
+            if(monthDiff<180 && role.equals("parent")){
+                Toast.makeText(context, "Parent must be at least 15 years old", Toast.LENGTH_SHORT).show();
+                return false;
+            } else if (monthDiff<216 && role.equals("personnel")) {
+                Toast.makeText(context, "Personnel must be at least 18 years old", Toast.LENGTH_SHORT).show();
+                return false;
+            }
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+
 
         String passwordPattern2 = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}$";
         String passwordPattern = "^(?=.*[0-9])(?=.*[a-zA-Z])([a-zA-Z0-9]+)$";
@@ -279,11 +310,12 @@ public class FormUtils {
         return true;
     }
 
-    public static boolean validateForm_Child(String firstName, String middleName, String lastName,
+    public static boolean validateForm_Child(String firstName, String middleName, String lastName, String bdate,
                                                Context context){
         if (firstName.isEmpty() || middleName.isEmpty() || lastName.isEmpty()) {
             Toast.makeText(context, "Please fill all fields", Toast.LENGTH_SHORT).show();
             return false;
+
         }
 
 
@@ -299,6 +331,23 @@ public class FormUtils {
         if (!lastName.matches(namePattern) ) {
             Toast.makeText(context, "Invalid Last Name", Toast.LENGTH_SHORT).show();
             return false;
+        }
+
+        DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+        int flag = 0;
+        try {
+            Date date = dateFormat.parse(bdate);
+            long daysDiff = calculateDaysDifferenceAccured(date);
+            if(daysDiff<0){
+                Toast.makeText(context, "Invalid age", Toast.LENGTH_SHORT).show();
+                flag = 1;
+                return false;
+            }
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        if(flag==0){
+            return true;
         }
 
         return true;
@@ -351,6 +400,22 @@ public class FormUtils {
             int daysDifference = (int) (differenceInMillis / (24 * 60 * 60 * 1000));
 
             return daysDifference;
+        }
+        return 0;
+    }
+
+    public static long calculateDaysDifferenceAccured(Date givenDate) {
+        if (givenDate != null) {
+            Calendar currentCalendar = Calendar.getInstance();
+            Calendar givenCalendar = Calendar.getInstance();
+            givenCalendar.setTime(givenDate);
+
+            long currentTimeInMillis = currentCalendar.getTimeInMillis();
+            long givenTimeInMillis = givenCalendar.getTimeInMillis();
+
+            long differenceInMillis = currentTimeInMillis - givenTimeInMillis;
+
+            return differenceInMillis;
         }
         return 0;
     }

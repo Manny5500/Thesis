@@ -43,6 +43,44 @@
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintEnd_toStartOf="@id/imgViews">
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        app:layout_constraintVertical_weight="0.5"
+                        android:id="@+id/textDateLayout"
+                        app:layout_constraintBottom_toTopOf="@id/barText"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent">
+
+                        <TextView
+                            android:id="@+id/dateText"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            app:layout_constraintHorizontal_weight="9"
+                            android:text="Date"
+                            android:textStyle="bold"
+                            android:textColor="@color/white"
+                            app:layout_constraintTop_toBottomOf="@id/textDateLayout"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintEnd_toStartOf="@id/dateMenu">
+                        </TextView>
+                        <ImageView
+                            android:src="@drawable/more"
+                            android:id="@+id/dateMenu"
+                            app:tint="@color/white"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            app:layout_constraintHorizontal_weight="1"
+                            app:layout_constraintStart_toEndOf="@id/dateText"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintTop_toTopOf="@id/dateText">
+                        </ImageView>
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+
                     <TextView
                         android:id="@+id/barText"
                         android:layout_width="match_parent"
@@ -52,14 +90,14 @@
                         android:text="Barangay"
                         android:textStyle="bold"
                         android:textColor="@color/white"
-                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/textDateLayout"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintBottom_toTopOf="@id/namText">
                     </TextView>
                     <TextView
                         android:id="@+id/namText"
-                        app:layout_constraintVertical_weight="2"
+                        app:layout_constraintVertical_weight="1.5"
                         android:layout_width="match_parent"
                         android:layout_height="0dp"
                         android:textSize="28sp"
